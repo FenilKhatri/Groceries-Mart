@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Allow: /products
+Allow: /about
+Allow: /contact
+
+Disallow: /admin/
+Disallow: /vendor/
+Disallow: /login
+Disallow: /register
+
+Sitemap: https://groceries-mart.vercel.app/sitemap.xml
