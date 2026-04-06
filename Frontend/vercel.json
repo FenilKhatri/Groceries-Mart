@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://groceries-mart-production-342c.up.railway.app/api/$1"
+      "destination": "https://grocery-store-pncw.onrender.com/api/$1"
     },
     {
       "source": "/(.*)",

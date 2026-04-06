@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import { FaArrowLeftLong } from "react-icons/fa6";
+import { FaArrowLeftLong, FaArrowRight } from "react-icons/fa6";
 import { MdOutlineMail } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { BiSolidShow, BiSolidHide } from "react-icons/bi";
@@ -13,6 +13,7 @@ import Background from "../../components/auth/UserAuthBackground";
 import { userLogin } from "../../api/authUserApi";
 import { useAuth } from "../../context/AuthContext";
 import { getMe } from "../../api/authApi";
+import Button from "../../components/ui/Button";
 
 const Login = () => {
   // same functionality states
@@ -174,13 +175,13 @@ const Login = () => {
           </div>
 
           {/* Submit */}
-          <button
+          <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-emerald-600 text-white py-4 rounded-xl font-semibold hover:bg-emerald-700 transition duration-300 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
-          >
-            {loading ? "Signing In..." : "Sign In →"}
-          </button>
+            children={loading ? "Signing In..." : "Sign In →"}
+            variant="secondary"
+            className="py-3 min-w-full cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+          />
 
           {/* Footer */}
           <p className="text-center text-gray-500 text-sm">

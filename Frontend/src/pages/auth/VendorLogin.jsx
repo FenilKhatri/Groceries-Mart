@@ -6,10 +6,11 @@ import { getMe } from "../../api/authApi";
 import { useAuth } from "../../context/AuthContext";
 import WebLogo from "../../assets/Logo.webp";
 import VendorBackground from "../../components/auth/VendorAuthBackground";
-import { FaArrowLeftLong } from "react-icons/fa6";
+import { FaArrowLeftLong, FaArrowRight } from "react-icons/fa6";
 import { MdOutlineMail } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { BiSolidShow, BiSolidHide } from "react-icons/bi";
+import Button from "../../components/ui/Button";
 
 const VendorLogin = () => {
   const [showPass, setShowPass] = useState(false);
@@ -145,13 +146,13 @@ const VendorLogin = () => {
             </div>
           </div>
 
-          <button
+          <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-orange-600 text-white py-4 rounded-xl font-semibold hover:bg-orange-500 transition duration-300 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
-          >
-            {loading ? "Signing In..." : "Sign In →"}
-          </button>
+            children={loading ? "Signing In..." : "Sign In →"}
+            variant="primary"
+            className="py-4 min-w-full cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+          />
 
           <p className="text-center text-gray-500 text-sm">
             Don’t have an account yet?{" "}

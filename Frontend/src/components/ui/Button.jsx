@@ -19,12 +19,13 @@ const Button = ({
   variant = "primary",
   className = "",
   icon,
+  ...props
 }) => {
   const styles = `${baseStyles} ${variants[variant]} ${className}`;
 
   if (to) {
     return (
-      <Link to={to} className={styles}>
+      <Link to={to} className={styles} {...props}>
         {children}
         {icon}
       </Link>
@@ -32,7 +33,7 @@ const Button = ({
   }
 
   return (
-    <button type={type} onClick={onClick} className={styles}>
+    <button type={type} onClick={onClick} className={styles} {...props}>
       {children}
       {icon}
     </button>

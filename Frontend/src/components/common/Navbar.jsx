@@ -136,7 +136,7 @@ const Navbar = () => {
           {showAuthButtons && (
             <>
               <Button
-                to="/products"
+                to="/login"
                 icon={<FaUser size={16} />}
                 children="Login"
                 variant="secondary"
@@ -144,7 +144,7 @@ const Navbar = () => {
               />
 
               <Button
-                to="/products"
+                to="/vendor/login"
                 icon={<FaHouseUser size={16} />}
                 children="Vendor Login"
                 variant="primary"

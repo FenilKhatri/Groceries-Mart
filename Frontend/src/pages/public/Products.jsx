@@ -10,6 +10,7 @@ const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [addLoading, setAddLoading] = useState(null);
+  const [cooldownMap, setCooldownMap] = useState({});
 
   const [query, setQuery] = useState("");
   const [debouncing, setDebouncing] = useState("");
@@ -93,10 +94,25 @@ const Products = () => {
   };
 
   const handleAddToCart = async (productId) => {
+
+    if(addLoading === productId || cooldownMap[productId]) return;
+
     try {
       setAddLoading(productId);
       const data = await addToCart({ productId, quantity: 1 });
       toast.success(data?.message || "Added to cart!");
+
+      setCooldownMap((prev) => ({
+        ...prev,
+        [productId]: true,
+      }));
+
+      setTimeout(() => {
+        setCooldownMap((prev) => ({
+          ...prev,
+          [productId]: false,
+        }));
+      }, 3000);
     } catch (error) {
       toast.error(error?.message || "Failed to add!");
     } finally {
@@ -173,6 +189,7 @@ const Products = () => {
           addLoading={addLoading}
           onView={handleProductDetails}
           onAddToCart={handleAddToCart}
+          cooldownMap={cooldownMap}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5"
         />
       </div>

@@ -10,6 +10,7 @@ const ProductGrid = ({
   addLoading = null,
   onView,
   onAddToCart,
+  coolDownMap,
   className = "",
 }) => {
   const gridClass =
@@ -147,7 +148,11 @@ const ProductGrid = ({
                   }`}
                   onClick={() => onAddToCart(product._id)}
                 >
-                  {addLoading === product._id ? "Adding..." : "Add +"}
+                  {addLoading === product._id
+                    ? "Adding..."
+                    : coolDownMap?.[product._id]
+                      ? "Wait..."
+                      : "Add +"}
                 </button>
               </div>
             </div>
