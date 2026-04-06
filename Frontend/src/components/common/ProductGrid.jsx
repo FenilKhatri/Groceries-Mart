@@ -56,7 +56,11 @@ const ProductGrid = ({
         return (
           <div
             key={product._id}
-            className="relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg"
+            className={`relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm ${
+              product.stock === 0
+                ? "cursor-not-allowed opacity-60"
+                : " transition duration-300 hover:-translate-y-1 hover:shadow-lg"
+            }`}
           >
             <button
               type="button"
@@ -105,7 +109,7 @@ const ProductGrid = ({
                   className={`font-bold flex items-center gap-1 ${
                     product.stock === 0
                       ? "text-red-500"
-                      : product.stock === 1
+                      : product.stock <= 5
                         ? "text-yellow-500"
                         : "text-emerald-500"
                   }`}
@@ -114,7 +118,7 @@ const ProductGrid = ({
                     <>
                       <ImCross /> Out of Stock
                     </>
-                  ) : product.stock === 1 ? (
+                  ) : product.stock <= 5 ? (
                     <>
                       <IoIosWarning /> Only {product.stock} stock left
                     </>
@@ -135,9 +139,9 @@ const ProductGrid = ({
 
                 <button
                   type="button"
-                  disabled={addLoading === product._id}
+                  disabled={addLoading === product._id || product.stock === 0}
                   className={`flex-1 rounded-lg py-2 font-semibold text-white transition-all ${
-                    addLoading === product._id
+                    addLoading === product._id || product.stock === 0
                       ? "cursor-not-allowed bg-emerald-300"
                       : "cursor-pointer bg-emerald-600 hover:bg-emerald-500"
                   }`}

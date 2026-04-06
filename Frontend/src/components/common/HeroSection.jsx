@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { FaArrowRight, FaHouseUser } from "react-icons/fa6";
 import HeroBG from "../../assets/background/HeroImg.webp";
+import Button from "../ui/Button";
 
 const HeroSection = () => {
   return (
@@ -36,25 +37,27 @@ const HeroSection = () => {
           </h1>
 
           <p className="mt-4 rounded-xl bg-emerald-200/30 p-2 text-base font-semibold text-emerald-900/50 backdrop-blur-md md:backdrop-blur-none sm:text-lg lg:bg-transparent">
-            Shop from local vendors and get the best quality fruits,
-            vegetables, and daily essentials delivered fast. Join thousands of
-            happy customers today.
+            Shop from local vendors and get the best quality fruits, vegetables,
+            and daily essentials delivered fast. Join thousands of happy
+            customers today.
           </p>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:gap-5">
-            <Link
+            <Button
               to="/products"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-orange-500 px-5 py-3 font-semibold text-white transition hover:bg-orange-600 sm:w-auto"
-            >
-              Shop Now <FaArrowRight className="h-5 w-5" />
-            </Link>
+              icon={<FaArrowRight size={20} />}
+              children="Shop Now"
+              variant="primary"
+              className="py-3"
+            />
 
-            <Link
-              to="/vendor/login"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-700 px-5 py-3 font-semibold text-white transition hover:bg-emerald-600 sm:w-auto"
-            >
-              Become a vendor <FaHouseUser className="h-5 w-5" />
-            </Link>
+            <Button
+              to="/products"
+              icon={<FaHouseUser size={20} />}
+              children="Become a vendor"
+              variant="secondary"
+              className="py-3"
+            />
           </div>
 
           <div className="mt-8 grid grid-cols-3 gap-4 rounded-xl bg-emerald-200/30 p-2 text-emerald-900 backdrop-blur-md md:backdrop-blur-none lg:bg-transparent">

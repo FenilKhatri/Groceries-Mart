@@ -1,18 +1,24 @@
 import Contact from "../models/contactModel.js";
+import Subscribe from "../models/subscribeModel.js";
 import { sendMail } from "../utils/sendSubscribeMail.js";
 
 const subscribeUser = async (req, res) => {
   try {
     const { email } = req.body;
-
     if (!email) {
       return res.status(400).json({
         message: "Please enter email to subscribe!",
       });
     }
 
-    console.log("Subscribe request received:", email);
+    const existing = await Subscribe.findOne({ email });
+    if (existing) {
+      return res.status(400).json({
+        message: "Email already subscribed!",
+      });
+    }
 
+    const subscribedUser = await Subscribe.create({ email });
     await sendMail({
       userEmail: email,
       subject: "New Newsletter Subscriber",
@@ -25,6 +31,7 @@ const subscribeUser = async (req, res) => {
 
     return res.status(200).json({
       message: "Thank you for subscribing!",
+      subscribedUser
     });
   } catch (error) {
     console.error("Subscribe error:", error);
@@ -46,10 +53,18 @@ const contactUser = async (req, res) => {
       });
     }
 
-    const normalizedName = String(name || "").trim().toLowerCase();
-    const normalizedEmail = String(email || "").trim().toLowerCase();
-    const normalizedSubject = String(subject || "").trim().toLowerCase();
-    const normalizedMessage = String(message || "").trim().toLowerCase();
+    const normalizedName = String(name || "")
+      .trim()
+      .toLowerCase();
+    const normalizedEmail = String(email || "")
+      .trim()
+      .toLowerCase();
+    const normalizedSubject = String(subject || "")
+      .trim()
+      .toLowerCase();
+    const normalizedMessage = String(message || "")
+      .trim()
+      .toLowerCase();
 
     const emailRegex = /^[A-Za-z0-9.+_-]+@[A-Za-z0-9.+_-]+\.[A-Za-z]{2,}$/;
     if (!emailRegex.test(normalizedEmail)) {

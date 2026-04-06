@@ -6,6 +6,7 @@ import { MdLogout } from "react-icons/md";
 import Logo from "../../assets/Logo.webp";
 import { useAuth } from "../../context/AuthContext";
 import { logoutApi } from "../../api/logOutApi";
+import Button from "../ui/Button";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -134,19 +135,21 @@ const Navbar = () => {
         <div className="hidden items-center gap-4 md:flex">
           {showAuthButtons && (
             <>
-              <NavLink
-                to="/login"
-                className="flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-3 py-2 text-white transition duration-300 hover:bg-emerald-500"
-              >
-                <FaUser size={15} /> Login
-              </NavLink>
+              <Button
+                to="/products"
+                icon={<FaUser size={16} />}
+                children="Login"
+                variant="secondary"
+                className="py-2"
+              />
 
-              <NavLink
-                to="/vendor/login"
-                className="flex items-center justify-center gap-2 rounded-lg bg-orange-600 px-3 py-2 text-white transition duration-300 hover:bg-orange-500"
-              >
-                <FaHouseUser size={15} /> Vendor Login
-              </NavLink>
+              <Button
+                to="/products"
+                icon={<FaHouseUser size={16} />}
+                children="Vendor Login"
+                variant="primary"
+                className="py-2"
+              />
             </>
           )}
 

@@ -1,24 +1,15 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-  socketTimeout: 10000,
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const sendMail = async ({ userEmail, subject, html }) => {
-  const info = await transporter.sendMail({
-    from: `"FreshMart Website" <${process.env.EMAIL_USER}>`,
-    to: process.env.EMAIL_USER,
-    replyTo: userEmail,
+  const response = await resend.emails.send({
+    from: "FreshMart <onboarding@resend.dev>",
+    to: process.env.EMAIL_USER, // admin email
+    reply_to: userEmail,
     subject,
     html,
   });
 
-  return info;
+  return response;
 };

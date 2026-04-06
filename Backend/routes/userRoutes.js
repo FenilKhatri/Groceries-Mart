@@ -5,19 +5,9 @@ import authMiddleware from "../middlewares/authMiddleware.js";
 import orderController from "../controllers/order.controller.js";
 import { createRazorPayOrder, verifyRazorPayOrder } from "../controllers/razorpay.controller.js";
 import downloadInvoice from "../controllers/invoice.controller.js";
-import rateLimit from "express-rate-limit";
+import { limiter } from "../middlewares/rateLimiter.js";
 
 const userRouter = express.Router();
-
-// Rate Limiter
-const rateLimiter = rateLimit({
-    windowMs: 20 * 1000,
-    max: 5,
-    message: {
-        success: false,
-        message: "Too many requests, try again later.",
-    }
-});
 
 // Auth
 userRouter.post("/register", auth.userRegister);
@@ -33,9 +23,9 @@ userRouter.delete("/delete-profile", userController.deleteProfile);
 
 // Cart
 userRouter.get("/cart", userController.userCart);
-userRouter.post("/cart/add", rateLimiter, userController.addToCart);
-userRouter.patch("/cart/update-quantity", rateLimiter, userController.updateQuantity);
-userRouter.patch("/cart/remove-item", rateLimiter, userController.removeItem);
+userRouter.post("/cart/add", limiter, userController.addToCart);
+userRouter.patch("/cart/update-quantity", limiter, userController.updateQuantity);
+userRouter.patch("/cart/remove-item", limiter, userController.removeItem);
 userRouter.delete("/cart/delete-cart", userController.deleteCart);
 
 // Payment
@@ -46,6 +36,6 @@ userRouter.post("/payments/verify-order", verifyRazorPayOrder);
 userRouter.post("/orders/place", orderController.placeOrder);
 userRouter.get("/orders", orderController.allOrders);
 userRouter.get("/orders/:id", orderController.getOrderDetails);
-userRouter.get("/orders/invoice/:id", downloadInvoice);
+userRouter.get("/orders/invoice/:id", limiter, downloadInvoice);
 
 export default userRouter;
