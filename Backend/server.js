@@ -1,5 +1,6 @@
 import app from "./app.js";
 import connectDB from "./config/database.js";
+import "./middlewares/keepAlive.js";
 
 const PORT = process.env.PORT || 5000;
 
