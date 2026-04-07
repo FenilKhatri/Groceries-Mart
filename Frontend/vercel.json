@@ -3,24 +3,10 @@
     {
       "source": "/api/(.*)",
       "destination": "https://grocery-store-pncw.onrender.com/api/$1"
-    }
-  ],
-  "routes": [
+    },
     {
       "source": "/sitemap.xml",
       "destination": "https://grocery-store-pncw.onrender.com/sitemap.xml"
-    },
-    {
-      "src": "/robots.txt",
-      "dest": "/robots.txt"
-    },
-    {
-      "src": "/google0b90f8d03ac6f96f.html",
-      "dest": "/google0b90f8d03ac6f96f.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
     }
   ]
 }
