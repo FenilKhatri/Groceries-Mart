@@ -13,6 +13,7 @@ import adminRouter from "./routes/adminRoutes.js";
 import authRouter from "./routes/authRoutes.js";
 import productRouter from "./routes/productRoutes.js";
 import router from "./routes/routes.js";
+import sitemapRouter from "./routes/sitemap.js";
 
 dotenv.config();
 dns.setServers(["8.8.8.8", "8.8.4.4"]);
@@ -64,6 +65,7 @@ app.use("/api/admin", adminRouter);
 app.use("/api/products", productRouter);
 app.use("/api/auth", authRouter);
 app.use("/api", router);
+app.use("/", sitemapRouter)
 
 // Health check
 app.get("/", (req, res) => {

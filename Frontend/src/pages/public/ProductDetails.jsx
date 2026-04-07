@@ -7,6 +7,7 @@ import { addToCart } from "../../api/userApi";
 import { FaShareAlt } from "react-icons/fa";
 import NoProductImg from "../../assets/background/ProductNotFound.png";
 import ProductDetailSkeleton from "../../components/skeleton/ProductDetailSkeleton";
+import { ProductSchema } from "../../utils/productSchema";
 
 // constants
 const TAGS = [
@@ -181,395 +182,400 @@ const ProductDetails = () => {
     }
   };
 
+
+  
   return (
-    <section className="min-h-screen bg-gray-50">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
-        {/* top crumb + back */}
-        <div className="flex items-center justify-between gap-3">
-          <button
-            onClick={() => navigate("/products")}
-            aria-label="Back"
-            title="Back"
-            className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-100 cursor-pointer"
-            type="button"
-          >
-            <FaArrowLeft />
-            Back
-          </button>
+    <>
+      {product && <ProductSchema product={product} />}
+      <section className="min-h-screen bg-gray-50">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+          {/* top crumb + back */}
+          <div className="flex items-center justify-between gap-3">
+            <button
+              onClick={() => navigate("/products")}
+              aria-label="Back"
+              title="Back"
+              className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-100 cursor-pointer"
+              type="button"
+            >
+              <FaArrowLeft />
+              Back
+            </button>
 
-          <div className="hidden sm:block text-md text-gray-500">
-            <span className="hover:text-gray-700">
-              <Link to="/">Home</Link>
-            </span>
-            <span className="mx-2">›</span>
-            <span className="hover:text-gray-700">
-              <Link to="/products">{categoryText}</Link>
-            </span>
-            <span className="mx-2">›</span>
-            <span className="text-gray-800 font-semibold">
-              {product?.name || "Product"}
-            </span>
+            <div className="hidden sm:block text-md text-gray-500">
+              <span className="hover:text-gray-700">
+                <Link to="/">Home</Link>
+              </span>
+              <span className="mx-2">›</span>
+              <span className="hover:text-gray-700">
+                <Link to="/products">{categoryText}</Link>
+              </span>
+              <span className="mx-2">›</span>
+              <span className="text-gray-800 font-semibold">
+                {product?.name || "Product"}
+              </span>
+            </div>
           </div>
-        </div>
 
-        {loading ? (
-          <ProductDetailSkeleton />
-        ) : !product ? (
-          <div className="flex items-center justify-center">
-            <img
-              src={NoProductImg}
-              alt="No Product Found Image"
-              loading="lazy"
-              decoding="async"
-              className="h-150 object-contain"
-              width="full"
-              height="full"
-            />
-          </div>
-        ) : (
-          <>
-            {/* main grid */}
-            <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
-              {/* LEFT */}
-              <div className="lg:col-span-5">
-                <div className="rounded-2xl bg-white border border-gray-200 p-5">
-                  <div className="flex items-center justify-between">
-                    {/* tags */}
-                    <div className="flex items-center gap-2 flex-wrap">
-                      {TAGS.map((t, i) => (
-                        <span
-                          key={i}
-                          className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-bold ${t.className}`}
-                        >
-                          {t.label}
-                        </span>
-                      ))}
+          {loading ? (
+            <ProductDetailSkeleton />
+          ) : !product ? (
+            <div className="flex items-center justify-center">
+              <img
+                src={NoProductImg}
+                alt="No Product Found Image"
+                loading="lazy"
+                decoding="async"
+                className="h-150 object-contain"
+                width="full"
+                height="full"
+              />
+            </div>
+          ) : (
+            <>
+              {/* main grid */}
+              <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
+                {/* LEFT */}
+                <div className="lg:col-span-5">
+                  <div className="rounded-2xl bg-white border border-gray-200 p-5">
+                    <div className="flex items-center justify-between">
+                      {/* tags */}
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {TAGS.map((t, i) => (
+                          <span
+                            key={i}
+                            className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-bold ${t.className}`}
+                          >
+                            {t.label}
+                          </span>
+                        ))}
+                      </div>
+                      {/* Share */}
+                      <button
+                        onClick={() => handleShare(product._id)}
+                        aria-label="Share Product"
+                        title="Share Product"
+                        className="cursor-pointer bg-emerald-100 rounded-full text-emerald-800 p-3"
+                      >
+                        <FaShareAlt title="Share product" />
+                      </button>
                     </div>
-                    {/* Share */}
-                    <button
-                      onClick={() => handleShare(product._id)}
-                      aria-label="Share Product"
-                      title="Share Product"
-                      className="cursor-pointer bg-emerald-100 rounded-full text-emerald-800 p-3"
-                    >
-                      <FaShareAlt title="Share product" />
-                    </button>
-                  </div>
 
-                  {/* hero */}
-                  <div className="mt-4 rounded-2xl border border-gray-200 bg-white h-80 flex items-center justify-center overflow-hidden">
-                    {loading ? (
-                      <p className="text-gray-500 font-semibold">
-                        Loading image...
-                      </p>
-                    ) : heroSrc ? (
-                      <img
-                        src={heroSrc}
-                        loading="lazy"
-                        decoding="async"
-                        width="full"
-                        height="full"
-                        alt={product?.name || "Product"}
-                        onError={() => setHeroSrc(FALLBACK_IMG)}
-                        className="h-full w-full object-contain bg-gray-100"
-                      />
-                    ) : (
-                      <p className="text-gray-500 font-semibold">No image</p>
-                    )}
-                  </div>
-                </div>
-
-                {/* thumbs */}
-                {gallery.length > 1 && (
-                  <div className="mt-4 relative">
-                    <div className="flex items-center gap-3 overflow-x-auto overflow-y-hidden scroll-smooth snap-x snap-mandatory no-scrollbar pr-10">
-                      {gallery.map((g) => (
-                        <button
-                          key={g.key}
-                          type="button"
-                          onClick={() => setHeroSrc(g.src)}
-                          className={`shrink-0 snap-start h-16 w-16 md:h-20 md:w-20 rounded-xl border bg-white overflow-hidden flex items-center justify-center transition-all hover:border-emerald-400 ${
-                            heroSrc === g.src
-                              ? "border-emerald-500 ring-2 ring-emerald-100"
-                              : "border-gray-200"
-                          }`}
-                          aria-label="Preview"
-                          title="Preview"
-                        >
-                          <img
-                            src={g.src}
-                            loading="lazy"
-                            decoding="async"
-                            alt="thumb"
-                            width="full"
-                            height="full"
-                            onError={(e) =>
-                              (e.currentTarget.src = FALLBACK_IMG)
-                            }
-                            className="h-10 md:h-20 w-auto object-contain"
-                          />
-                        </button>
-                      ))}
+                    {/* hero */}
+                    <div className="mt-4 rounded-2xl border border-gray-200 bg-white h-80 flex items-center justify-center overflow-hidden">
+                      {loading ? (
+                        <p className="text-gray-500 font-semibold">
+                          Loading image...
+                        </p>
+                      ) : heroSrc ? (
+                        <img
+                          src={heroSrc}
+                          loading="lazy"
+                          decoding="async"
+                          width="full"
+                          height="full"
+                          alt={product?.name || "Product"}
+                          onError={() => setHeroSrc(FALLBACK_IMG)}
+                          className="h-full w-full object-contain bg-gray-100"
+                        />
+                      ) : (
+                        <p className="text-gray-500 font-semibold">No image</p>
+                      )}
                     </div>
-                    <div className="pointer-events-none absolute right-0 top-0 h-full w-12 bg-linear-to-l from-white to-transparent" />
                   </div>
-                )}
-              </div>
 
-              {/* RIGHT */}
-              <div className="lg:col-span-7">
-                {/* brand */}
-                <div className="flex items-center justify-between gap-3 flex-wrap">
-                  <div className="flex items-center gap-2">
-                    <span className="text-emerald-700 bg-emerald-100 px-5 py-2 rounded-xl font-bold text-sm">
-                      {product?.brand || "Nature's Best"}
-                    </span>
-                  </div>
-                </div>
-
-                {/* title */}
-                <h1 className="mt-3 text-2xl sm:text-3xl font-extrabold text-gray-900">
-                  {product?.name || "Product Name"}
-                </h1>
-
-                {/* price */}
-                <div className="mt-4 flex items-end gap-3">
-                  <p className="text-3xl font-extrabold text-gray-900">
-                    ₹{product?.price ?? "-"}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    / {product?.unit || "unit"}
-                    {product?.unit ? "" : " (approx.)"}
-                  </p>
-                </div>
-
-                {/* stock */}
-                <div className="mt-2 flex items-center gap-2">
-                  <span
-                    className={`inline-flex items-center gap-2 text-sm font-semibold ${
-                      inStock ? "text-emerald-700" : "text-red-600"
-                    }`}
-                  >
-                    <span
-                      className={`h-2 w-2 rounded-full ${
-                        inStock ? "bg-emerald-600" : "bg-red-600"
-                      }`}
-                    />
-                    {inStock ? "In Stock" : "Out of Stock"}
-                  </span>
-
-                  {typeof product?.stock === "number" && inStock && (
-                    <span className="text-sm text-gray-500">
-                      • {product.stock} left
-                    </span>
+                  {/* thumbs */}
+                  {gallery.length > 1 && (
+                    <div className="mt-4 relative">
+                      <div className="flex items-center gap-3 overflow-x-auto overflow-y-hidden scroll-smooth snap-x snap-mandatory no-scrollbar pr-10">
+                        {gallery.map((g) => (
+                          <button
+                            key={g.key}
+                            type="button"
+                            onClick={() => setHeroSrc(g.src)}
+                            className={`shrink-0 snap-start h-16 w-16 md:h-20 md:w-20 rounded-xl border bg-white overflow-hidden flex items-center justify-center transition-all hover:border-emerald-400 ${
+                              heroSrc === g.src
+                                ? "border-emerald-500 ring-2 ring-emerald-100"
+                                : "border-gray-200"
+                            }`}
+                            aria-label="Preview"
+                            title="Preview"
+                          >
+                            <img
+                              src={g.src}
+                              loading="lazy"
+                              decoding="async"
+                              alt="thumb"
+                              width="full"
+                              height="full"
+                              onError={(e) =>
+                                (e.currentTarget.src = FALLBACK_IMG)
+                              }
+                              className="h-10 md:h-20 w-auto object-contain"
+                            />
+                          </button>
+                        ))}
+                      </div>
+                      <div className="pointer-events-none absolute right-0 top-0 h-full w-12 bg-linear-to-l from-white to-transparent" />
+                    </div>
                   )}
                 </div>
 
-                <div className="my-4 h-px bg-gray-200" />
+                {/* RIGHT */}
+                <div className="lg:col-span-7">
+                  {/* brand */}
+                  <div className="flex items-center justify-between gap-3 flex-wrap">
+                    <div className="flex items-center gap-2">
+                      <span className="text-emerald-700 bg-emerald-100 px-5 py-2 rounded-xl font-bold text-sm">
+                        {product?.brand || "Nature's Best"}
+                      </span>
+                    </div>
+                  </div>
 
-                {/* Product description */}
-                <div className="font-normal text-gray-500 text-justify">
-                  {product?.longDescription}
-                </div>
+                  {/* title */}
+                  <h1 className="mt-3 text-2xl sm:text-3xl font-extrabold text-gray-900">
+                    {product?.name || "Product Name"}
+                  </h1>
 
-                {/* Product quantity */}
-                <div className="my-5 font-semibold">
-                  Quantity left:{" "}
-                  <span className="text-gray-500">{product?.stock}</span>
-                </div>
+                  {/* price */}
+                  <div className="mt-4 flex items-end gap-3">
+                    <p className="text-3xl font-extrabold text-gray-900">
+                      ₹{product?.price ?? "-"}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      / {product?.unit || "unit"}
+                      {product?.unit ? "" : " (approx.)"}
+                    </p>
+                  </div>
 
-                {/* add to cart */}
-                <div className="mt-5">
-                  <button
-                    type="button"
-                    aria-label="Add to Cart"
-                    title="Add to Cart"
-                    className={`flex-1 h-11 rounded-xl text-white font-bold shadow-sm p-3
+                  {/* stock */}
+                  <div className="mt-2 flex items-center gap-2">
+                    <span
+                      className={`inline-flex items-center gap-2 text-sm font-semibold ${
+                        inStock ? "text-emerald-700" : "text-red-600"
+                      }`}
+                    >
+                      <span
+                        className={`h-2 w-2 rounded-full ${
+                          inStock ? "bg-emerald-600" : "bg-red-600"
+                        }`}
+                      />
+                      {inStock ? "In Stock" : "Out of Stock"}
+                    </span>
+
+                    {typeof product?.stock === "number" && inStock && (
+                      <span className="text-sm text-gray-500">
+                        • {product.stock} left
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="my-4 h-px bg-gray-200" />
+
+                  {/* Product description */}
+                  <div className="font-normal text-gray-500 text-justify">
+                    {product?.longDescription}
+                  </div>
+
+                  {/* Product quantity */}
+                  <div className="my-5 font-semibold">
+                    Quantity left:{" "}
+                    <span className="text-gray-500">{product?.stock}</span>
+                  </div>
+
+                  {/* add to cart */}
+                  <div className="mt-5">
+                    <button
+                      type="button"
+                      aria-label="Add to Cart"
+                      title="Add to Cart"
+                      className={`flex-1 h-11 rounded-xl text-white font-bold shadow-sm p-3
                             ${
                               !inStock || addLoading === id
                                 ? "bg-emerald-300 cursor-not-allowed"
                                 : "bg-emerald-600 hover:bg-emerald-700 cursor-pointer"
                             }
                           `}
-                    onClick={() => handleAddToCart(id)}
-                    disabled={!inStock || addLoading === id}
+                      onClick={() => handleAddToCart(id)}
+                      disabled={!inStock || addLoading === id}
+                    >
+                      {addLoading === id ? (
+                        <p>Adding product...</p>
+                      ) : (
+                        <p>Add to cart</p>
+                      )}
+                    </button>
+                  </div>
+
+                  {/* delivery cards */}
+                  <div className="mt-5 rounded-2xl bg-emerald-50 border border-emerald-100 p-4 space-y-3">
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 text-emerald-700">
+                        <FaTruck />
+                      </div>
+                      <div>
+                        <p className="text-sm font-extrabold text-gray-900">
+                          Same-day Delivery
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Available for orders placed before 2 PM.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 text-emerald-700">
+                        <FaStore />
+                      </div>
+                      <div>
+                        <p className="text-sm font-extrabold text-gray-900">
+                          In-store Pickup
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Ready in 1 hour at Main Street Store.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tabs FULL WIDTH (moved outside grid) */}
+              <div className="mt-8 w-full rounded-2xl border border-gray-200 bg-white p-5">
+                <div className="flex items-center gap-6 border-b border-gray-200">
+                  <button
+                    type="button"
+                    aria-label="Description"
+                    title="Description"
+                    className={`pb-3 text-sm font-extrabold transition ${
+                      activeTab === "description"
+                        ? "text-gray-900 border-b-2 border-emerald-600"
+                        : "text-gray-500 hover:text-gray-800"
+                    }`}
+                    onClick={() => setActiveTab("description")}
                   >
-                    {addLoading === id ? (
-                      <p>Adding product...</p>
-                    ) : (
-                      <p>Add to cart</p>
-                    )}
+                    Description
+                  </button>
+
+                  <button
+                    type="button"
+                    aria-label="Nutrition"
+                    title="Nutrition"
+                    className={`pb-3 text-sm font-extrabold transition ${
+                      activeTab === "nutrition"
+                        ? "text-gray-900 border-b-2 border-emerald-600"
+                        : "text-gray-500 hover:text-gray-800"
+                    }`}
+                    onClick={() => setActiveTab("nutrition")}
+                  >
+                    Nutrition
+                  </button>
+
+                  <button
+                    type="button"
+                    aria-label="Details"
+                    title="Details"
+                    className={`pb-3 text-sm font-extrabold transition ${
+                      activeTab === "details"
+                        ? "text-gray-900 border-b-2 border-emerald-600"
+                        : "text-gray-500 hover:text-gray-800"
+                    }`}
+                    onClick={() => setActiveTab("details")}
+                  >
+                    Details
                   </button>
                 </div>
 
-                {/* delivery cards */}
-                <div className="mt-5 rounded-2xl bg-emerald-50 border border-emerald-100 p-4 space-y-3">
-                  <div className="flex items-start gap-3">
-                    <div className="mt-0.5 text-emerald-700">
-                      <FaTruck />
+                <div className="pt-5">
+                  {activeTab === "description" && (
+                    <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
+                      <p>{descText}</p>
+                      <ul className="mt-4 space-y-2 list-disc pl-5 text-gray-700">
+                        <li>Freshly packed for better shelf life</li>
+                        <li>Great for smoothies, snacks, and breakfast</li>
+                        <li>Quality checked packaging</li>
+                      </ul>
                     </div>
-                    <div>
-                      <p className="text-sm font-extrabold text-gray-900">
-                        Same-day Delivery
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        Available for orders placed before 2 PM.
-                      </p>
-                    </div>
-                  </div>
+                  )}
 
-                  <div className="flex items-start gap-3">
-                    <div className="mt-0.5 text-emerald-700">
-                      <FaStore />
-                    </div>
-                    <div>
-                      <p className="text-sm font-extrabold text-gray-900">
-                        In-store Pickup
+                  {activeTab === "nutrition" && (
+                    <div className="text-sm text-gray-700">
+                      <p className="font-bold text-gray-900">
+                        Nutrition Highlights
                       </p>
-                      <p className="text-sm text-gray-600">
-                        Ready in 1 hour at Main Street Store.
-                      </p>
+                      <ul className="mt-3 space-y-2 list-disc pl-5">
+                        {NUTRITION_POINTS.map((n, i) => (
+                          <li key={i}>{n}</li>
+                        ))}
+                      </ul>
                     </div>
-                  </div>
+                  )}
+
+                  {activeTab === "details" && (
+                    <div className="text-sm text-gray-700">
+                      <p className="font-bold text-gray-900">Product Details</p>
+                      <ul className="mt-3 space-y-2 list-disc pl-5">
+                        {detailPoints.map((d, i) => (
+                          <li key={i}>{d}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
 
-            {/* Tabs FULL WIDTH (moved outside grid) */}
-            <div className="mt-8 w-full rounded-2xl border border-gray-200 bg-white p-5">
-              <div className="flex items-center gap-6 border-b border-gray-200">
-                <button
-                  type="button"
-                  aria-label="Description"
-                  title="Description"
-                  className={`pb-3 text-sm font-extrabold transition ${
-                    activeTab === "description"
-                      ? "text-gray-900 border-b-2 border-emerald-600"
-                      : "text-gray-500 hover:text-gray-800"
-                  }`}
-                  onClick={() => setActiveTab("description")}
-                >
-                  Description
-                </button>
-
-                <button
-                  type="button"
-                  aria-label="Nutrition"
-                  title="Nutrition"
-                  className={`pb-3 text-sm font-extrabold transition ${
-                    activeTab === "nutrition"
-                      ? "text-gray-900 border-b-2 border-emerald-600"
-                      : "text-gray-500 hover:text-gray-800"
-                  }`}
-                  onClick={() => setActiveTab("nutrition")}
-                >
-                  Nutrition
-                </button>
-
-                <button
-                  type="button"
-                  aria-label="Details"
-                  title="Details"
-                  className={`pb-3 text-sm font-extrabold transition ${
-                    activeTab === "details"
-                      ? "text-gray-900 border-b-2 border-emerald-600"
-                      : "text-gray-500 hover:text-gray-800"
-                  }`}
-                  onClick={() => setActiveTab("details")}
-                >
-                  Details
-                </button>
-              </div>
-
-              <div className="pt-5">
-                {activeTab === "description" && (
-                  <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
-                    <p>{descText}</p>
-                    <ul className="mt-4 space-y-2 list-disc pl-5 text-gray-700">
-                      <li>Freshly packed for better shelf life</li>
-                      <li>Great for smoothies, snacks, and breakfast</li>
-                      <li>Quality checked packaging</li>
-                    </ul>
-                  </div>
-                )}
-
-                {activeTab === "nutrition" && (
-                  <div className="text-sm text-gray-700">
-                    <p className="font-bold text-gray-900">
-                      Nutrition Highlights
+              {/* Reviews FULL WIDTH */}
+              <div className="mt-8 w-full rounded-2xl border border-gray-200 bg-white p-5">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-extrabold text-gray-900">
+                      Ratings & Reviews
                     </p>
-                    <ul className="mt-3 space-y-2 list-disc pl-5">
-                      {NUTRITION_POINTS.map((n, i) => (
-                        <li key={i}>{n}</li>
-                      ))}
-                    </ul>
+                    <p className="mt-1 text-sm text-gray-500">
+                      {rating} ★ • {reviewCount} reviews
+                    </p>
                   </div>
-                )}
-
-                {activeTab === "details" && (
-                  <div className="text-sm text-gray-700">
-                    <p className="font-bold text-gray-900">Product Details</p>
-                    <ul className="mt-3 space-y-2 list-disc pl-5">
-                      {detailPoints.map((d, i) => (
-                        <li key={i}>{d}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Reviews FULL WIDTH */}
-            <div className="mt-8 w-full rounded-2xl border border-gray-200 bg-white p-5">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-sm font-extrabold text-gray-900">
-                    Ratings & Reviews
-                  </p>
-                  <p className="mt-1 text-sm text-gray-500">
-                    {rating} ★ • {reviewCount} reviews
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  aria-label="Write Review"
-                  title="Write Review"
-                  className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-extrabold text-gray-900 hover:bg-gray-50"
-                  onClick={() => toast.info("Write review (demo)")}
-                >
-                  Write Review
-                </button>
-              </div>
-
-              <div className="mt-4 space-y-4">
-                {DEMO_REVIEWS.map((r, i) => (
-                  <div
-                    key={i}
-                    className="rounded-xl bg-gray-50 border border-gray-200 p-4"
+                  <button
+                    type="button"
+                    aria-label="Write Review"
+                    title="Write Review"
+                    className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-extrabold text-gray-900 hover:bg-gray-50"
+                    onClick={() => toast.info("Write review (demo)")}
                   >
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <p className="text-sm font-extrabold text-gray-900">
-                          {r.name}
-                        </p>
-                        <p className="text-xs text-gray-500">{r.time}</p>
+                    Write Review
+                  </button>
+                </div>
+
+                <div className="mt-4 space-y-4">
+                  {DEMO_REVIEWS.map((r, i) => (
+                    <div
+                      key={i}
+                      className="rounded-xl bg-gray-50 border border-gray-200 p-4"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="text-sm font-extrabold text-gray-900">
+                            {r.name}
+                          </p>
+                          <p className="text-xs text-gray-500">{r.time}</p>
+                        </div>
+                        <div className="inline-flex items-center gap-1 rounded-full bg-emerald-600 text-white px-3 py-1 text-xs font-extrabold">
+                          <FaStar />
+                          {r.stars}
+                        </div>
                       </div>
-                      <div className="inline-flex items-center gap-1 rounded-full bg-emerald-600 text-white px-3 py-1 text-xs font-extrabold">
-                        <FaStar />
-                        {r.stars}
-                      </div>
+                      <p className="mt-3 text-sm text-gray-700 leading-relaxed">
+                        {r.text}
+                      </p>
                     </div>
-                    <p className="mt-3 text-sm text-gray-700 leading-relaxed">
-                      {r.text}
-                    </p>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          </>
-        )}
-      </div>
-    </section>
+            </>
+          )}
+        </div>
+      </section>
+    </>
   );
 };
 
