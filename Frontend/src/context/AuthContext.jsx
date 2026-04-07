@@ -44,8 +44,6 @@ export const AuthProvider = ({ children }) => {
       try {
         const res = await getMe();
 
-        console.log("GET ME:", res);
-
         const account = res?.data?.account;
         const role = res?.data?.accountType;
 

@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import categories from "../../data/categories";
-import CategorySkeleton from "../reusable-component/CategorySkeleton";
+import categories from "../../../data/categories";
+import CategorySkeleton from "../../skeleton/CategorySkeleton";
+import H3 from "../../ui/H3";
+import Description from "../../ui/Description";
 
 const Category = () => {
   const [category, setCategory] = useState([]);
@@ -24,11 +26,12 @@ const Category = () => {
 
   return (
     <div className="my-10 bg-gray-100">
-      <div className="mx-auto max-w-screen-2xl space-y-5 px-5 py-10">
-        <p className="text-center text-xl font-bold">Shop by Category</p>
-        <p className="text-center font-semibold text-gray-600">
-          Browse through our wide variety of fresh and organic products
-        </p>
+      <div className="max-w-screen-2xl mx-auto  space-y-5 px-5 py-10">
+        <H3 children="Shop by Category" className="text-center" />
+        <Description
+          children="Browse through our wide variety of fresh and organic products"
+          className="text-center mx-auto text-gray-500 "
+        />
 
         {loading ? (
           <CategorySkeleton

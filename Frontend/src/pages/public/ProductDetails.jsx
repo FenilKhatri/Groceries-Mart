@@ -6,7 +6,7 @@ import { getProductDetails } from "../../api/productApi";
 import { addToCart } from "../../api/userApi";
 import { FaShareAlt } from "react-icons/fa";
 import NoProductImg from "../../assets/background/ProductNotFound.png";
-import ProductDetailSkeleton from "../../components/reusable-component/ProductDetailSkeleton";
+import ProductDetailSkeleton from "../../components/skeleton/ProductDetailSkeleton";
 
 // constants
 const TAGS = [

@@ -155,10 +155,6 @@ const Shop = () => {
     }
   };
 
-  if (pageLoading) {
-    return <div className="p-6 animate-pulse">Loading...</div>;
-  }
-
   if (shopData) {
     return (
       <>

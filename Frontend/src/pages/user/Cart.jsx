@@ -8,8 +8,8 @@ import {
 } from "../../api/userApi";
 import { Link } from "react-router-dom";
 import { TbRefreshOff } from "react-icons/tb";
-import UserCartSkeleton from "../../components/reusable-component/UserCartSkeleton";
-import OrderSummarySkeleton from "../../components/reusable-component/OrderSummarySkeleton";
+import UserCartSkeleton from "../../components/skeleton/UserCartSkeleton";
+import OrderSummarySkeleton from "../../components/skeleton/OrderSummarySkeleton";
 
 const UserCart = () => {
   const [cart, setCart] = useState(null);

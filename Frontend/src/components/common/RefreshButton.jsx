@@ -1,4 +1,3 @@
-import React from "react";
 import { HiOutlineRefresh } from "react-icons/hi";
 import { toast } from "react-toastify";
 

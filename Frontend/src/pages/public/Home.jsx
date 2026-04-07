@@ -1,6 +1,6 @@
-import Category from "../../components/common/Category"
-import FeaturedProducts from "../../components/common/FeaturedProducts"
-import HeroSection from "../../components/common/HeroSection"
+import Category from "../../components/sections/Home/Category"
+import FeaturedProducts from "../../components/sections/Home/FeaturedProducts";
+import HeroSection from "../../components/sections/Home/HeroSection";
 
 const Home = () => {
   return (

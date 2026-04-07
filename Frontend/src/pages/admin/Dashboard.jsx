@@ -8,14 +8,14 @@ import {
   getCategoryData,
 } from "../../utils/dashboardHelpers";
 
-import DashboardHeader from "../../components/admin/dashboard/DashboardHeader";
-import StatsGrid from "../../components/admin/dashboard/StatsGrid";
-import StatusGrid from "../../components/admin/dashboard/StatusGrid";
-import DeliveryStatusChart from "../../components/admin/dashboard/DeliveryStatusChart";
-import CategoryInsightsChart from "../../components/admin/dashboard/CategoryInsightsChart";
-import SalesChart from "../../components/admin/dashboard/SalesChart";
-import RecentOrdersTable from "../../components/admin/dashboard/RecentOrdersTable";
-import AdminDashboardSkeleton from "../../components/reusable-component/AdminDashboardSkeleton";
+import DashboardHeader from "../../components/sections/admin/dashboard/DashboardHeader";
+import StatsGrid from "../../components/sections/admin/dashboard/StatsGrid";
+import StatusGrid from "../../components/sections/admin/dashboard/StatusGrid";
+import DeliveryStatusChart from "../../components/sections/admin/dashboard/DeliveryStatusChart";
+import CategoryInsightsChart from "../../components/sections/admin/dashboard/CategoryInsightsChart";
+import SalesChart from "../../components/sections/admin/dashboard/SalesChart";
+import RecentOrdersTable from "../../components/sections/admin/dashboard/RecentOrdersTable";
+import AdminDashboardSkeleton from "../../components/skeleton/AdminDashboardSkeleton";
 
 const Dashboard = () => {
   const {

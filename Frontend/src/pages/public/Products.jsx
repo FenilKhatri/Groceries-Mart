@@ -4,7 +4,8 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { addToCart } from "../../api/userApi";
 import ProductGrid from "../../components/common/ProductGrid";
-import SearchBar from "../../components/reusable-component/SearchBar";
+import SearchBar from "../../components/common/SearchBar";
+import useDebounce from "../../utils/useDebounce";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -13,7 +14,6 @@ const Products = () => {
   const [cooldownMap, setCooldownMap] = useState({});
 
   const [query, setQuery] = useState("");
-  const [debouncing, setDebouncing] = useState("");
 
   const navigate = useNavigate();
 
@@ -36,15 +36,6 @@ const Products = () => {
     handleProducts();
   }, []);
 
-  // Filtering
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncing(query);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [query]);
-
   const handleSortChange = (e) => {
     const value = e.target.value;
 
@@ -57,8 +48,9 @@ const Products = () => {
     setSortConfig({ key, direction });
   };
 
+  const debouncingQuery = useDebounce(query, 500);
   const finalProducts = useMemo(() => {
-    const search = debouncing.toLowerCase().trim();
+    const search = debouncingQuery.toLowerCase().trim();
 
     let filtered = products?.filter((product) => {
       return (
@@ -86,7 +78,7 @@ const Products = () => {
         ? String(aValue).localeCompare(String(bValue))
         : String(bValue).localeCompare(String(aValue));
     });
-  }, [products, debouncing, sortConfig]);
+  }, [products, debouncingQuery, sortConfig]);
 
   // Product
   const handleProductDetails = (productId) => {
@@ -94,8 +86,7 @@ const Products = () => {
   };
 
   const handleAddToCart = async (productId) => {
-
-    if(addLoading === productId || cooldownMap[productId]) return;
+    if (addLoading === productId || cooldownMap[productId]) return;
 
     try {
       setAddLoading(productId);

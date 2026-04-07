@@ -4,7 +4,7 @@ import {
   getOrderBadge,
   getOrderStatusName,
   getOrderStatusColor,
-} from "../../components/common/OrderComponent";
+} from "../../utils/order";
 import { toast } from "react-toastify";
 import { downloadInvoice } from "../../api/userApi";
 

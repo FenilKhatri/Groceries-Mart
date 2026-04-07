@@ -5,7 +5,7 @@ import { MdInventory2, MdCategory } from "react-icons/md";
 import { toast } from "react-toastify";
 import { vendorProducts } from "../../api/vendorApi";
 import { Link } from "react-router-dom";
-import VendorDashboardSkeleton from "../../components/reusable-component/VendorDashboardSkeleton";
+import VendorDashboardSkeleton from "../../components/skeleton/VendorDashboardSkeleton";
 import { useAuth } from "../../context/AuthContext";
 
 const VendorDashboard = () => {

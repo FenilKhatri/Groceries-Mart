@@ -3,7 +3,6 @@ import { FaUser, FaBox } from "react-icons/fa";
 import { userProfile } from "../../api/userApi";
 import { useEffect, useState } from "react";
 import { RiLockPasswordLine } from "react-icons/ri";
-import React from "react";
 import Skeleton from "react-loading-skeleton";
 
 const UserSideBar = () => {

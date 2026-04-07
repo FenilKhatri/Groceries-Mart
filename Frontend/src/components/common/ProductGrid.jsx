@@ -2,7 +2,7 @@ import { FaShareAlt } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { IoIosWarning } from "react-icons/io";
 import { ImCross } from "react-icons/im";
-import ProductGridSkeleton from "../reusable-component/ProductGridSkeleton";
+import ProductGridSkeleton from "../skeleton/ProductGridSkeleton";
 
 const ProductGrid = ({
   products = [],

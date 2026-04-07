@@ -1,3 +1,6 @@
+import Description from "../../ui/Description";
+import H3 from "../../ui/H3";
+
 const ShopStatusView = ({ shopData, onResubmit }) => {
   const fallback =
     "https://t4.ftcdn.net/jpg/03/22/52/97/360_F_322529755_PtwWWld1VDk66wXltHdVC6eZiMI4Hu8W.jpg";
@@ -20,16 +23,14 @@ const ShopStatusView = ({ shopData, onResubmit }) => {
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-xs font-semibold tracking-wide text-orange-600">
-                { status === "approved" ? "" : "SHOP REQUEST" }
+                {status === "approved" ? "" : "SHOP REQUEST"}
               </p>
-              <h1 className="mt-1 text-2xl md:text-3xl font-semibold text-gray-900">
-                {shopData?.name}
-              </h1>
-              <p className="mt-1 text-sm text-gray-500">
-                {
-                  status === "approved" ? "Your shop is approved. You cannot edit your shop. You can only view details." : "Your request is under review. You can only view details and status."
-                }
-              </p>
+              <H3 children={shopData?.name} />
+              <Description className="mt-1 text-sm text-gray-500">
+                {status === "approved"
+                  ? "Your shop is approved. You can't edit your shop. You can only view details."
+                  : "Your request is under review. You can only view details and status."}
+              </Description>
             </div>
 
             <div
@@ -46,7 +47,11 @@ const ShopStatusView = ({ shopData, onResubmit }) => {
             <DetailCard label="Phone" value={shopData?.phone} />
             <DetailCard label="City" value={shopData?.city} />
             <DetailCard label="Pincode" value={shopData?.pincode} />
-            <DetailCard label="Address" value={shopData?.address} className="md:col-span-2" />
+            <DetailCard
+              label="Address"
+              value={shopData?.address}
+              className="md:col-span-2"
+            />
             <DetailCard
               label="Description"
               value={shopData?.description}

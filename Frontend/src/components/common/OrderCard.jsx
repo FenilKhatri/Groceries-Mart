@@ -1,5 +1,6 @@
 import { PiCurrencyInrBold } from "react-icons/pi";
 import useOrderDetails from "../../hooks/OrderDetails";
+import Description from "../ui/Description";
 
 const OrderCard = () => {
   const { orderDetails } = useOrderDetails();
@@ -11,10 +12,14 @@ const OrderCard = () => {
       <div className="p-6">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-lg font-semibold text-gray-800">Order Items</p>
-            <p className="text-sm text-gray-500">
-              {items.length} {items.length === 1 ? "item" : "items"} in this order
+            <p className="text-md font-bold uppercase tracking-widest text-black">
+              Order Items
             </p>
+
+            <Description className="text-gray-500">
+              {items.length} {items.length === 1 ? "item" : "items"} in this
+              order
+            </Description>
           </div>
         </div>
       </div>

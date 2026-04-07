@@ -3,10 +3,10 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { HiMenu, HiX } from "react-icons/hi";
 import { FaUser, FaHouseUser } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
-import Logo from "../../assets/Logo.webp";
-import { useAuth } from "../../context/AuthContext";
-import { logoutApi } from "../../api/logOutApi";
-import Button from "../ui/Button";
+import Logo from "../assets/Logo.webp";
+import { useAuth } from "../context/AuthContext";
+import { logoutApi } from "../api/logOutApi";
+import Button from "../components/ui/Button";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);

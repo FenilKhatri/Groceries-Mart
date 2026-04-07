@@ -13,10 +13,12 @@ import {
   getOrderBadge,
   getOrderStatusName,
   getOrderStatusColor,
-} from "../../components/common/OrderComponent";
+  orderSteps,
+} from "../../utils/order";
 import OrderStatusProgress from "../../components/common/OrderStatusProgress";
 import OrderCard from "../../components/common/OrderCard";
 import useOrderDetails from "../../hooks/OrderDetails";
+import H3 from "../../components/ui/H3";
 
 const OrderDetails = () => {
   const [orderStatus, setOrderStatus] = useState("");
@@ -71,15 +73,16 @@ const OrderDetails = () => {
                   <div className="flex flex-col gap-3">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-start">
                       <div className="min-w-0">
-                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
+                        <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-600">
                           Order Overview
                         </p>
-                        <h1 className="mt-1 break-all text-xl font-bold text-gray-900 sm:text-2xl lg:text-3xl">
+
+                        <H3>
                           Order #
                           {orderDetails?.razorpay?.orderId
                             ? orderDetails?.razorpay?.orderId.slice(6)
                             : "N/A"}
-                        </h1>
+                        </H3>
                       </div>
 
                       <span
@@ -122,11 +125,6 @@ const OrderDetails = () => {
                 {/* Right Section */}
                 <div className="w-full xl:w-auto">
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-1">
-                    <button className="flex items-center justify-center gap-2 rounded-xl border border-gray-200 px-5 py-3 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-100 cursor-pointer">
-                      <IoPrintSharp className="text-base" />
-                      Print Order
-                    </button>
-
                     <button
                       className="flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-slate-100 px-5 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-200 cursor-pointer"
                       onClick={() => navigate(-1)}
@@ -154,11 +152,11 @@ const OrderDetails = () => {
                 onChange={(e) => setOrderStatus(e.target.value)}
                 className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-700 outline-none focus:border-emerald-400"
               >
-                <option value="placed">Place</option>
-                <option value="confirmed">Confirm</option>
-                <option value="packed">Pack</option>
-                <option value="out_for_delivery">Out of Delivery</option>
-                <option value="delivered">Deliver</option>
+                {
+                  orderSteps?.map((step) => (
+                    <option value={step?.key} key={step?.key}>{step?.label}</option>
+                  ))
+                }
                 <option value="cancelled">Cancel</option>
               </select>
 

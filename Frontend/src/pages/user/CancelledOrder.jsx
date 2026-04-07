@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { allOrders } from "../../api/userApi";
 import OrderList from "./OrderList";
-import UserOrderSkeleton from "../../components/reusable-component/UserOrderSkeleton";
+import UserOrderSkeleton from "../../components/skeleton/UserOrderSkeleton";
 
 const ProcessingOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -13,9 +13,7 @@ const ProcessingOrders = () => {
     try {
       const res = await allOrders();
       const filteredOrders = (res.orders || []).filter((order) =>
-        ["cancelled"].includes(
-          order.orderStatus
-        )
+        ["cancelled"].includes(order.orderStatus),
       );
       setOrders(filteredOrders);
     } catch (error) {

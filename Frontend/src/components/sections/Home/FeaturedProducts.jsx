@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaShareAlt } from "react-icons/fa";
 import { toast } from "react-toastify";
-import { getProducts } from "../../api/productApi";
-import ProductGridSkeleton from "../reusable-component/ProductGridSkeleton";
-import Button from "../ui/Button";
+import { getProducts } from "../../../api/productApi";
+import ProductGridSkeleton from "../../skeleton/ProductGridSkeleton";
+import Button from "../../ui/Button";
+import H3 from "../../ui/H3";
+import Description from "../../ui/Description";
 
 const FeaturedProducts = () => {
   const [products, setProducts] = useState([]);
@@ -49,12 +51,11 @@ const FeaturedProducts = () => {
       <div className="mx-auto max-w-screen-2xl space-y-8">
         <div className="flex flex-col items-center justify-between gap-5 md:flex-row">
           <div className="w-full space-y-2">
-            <h2 className="text-2xl font-bold text-gray-900 md:text-3xl">
-              Featured Products
-            </h2>
-            <p className="text-sm font-medium text-gray-500 md:text-base">
-              Handpicked fresh arrivals from our top-rated local vendors
-            </p>
+            <H3 children="Featured Products" />
+            <Description
+              children="Handpicked fresh arrivals from our top-rated local vendors"
+              className="text-gray-500 "
+            />
           </div>
 
           <Button

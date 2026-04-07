@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { allOrders } from "../../api/userApi";
 import OrderList from "./OrderList";
-import UserOrderSkeleton from "../../components/reusable-component/UserOrderSkeleton";
+import UserOrderSkeleton from "../../components/skeleton/UserOrderSkeleton";
 
 const AllOrders = () => {
   const [orders, setOrders] = useState([]);

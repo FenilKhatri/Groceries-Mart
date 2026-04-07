@@ -7,8 +7,8 @@ import { MdOutlineInventory2 } from "react-icons/md";
 import { IoMdSearch } from "react-icons/io";
 import { HiOutlineSparkles } from "react-icons/hi";
 import { LuPackageSearch } from "react-icons/lu";
-import SearchBar from "../../reusable-component/SearchBar";
-import VendorProductsSkeleton from "../../reusable-component/VendorProductsSkeleton";
+import SearchBar from "../../common/SearchBar";
+import VendorProductsSkeleton from "../../skeleton/VendorProductsSkeleton";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -107,7 +107,7 @@ const ProductList = () => {
   return (
     <div className="m-4 space-y-6 md:m-6">
       {loading ? (
-        <VendorProductsSkeleton count={ products.length || "5" } />
+        <VendorProductsSkeleton count={products.length || "5"} />
       ) : (
         <>
           {/* Top Banner */}

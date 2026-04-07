@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { deleteProfile, updateProfile, userProfile } from "../../api/userApi";
 import { toast } from "react-toastify";
-import UserProfileSkeleton from "../../components/reusable-component/UserProfileSkeleton";
+import UserProfileSkeleton from "../../components/skeleton/UserProfileSkeleton";
 
 const UserProfile = () => {
   const [user, setUser] = useState({});

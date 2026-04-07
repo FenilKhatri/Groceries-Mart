@@ -1,19 +1,26 @@
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { getContacts } from "../../api/adminApi";
-import { HiOutlineRefresh } from "react-icons/hi";
-import { NavLink } from "react-router-dom";
-import SearchBar from "../../components/reusable-component/SearchBar";
-import RefreshButton from "../../components/reusable-component/RefreshButton";
+import { NavLink, useNavigate } from "react-router-dom";
+import SearchBar from "../../components/common/SearchBar";
+import RefreshButton from "../../components/common/RefreshButton";
 import { IoMdArrowRoundDown, IoMdArrowRoundUp } from "react-icons/io";
+import Description from "../../components/ui/Description";
+import H3 from "../../components/ui/H3";
+import TotalCounts from "../../components/sections/admin/TotalCounts";
+import useDebounce from "../../utils/useDebounce";
+import TableTitle from "../../components/sections/about/TableTitle";
+import AdminTable from "../../components/sections/admin/Table";
+import { contactColumns } from "../../data/adminTable";
+import Button from "../../components/ui/Button";
 
 const AdminContacts = () => {
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [contacts, setContacts] = useState([]);
 
+  const navigate = useNavigate();
   const [query, setQuery] = useState("");
-  const [debouncingQuery, setDebouncingQuery] = useState("");
 
   const [sorted, setSorted] = useState({ key: "", direction: "" });
 
@@ -32,14 +39,7 @@ const AdminContacts = () => {
     }
   };
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncingQuery(query);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [query]);
-
+  const debouncingQuery = useDebounce(query, 500);
   const filteredContacts = useMemo(() => {
     const search = debouncingQuery.toLowerCase().trim();
 
@@ -62,33 +62,31 @@ const AdminContacts = () => {
       const aValue = a[key] ?? "";
       const bValue = b[key] ?? "";
 
-      return direction === "asc" ? String(aValue).localeCompare(bValue) : String(bValue).localeCompare(aValue);
+      return direction === "asc"
+        ? String(aValue).localeCompare(bValue)
+        : String(bValue).localeCompare(aValue);
     });
     setContacts(sorted);
     setSorted({ key, direction });
-  }
+  };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div className="w-full flex flex-col md:flex-row items-start justify-between gap-3">
-          <div>
-            <p className="text-xs font-semibold tracking-widest text-gray-500 uppercase">
-              Admin Panel
-            </p>
-            <h1 className="mt-1 text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
-              Contacts Management
-            </h1>
-            <p className="mt-2 text-sm text-gray-600">
-              Manage details and monitor overview.
-            </p>
-          </div>
-          <div className="rounded-2xl border border-gray-200 bg-white px-4 py-3 shadow-sm">
-            <p className="text-xs text-gray-500">Total Contacts</p>
-            <p className="mt-1 text-xl font-bold text-gray-900 text-center">
-              {contacts?.length}
-            </p>
-          </div>
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+      {/* Top Bar */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-600">
+            admin panel
+          </p>
+          <H3 children="Contacts Management" />
+          <Description
+            children="Manage contact informations."
+            className="text-gray-500"
+          />
+        </div>
+
+        <div className="flex items-center gap-3">
+          <TotalCounts children="Contacts" length={contacts?.length} />
         </div>
       </div>
 
@@ -99,16 +97,14 @@ const AdminContacts = () => {
         placeholder="Search for contacts..."
       />
 
+      {/* Card */}
       <div className="mt-8 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+        {/* Header */}
         <div className="flex items-center justify-between border-b border-gray-100 px-5 sm:px-6 py-4">
-          <div className="left-part">
-            <p className="text-sm font-semibold text-gray-900">
-              Contacts Directory
-            </p>
-            <p className="mt-1 text-xs text-gray-500">
-              Below is the list of all contacts.
-            </p>
-          </div>
+          <TableTitle
+            Title="Contacts Directory"
+            Description="Below is the list of all contacts."
+          />
           {/* Refresh button */}
           <RefreshButton
             refreshing={refreshing}
@@ -117,118 +113,34 @@ const AdminContacts = () => {
           />
         </div>
 
-        {loading ? (
-          <p className="text-2xl font-semibold text-center py-12 animate-pulse">
-            Loading contacts...
-          </p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-sm">
-              <thead className="bg-gray-50 text-gray-600">
-                <tr>
-                  <th className={LINKS}>Sr No.</th>
-                  <th className={LINKS}>
-                    <div className="flex items-center justify-between">
-                      Name
-                      <div className="flex items-center justify-center gap-3">
-                        <IoMdArrowRoundUp
-                          className="cursor-pointer hover:text-emerald-500 transition duration-300"
-                          onClick={() => handleSorted("name", "asc")}
-                        />
-                        <IoMdArrowRoundDown
-                          className="cursor-pointer hover:text-emerald-500 transition duration-300"
-                          onClick={() => handleSorted("name", "desc")}
-                        />
-                      </div>
-                    </div>
-                  </th>
-                  <th className={LINKS}>
-                    <div className="flex items-center justify-between">
-                      User ID
-                      <div className="flex items-center justify-center gap-3">
-                        <IoMdArrowRoundUp
-                          className="cursor-pointer hover:text-emerald-500 transition duration-300"
-                          onClick={() => handleSorted("email", "asc")}
-                        />
-                        <IoMdArrowRoundDown
-                          className="cursor-pointer hover:text-emerald-500 transition duration-300"
-                          onClick={() => handleSorted("email", "desc")}
-                        />
-                      </div>
-                    </div>
-                  </th>
-                  <th className={LINKS}>
-                    <div className="flex items-center justify-between">
-                      User ID
-                      <div className="flex items-center justify-center gap-3">
-                        <IoMdArrowRoundUp
-                          className="cursor-pointer hover:text-emerald-500 transition duration-300"
-                          onClick={() => handleSorted("subject", "asc")}
-                        />
-                        <IoMdArrowRoundDown
-                          className="cursor-pointer hover:text-emerald-500 transition duration-300"
-                          onClick={() => handleSorted("subject", "desc")}
-                        />
-                      </div>
-                    </div>
-                  </th>
-                  <th className={LINKS}>
-                    <div className="flex items-center justify-between">
-                      User ID
-                      <div className="flex items-center justify-center gap-3">
-                        <IoMdArrowRoundUp
-                          className="cursor-pointer hover:text-emerald-500 transition duration-300"
-                          onClick={() => handleSorted("message", "asc")}
-                        />
-                        <IoMdArrowRoundDown
-                          className="cursor-pointer hover:text-emerald-500 transition duration-300"
-                          onClick={() => handleSorted("message", "desc")}
-                        />
-                      </div>
-                    </div>
-                  </th>
-                  <th className={LINKS}>View</th>
-                </tr>
-              </thead>
-
-              <tbody className="divide-y divide-gray-100">
-                {filteredContacts?.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="py-12 text-center text-gray-500">
-                      No contacts found
-                    </td>
-                  </tr>
-                ) : (
-                  filteredContacts?.map((contact, index) => (
-                    <tr
-                      key={contact?._id || index}
-                      className="hover:bg-emerald-50/60 transition"
-                    >
-                      <td className="px-5 py-4">{index + 1}</td>
-                      <td className="px-5 py-4">{contact?.name || "-"}</td>
-                      <td className="px-5 py-4">{contact?.email || "-"}</td>
-                      <td className="px-5 py-4">{contact?.subject || "-"}</td>
-                      <td className="px-5 py-4">{contact?.message || "-"}</td>
-                      <td className="px-5 py-4">
-                        <NavLink
-                          to={`/admin/contacts/${contact?._id}`}
-                          className="w-fit flex items-center gap-2 px-3 py-1.5 text-sm font-semibold text-gray-700 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-all cursor-pointer"
-                        >
-                          View
-                        </NavLink>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        <div className="border-t border-gray-100 bg-white px-5 py-4 text-xs text-gray-500">
-          Showing {filteredContacts?.length} contact
-          {filteredContacts?.length !== 1 ? "s" : ""}.
-        </div>
+        <AdminTable
+          columns={contactColumns}
+          data={filteredContacts}
+          loading={loading}
+          onSort={handleSorted}
+          emptyMessage="No contacts found"
+          renderRow={(contact, index) => (
+            <tr
+              key={contact?._id || index}
+              className="hover:bg-emerald-50/60 transition"
+            >
+              <td className="px-5 py-4">{index + 1}</td>
+              <td className="px-5 py-4">{contact?.name || "-"}</td>
+              <td className="px-5 py-4">{contact?.email || "-"}</td>
+              <td className="px-5 py-4">{contact?.subject || "-"}</td>
+              <td className="px-5 py-4">{contact?.message || "-"}</td>
+              <td className="px-5 py-4">
+                <Button
+                  variant="outline"
+                  children="View Contact"
+                  onClick={() => navigate(`/admin/contacts/${contact?._id}`)}
+                />
+              </td>
+            </tr>
+          )}
+          children="contact"
+          length={contacts?.length}
+        />
       </div>
     </div>
   );

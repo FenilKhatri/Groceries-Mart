@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { SiGmail } from "react-icons/si";
-import { FaPhoneAlt } from "react-icons/fa";
-import { IoLogoWhatsapp } from "react-icons/io";
 import { toast } from "react-toastify";
-import WebLogo from "../../assets/Logo.webp";
-import { subscribe } from "../../api/userApi";
+import WebLogo from "../assets/Logo.webp";
+import { subscribe } from "../api/userApi";
+import { contactInfo } from "../data/contactInfo";
+import Description from "../components/ui/Description";
+import { quickLinks, legalLinks } from "../data/footerLinks.js";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
@@ -43,40 +43,33 @@ const Footer = () => {
               </p>
             </div>
 
-            <p className="leading-7 text-gray-500">
+            <Description className="leading-7 text-gray-500 text-justify">
               The leading multi-vendor grocery marketplace connecting you with
               fresh, organic produce and everyday essentials directly from local
               farms and trusted vendors.
-            </p>
+            </Description>
 
             <div>
               <p className="font-bold text-gray-800">Get in touch</p>
+              {contactInfo?.map((info, index) => {
+                const Icon = info?.icon;
 
-              <a
-                className="mt-3 flex items-center gap-3 text-gray-600 transition-all hover:text-emerald-500"
-                href="https://wa.me/919313407400"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <IoLogoWhatsapp size={24} className="text-emerald-600" />
-                +91 9313407400
-              </a>
-
-              <a
-                className="mt-3 flex items-center gap-3 text-gray-600 transition-all hover:text-emerald-500"
-                href="tel:+919313407400"
-              >
-                <FaPhoneAlt size={18} className="text-blue-700" />
-                +91 9313407400
-              </a>
-
-              <a
-                className="mt-3 flex items-center gap-3 text-gray-600 transition-all hover:text-emerald-500"
-                href="mailto:fenilkhatri931@gmail.com"
-              >
-                <SiGmail size={18} className="text-red-600" />
-                fenilkhatri931@gmail.com
-              </a>
+                return (
+                  <a
+                    className="mt-3 flex items-center gap-3 text-gray-600 transition-all hover:text-emerald-500"
+                    href={info?.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    key={index}
+                  >
+                    <Icon
+                      size={20}
+                      className={`${info?.theme} bg-transparent`}
+                    />
+                    {info?.description}
+                  </a>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -85,38 +78,25 @@ const Footer = () => {
           <div className="flex flex-wrap items-start justify-between gap-8">
             <div className="flex flex-col items-start justify-start gap-5">
               <p className="font-bold text-gray-800">Quick Links</p>
-              <Link className={FOOTER_LINKS} to="/about">
-                About Us
-              </Link>
-              <Link className={FOOTER_LINKS} to="/contact">
-                Contact Us
-              </Link>
-              <Link className={FOOTER_LINKS} to="/products">
-                Products
-              </Link>
+              {quickLinks?.map((link, index) => (
+                <Link className={FOOTER_LINKS} to={link?.path} key={index}>
+                  {link?.description}
+                </Link>
+              ))}
             </div>
 
             <div className="flex flex-col items-start justify-start gap-5">
               <p className="font-bold text-gray-800">Legal</p>
-              <Link className={FOOTER_LINKS} to="/privacy-policy">
-                Privacy Policy
-              </Link>
-              <Link className={FOOTER_LINKS} to="/terms-of-service">
-                Terms of Service
-              </Link>
-              <Link className={FOOTER_LINKS} to="/return-policy">
-                Return Policy
-              </Link>
-              <Link className={FOOTER_LINKS} to="/faq">
-                FAQ
-              </Link>
+              {legalLinks?.map((link, index) => (
+                <Link className={FOOTER_LINKS} to={link?.path} key={index}>
+                  {link?.description}
+                </Link>
+              ))}
             </div>
 
             <div className="max-w-sm w-full flex flex-col items-start justify-start gap-5">
               <p className="font-bold text-gray-800">Subscribe to Newsletter</p>
-              <p className="font-semibold text-gray-400">
-                Get weekly updates on fresh deals and exclusive offers.
-              </p>
+              <Description children="Get weekly updates on fresh deals and exclusive offers." className="text-gray-500" />
 
               <div className="w-full space-y-3">
                 <label htmlFor="footer-email" className="sr-only">
