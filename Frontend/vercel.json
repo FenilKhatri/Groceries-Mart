@@ -5,10 +5,6 @@
       "destination": "https://grocery-store-pncw.onrender.com/api/$1"
     },
     {
-      "source": "/sitemap.xml",
-      "destination": "https://grocery-store-pncw.onrender.com/sitemap.xml"
-    },
-    {
       "source": "/((?!api|sitemap.xml|robots.txt|.*\\..*).*)",
       "destination": "/index.html"
     }
