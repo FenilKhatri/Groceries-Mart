@@ -73,6 +73,8 @@ const Register = () => {
         <div className="flex justify-center md:justify-end">
           <button
             onClick={() => navigate("/")}
+            aria-label="Back"
+            title="Back"
             className="flex items-center gap-2 text-gray-500 hover:text-gray-800 cursor-pointer"
           >
             <FaArrowLeftLong size={14} />
@@ -88,6 +90,8 @@ const Register = () => {
             loading="lazy"
             decoding="async"
             className="h-10"
+            width="full"
+            height="full"
           />
 
           <div className="flex items-center gap-3">
@@ -194,6 +198,8 @@ const Register = () => {
 
               <button
                 type="button"
+                aria-label={showPass ? "Show Pass" : "Hide Pass"}
+                title={showPass ? "Show Pass" : "Hide Pass"}
                 onClick={() => setShowPass((p) => !p)}
                 className="text-gray-500 hover:text-emerald-600 transition"
               >
@@ -226,6 +232,8 @@ const Register = () => {
               <button
                 type="button"
                 onClick={() => setShowConfirmPass((p) => !p)}
+                aria-label={showConfirmPass ? "Show Pass" : "Hide Pass"}
+                title={showConfirmPass ? "Show Pass" : "Hide Pass"}
                 className="text-gray-500 hover:text-emerald-600 transition"
               >
                 {showConfirmPass ? (
@@ -240,6 +248,8 @@ const Register = () => {
           {/* Submit */}
           <button
             type="submit"
+            aria-label="Sign Up"
+            title="Sign Up"
             disabled={registerLoading}
             className="w-full bg-emerald-600 text-white py-4 rounded-xl font-semibold hover:bg-emerald-700 transition duration-300 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
           >

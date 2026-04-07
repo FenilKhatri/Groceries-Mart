@@ -38,7 +38,7 @@ const Category = () => {
             count={category.length || categories.length || 10}
           />
         ) : (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-[repeat(auto-fit,minmax(120px,1fr))]">
             {category?.map((item) => (
               <div
                 key={item.value}
@@ -47,6 +47,10 @@ const Category = () => {
                 <img
                   src={item.image}
                   alt={item.value}
+                  loading="lazy"
+                  decoding="async"
+                  width="full"
+                  height="full"
                   className="h-20 w-20 rounded-full object-cover"
                 />
                 <p className="text-center font-bold">{item.value}</p>

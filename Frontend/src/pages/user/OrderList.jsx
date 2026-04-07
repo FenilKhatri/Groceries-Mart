@@ -86,6 +86,8 @@ const OrderList = ({ orders = [], emptyMessage = "No orders found." }) => {
               <button
                 className="flex items-center justify-center gap-3 shadow-md border border-gray-200 rounded-md hover:bg-gray-100 cursor-pointer px-4 py-2"
                 onClick={() => handleInvoice(order._id)}
+                aria-label="Download"
+                title="Download"
               >
                 <TbFileInvoice className="text-lg" />
                 Download Invoice
@@ -117,6 +119,8 @@ const OrderList = ({ orders = [], emptyMessage = "No orders found." }) => {
                       alt={item?.product?.name || "-"}
                       loading="lazy"
                       decoding="async"
+                      width="full"
+                      height="full"
                       className="h-16 w-16 object-cover rounded-md"
                     />
                     <div className="flex flex-col items-start justify-between">

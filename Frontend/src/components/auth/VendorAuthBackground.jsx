@@ -6,6 +6,10 @@ const VendorAuthBackground = () => {
       <img
         src={VendorLoginRegisterBG}
         alt="Vendor auth background"
+        loading="lazy"
+        decoding="async"
+        width="full"
+        height="full"
         className="h-full w-full object-cover"
       />
 
@@ -23,9 +27,7 @@ const VendorAuthBackground = () => {
 
         <div className="mt-6">
           <p className="font-semibold">Mark Thompson</p>
-          <p className="text-sm text-white/70">
-            Owner, Sunrise Organic Farms
-          </p>
+          <p className="text-sm text-white/70">Owner, Sunrise Organic Farms</p>
         </div>
       </div>
     </div>

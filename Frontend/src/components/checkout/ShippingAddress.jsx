@@ -24,7 +24,7 @@ const ShippingAddress = ({ address, handleAddress }) => {
             placeholder="Enter full name"
             value={address.name}
             onChange={handleAddress}
-            className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+            className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none wrap-break-word"
           />
         </div>
 

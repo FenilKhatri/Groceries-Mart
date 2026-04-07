@@ -33,6 +33,8 @@ const RefreshButton = ({
     <>
       <button
         type="button"
+        aria-label="Refresh"
+        title="Refresh"
         onClick={handleRefresh}
         disabled={refreshing}
         className={`flex items-center gap-5 bg-white border-2 border-emerald-300 text-emerald-700 hover:bg-emerald-200 shadow-3xl rounded-3xl px-4 py-3 w-fit transition-all ${

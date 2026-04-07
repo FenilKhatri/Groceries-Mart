@@ -11,10 +11,16 @@ const PageNotFound = () => {
         <img
           src={PageNotFoundImg}
           alt="page not found"
+          loading="lazy"
+          decoding="async"
           className="w-full h-100 object-contain"
+          width="full"
+          height="full"
         />
         <button
           onClick={() => navigate("/")}
+          aria-label="Back"
+          title="Back"
           className="px-3 py-2 text-center font-semibold bg-emerald-100 text-emerald-700 hover:bg-red-100 hover:text-red-700 transition duration-300 rounded-xl shadow-xl flex items-center gap-3 cursor-pointer"
         >
           <IoMdArrowRoundBack /> Back to Home Page

@@ -110,6 +110,8 @@ const AdminContacts = () => {
             refreshing={refreshing}
             setRefreshing={setRefreshing}
             onRefresh={handleData}
+            aria-label="Refresh"
+            title="Refresh"
           />
         </div>
 
@@ -133,6 +135,8 @@ const AdminContacts = () => {
                 <Button
                   variant="outline"
                   children="View Contact"
+                  aria-label="View"
+                  title="View"
                   onClick={() => navigate(`/admin/contacts/${contact?._id}`)}
                 />
               </td>

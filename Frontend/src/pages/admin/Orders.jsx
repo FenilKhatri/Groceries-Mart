@@ -194,6 +194,8 @@ const OrderRow = ({ order, index, navigate }) => {
       <td className="px-5 py-4">
         <Button
           variant="outline"
+          aria-label="View"
+          title="View"
           onClick={() => navigate(`/admin/orders/${order._id}`)}
         >
           View Order

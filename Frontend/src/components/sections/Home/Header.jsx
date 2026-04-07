@@ -9,7 +9,7 @@ const Header = () => {
       <div className="relative z-10 mx-auto flex min-h-svh max-w-7xl items-center px-4 sm:px-6 lg:px-8">
         <div className="w-full flex flex-col items-start space-y-5 lg:space-y-7 max-w-2xl">
           <div className="flex">
-            <p className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white/50 px-4 py-2 text-sm font-bold text-emerald-700 shadow-2xl backdrop-blur-md">
+            <p className="inline-flex items-center gap-3 rounded-full border border-emerald-200 bg-white/50 px-4 py-2 text-sm font-bold text-emerald-700 shadow-2xl backdrop-blur-md">
               <span className="h-2 w-2 animate-ping rounded-full bg-emerald-500" />
               100% Organic & Fresh
             </p>
@@ -35,6 +35,8 @@ const Header = () => {
               children="Shop Now"
               variant="primary"
               className="py-3"
+              aria-label="Shop Now"
+              title="Shop Now"
             />
 
             <Button
@@ -43,6 +45,8 @@ const Header = () => {
               children="Become a vendor"
               variant="secondary"
               className="py-3"
+              aria-label="Become a vendor"
+              title="Become a vendor"
             />
           </div>
 

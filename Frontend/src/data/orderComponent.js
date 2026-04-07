@@ -1,7 +1,7 @@
 const ORDER_STATUS_CONFIG = {
   placed: {
     label: "Placed",
-    icon: "📦",
+    icon: "🛒",
     color: "bg-blue-50 text-blue-700 border border-blue-200",
   },
   confirmed: {

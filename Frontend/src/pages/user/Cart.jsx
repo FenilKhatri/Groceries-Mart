@@ -101,6 +101,8 @@ const UserCart = () => {
           alt={alt}
           loading={priority ? "eager" : "lazy"}
           decoding="async"
+          width="full"
+          height="full"
           onLoad={() => setLoaded(true)}
           className={`h-full w-full object-cover transition duration-500 ${
             loaded ? "blur-0 scale-100" : "blur-md scale-110"
@@ -135,6 +137,8 @@ const UserCart = () => {
 
           <button
             onClick={handleDeleteCart}
+            aria-label="Delete"
+            title="Delete"
             disabled={clearing || !cart?.items?.length}
             className={`inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-semibold transition ${
               clearing || !cart?.items?.length
@@ -216,6 +220,8 @@ const UserCart = () => {
 
                             <button
                               onClick={() => handleRemoveItem(pid)}
+                              aria-label="Remove"
+                              title="Remove"
                               className="mt-2 text-sm font-semibold text-red-500 transition hover:text-red-600"
                             >
                               Remove
@@ -230,6 +236,8 @@ const UserCart = () => {
                               onClick={() =>
                                 handleUpdateQuantity(pid, item?.quantity - 1)
                               }
+                              aria-label="Decrease"
+                              title="Decrease"
                               disabled={isUpdating || item?.quantity <= 1}
                               className="px-4 py-2 text-lg font-bold text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
                             >
@@ -245,6 +253,8 @@ const UserCart = () => {
                                 handleUpdateQuantity(pid, item?.quantity + 1)
                               }
                               disabled={isUpdating}
+                              aria-label="Increase"
+                              title="Increase"
                               className="px-4 py-2 text-lg font-bold text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
                             >
                               +

@@ -65,6 +65,7 @@ const ProductGrid = ({
           >
             <button
               type="button"
+              aria-label="Share"
               className="absolute top-3 right-3 flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100/70 text-emerald-700 cursor-pointer z-10"
               onClick={() => handleShare(product)}
             >
@@ -76,8 +77,8 @@ const ProductGrid = ({
                 <img
                   src={image}
                   alt={product.name}
-                  width="500"
-                  height="500"
+                  width="full"
+                  height="full"
                   loading={index < 4 ? "eager" : "lazy"}
                   decoding="async"
                   className="h-full w-full rounded-t-lg object-cover hover:scale-110 overflow-hidden transition duration-300"
@@ -132,6 +133,8 @@ const ProductGrid = ({
               <div className="mt-4 flex gap-3">
                 <button
                   type="button"
+                  aria-label="View"
+                  title="view"
                   className="flex-1 rounded-lg bg-orange-600 py-2 font-semibold text-white transition-all hover:bg-orange-500 cursor-pointer"
                   onClick={() => onView(product._id)}
                 >
@@ -140,6 +143,8 @@ const ProductGrid = ({
 
                 <button
                   type="button"
+                  aria-label="Add to Cart"
+                  title="Add to Cart"
                   disabled={addLoading === product._id || product.stock === 0}
                   className={`flex-1 rounded-lg py-2 font-semibold text-white transition-all ${
                     addLoading === product._id || product.stock === 0

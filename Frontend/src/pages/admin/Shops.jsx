@@ -157,6 +157,8 @@ const AdminShops = () => {
                         decoding="async"
                         src={shop?.image?.url || FALLBACK_IMG}
                         alt="shop"
+                        width="full"
+                        height="full"
                         className="h-10 w-10 rounded-xl object-cover border"
                         onError={(e) => {
                           e.currentTarget.src = FALLBACK_IMG;
@@ -194,6 +196,8 @@ const AdminShops = () => {
                     <Button
                       variant="outline"
                       children="View Shop"
+                      aria-label="View"
+                      title="View"
                       onClick={() => navigate(`/admin/shops/${shop._id}`)}
                     />
                   </td>

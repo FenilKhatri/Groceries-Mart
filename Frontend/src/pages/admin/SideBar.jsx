@@ -158,6 +158,8 @@ const AdminSideBar = () => {
             <button
               type="button"
               onClick={handleLogOut}
+              aria-label="Logout"
+              title="Logout"
               className="w-full group flex items-center justify-between gap-3 px-4 py-3 rounded-2xl border border-red-200 bg-red-50 text-red-700 font-semibold hover:bg-red-100 transition cursor-pointer"
             >
               <span className="flex items-center gap-3">
@@ -183,6 +185,7 @@ const AdminSideBar = () => {
             className="absolute inset-0 bg-black/40"
             onClick={() => setOpen(false)}
             aria-label="Close overlay"
+            title="Close"
           />
 
           <div className="absolute left-0 top-0 h-full w-72 bg-white shadow-2xl border-r border-gray-200 flex flex-col">
@@ -192,6 +195,7 @@ const AdminSideBar = () => {
                 onClick={() => setOpen(false)}
                 className="p-2 rounded-xl hover:bg-gray-100 transition"
                 aria-label="Close menu"
+                title="Close"
               >
                 <MdClose size={22} className="text-gray-800" />
               </button>
@@ -212,6 +216,8 @@ const AdminSideBar = () => {
                   setOpen(false);
                   handleLogOut();
                 }}
+                aria-label="Logout"
+                title="Logout"
                 className="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-2xl border border-red-200 bg-red-50 text-red-700 font-semibold hover:bg-red-100 transition"
               >
                 <span className="flex items-center gap-3">

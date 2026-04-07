@@ -17,7 +17,6 @@ const ShopRegistrationForm = ({
 }) => {
   return (
     <div className="min-h-screen w-full bg-gray-100 rounded-3xl px-4">
-
       <div className="mx-auto w-full max-w-3xl">
         <div className="mb-6 rounded-3xl border border-gray-200 bg-white/30 p-6 shadow-sm">
           <div className="flex items-start justify-between gap-4">
@@ -68,7 +67,9 @@ const ShopRegistrationForm = ({
 
               <TextAreaInput
                 label="Shop Description"
-                icon={<FaAudioDescription className="mt-0.5 text-gray-500 shrink-0" />}
+                icon={
+                  <FaAudioDescription className="mt-0.5 text-gray-500 shrink-0" />
+                }
                 value={form.description}
                 placeholder="Tell customers what you sell and what makes your shop special..."
                 onChange={(e) => onChange("description", e.target.value)}
@@ -78,7 +79,9 @@ const ShopRegistrationForm = ({
 
               <TextInput
                 label="Shop Email Address"
-                icon={<MdOutlineMailLock className="text-gray-500 text-xl shrink-0" />}
+                icon={
+                  <MdOutlineMailLock className="text-gray-500 text-xl shrink-0" />
+                }
                 value={form.email}
                 type="email"
                 placeholder="e.g. shop@email.com"
@@ -94,7 +97,10 @@ const ShopRegistrationForm = ({
                 type="tel"
                 placeholder="e.g. 9876543210"
                 onChange={(e) =>
-                  onChange("phone", e.target.value.replace(/\D/g, "").slice(0, 10))
+                  onChange(
+                    "phone",
+                    e.target.value.replace(/\D/g, "").slice(0, 10),
+                  )
                 }
               />
 
@@ -111,11 +117,13 @@ const ShopRegistrationForm = ({
 
               <TextAreaInput
                 label="Shop Address"
-                icon={<FaAudioDescription className="mt-0.5 text-gray-500 shrink-0" />}
+                icon={
+                  <FaAudioDescription className="mt-0.5 text-gray-500 shrink-0" />
+                }
                 value={form.address}
                 placeholder="Street / Area / Landmark"
                 onChange={(e) => onChange("address", e.target.value)}
-                className="md:col-span-2"
+                className="md:col-span-2 wrap-break-word"
               />
 
               <SelectField
@@ -148,6 +156,8 @@ const ShopRegistrationForm = ({
             <div className="md:col-span-2 flex justify-center items-center gap-5">
               <button
                 type="submit"
+                aria-label="Register Shop"
+                title="Register Shop"
                 disabled={loading}
                 className={`rounded-2xl py-4 px-3 font-semibold text-white shadow-sm transition duration-300 ${
                   loading
@@ -160,6 +170,8 @@ const ShopRegistrationForm = ({
 
               <button
                 type="button"
+                aria-label="Reset"
+                title="Reset"
                 onClick={onReset}
                 disabled={loading}
                 className={`rounded-2xl py-4 px-3 font-semibold text-white shadow-sm transition ${
@@ -316,6 +328,8 @@ const ImageUpload = ({ image, onChange, className = "" }) => (
             alt="preview"
             loading="lazy"
             decoding="async"
+            width="full"
+            height="full"
             className="h-full w-full rounded-2xl object-cover"
           />
           <div className="pointer-events-none absolute inset-0 flex items-end justify-center pb-4">

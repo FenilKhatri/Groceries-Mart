@@ -201,6 +201,8 @@ const AdminVendors = () => {
                     <button
                       disabled={busy || vendor.status === "approved"}
                       onClick={() => act("approve", vendor._id)}
+                      aria-label="Approve"
+                      title="Approve"
                       className={`rounded-xl px-3 py-2 text-xs font-semibold
                                     ${
                                       vendor.status === "approved" || busy
@@ -218,6 +220,8 @@ const AdminVendors = () => {
                     <button
                       disabled={busy || vendor.status === "rejected"}
                       onClick={() => act("reject", vendor._id)}
+                      aria-label="Reject"
+                      title="Reject"
                       className={`rounded-xl px-3 py-2 text-xs font-semibold
                                   ${
                                     vendor.status === "rejected" || busy
@@ -231,6 +235,8 @@ const AdminVendors = () => {
                     <button
                       disabled={busy || vendor.status === "deleted"}
                       onClick={() => act("delete", vendor._id)}
+                      aria-label="Delete"
+                      title="Delete"
                       className={`rounded-xl px-3 py-2 text-xs font-semibold
                                   ${
                                     vendor.status === "deleted" || busy

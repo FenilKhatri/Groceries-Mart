@@ -92,6 +92,8 @@ const UpdatePassword = () => {
               />
               <button
                 type="button"
+                aria-label={showPassword ? "Hide Pass" : "Show Pass"}
+                title={showPassword ? "Hide Pass" : "Show Pass"}
                 onClick={() => setShowPassword((prev) => !prev)}
               >
                 {showPassword ? <IoMdEye /> : <IoMdEyeOff />}
@@ -118,7 +120,10 @@ const UpdatePassword = () => {
               />
               <button
                 type="button"
-                aria-label={showPassword ? "Hide Password" : "Show Password"}
+                aria-label={
+                  showConfirmPassword ? "Hide Password" : "Show Password"
+                }
+                title={showConfirmPassword ? "Hide Password" : "Show Password"}
                 onClick={() => setShowConfirmPassword((prev) => !prev)}
               >
                 {showConfirmPassword ? <IoMdEye /> : <IoMdEyeOff />}
@@ -130,6 +135,8 @@ const UpdatePassword = () => {
           <div className="pt-2 flex gap-3 justify-end">
             <button
               type="button"
+              aria-label="Reset"
+              title="Reset"
               disabled={
                 loading || (!password.trim() && !confirmPassword.trim())
               }
@@ -146,6 +153,8 @@ const UpdatePassword = () => {
             </button>
             <button
               type="submit"
+              aria-label="Update"
+              title="Update"
               disabled={loading}
               className={`rounded-2xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white hover:bg-emerald-700 transition duration-300 ${loading ? "opacity-60" : "cursor-pointer"}`}
             >

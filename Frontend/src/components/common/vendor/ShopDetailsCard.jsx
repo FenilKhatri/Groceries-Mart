@@ -41,11 +41,15 @@ const ShopDetailsCard = ({ shop, navigate, onAction, actionLoading }) => {
           </div>
 
           <div className="flex items-center gap-5">
-            <div className={`text-xs font-semibold px-2 py-1 rounded-lg ${badgeClass}`}>
+            <div
+              className={`text-xs font-semibold px-2 py-1 rounded-lg ${badgeClass}`}
+            >
               {statusLabel}
             </div>
 
             <button
+              aria-label="Back"
+              title="Back"
               onClick={() => navigate(-1)}
               className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 cursor-pointer"
             >
@@ -69,6 +73,8 @@ const ShopDetailsCard = ({ shop, navigate, onAction, actionLoading }) => {
             <div className="flex flex-col sm:flex-row gap-2 justify-end border-t border-gray-100 bg-gray-50 px-5 sm:px-6 py-4">
               <button
                 onClick={() => onAction("approve")}
+                aria-label="Approve"
+                title="Approve"
                 disabled={!canApprove || busy}
                 className={`rounded-xl border px-4 py-2 text-sm font-semibold ${
                   !canApprove
@@ -84,6 +90,8 @@ const ShopDetailsCard = ({ shop, navigate, onAction, actionLoading }) => {
               <button
                 onClick={() => onAction("reject")}
                 disabled={!canReject || busy}
+                aria-label="Reject"
+                title="Reject"
                 className={`rounded-xl border px-4 py-2 text-sm font-semibold ${
                   !canReject
                     ? "border-gray-200 bg-gray-100 text-gray-600 cursor-not-allowed"
@@ -98,6 +106,8 @@ const ShopDetailsCard = ({ shop, navigate, onAction, actionLoading }) => {
               <button
                 onClick={() => onAction("cancel")}
                 disabled={!canCancel || busy}
+                aria-label="Cancel"
+                title="Cancel"
                 className={`rounded-xl border px-4 py-2 text-sm font-semibold ${
                   !canCancel
                     ? "border-gray-200 bg-gray-100 text-gray-600 cursor-not-allowed"
@@ -106,12 +116,16 @@ const ShopDetailsCard = ({ shop, navigate, onAction, actionLoading }) => {
                       : "border-gray-200 bg-white text-gray-700 hover:bg-gray-100"
                 }`}
               >
-                {actionLoading === "cancel" ? "Cancelling..." : "Cancel Request"}
+                {actionLoading === "cancel"
+                  ? "Cancelling..."
+                  : "Cancel Request"}
               </button>
 
               <button
                 onClick={() => onAction("delete")}
                 disabled={!canDelete || busy}
+                aria-label="Delete"
+                title="Delete"
                 className={`rounded-xl border px-4 py-2 text-sm font-semibold ${
                   !canDelete
                     ? "border-gray-200 bg-gray-100 text-gray-600 cursor-not-allowed"
@@ -131,13 +145,17 @@ const ShopDetailsCard = ({ shop, navigate, onAction, actionLoading }) => {
               decoding="async"
               src={imgUrl}
               alt="shop"
+              width="full"
+              height="full"
               className="w-full h-auto object-cover rounded-2xl border border-gray-200"
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="rounded-2xl border border-gray-200 bg-white px-4 py-3">
                 <p className="text-xs text-gray-500">Shop Name</p>
-                <p className="mt-1 font-semibold text-gray-900">{shop?.name || "—"}</p>
+                <p className="mt-1 font-semibold text-gray-900">
+                  {shop?.name || "—"}
+                </p>
               </div>
 
               <div className="rounded-2xl border border-gray-200 bg-white px-4 py-3">
@@ -151,17 +169,23 @@ const ShopDetailsCard = ({ shop, navigate, onAction, actionLoading }) => {
 
               <div className="rounded-2xl border border-gray-200 bg-white px-4 py-3">
                 <p className="text-xs text-gray-500">Phone</p>
-                <p className="mt-1 font-semibold text-gray-900">{shop?.phone || "—"}</p>
+                <p className="mt-1 font-semibold text-gray-900">
+                  {shop?.phone || "—"}
+                </p>
               </div>
 
               <div className="rounded-2xl border border-gray-200 bg-white px-4 py-3">
                 <p className="text-xs text-gray-500">City</p>
-                <p className="mt-1 font-semibold text-gray-900">{shop?.city || "—"}</p>
+                <p className="mt-1 font-semibold text-gray-900">
+                  {shop?.city || "—"}
+                </p>
               </div>
 
               <div className="rounded-2xl border border-gray-200 bg-white px-4 py-3 md:col-span-2">
                 <p className="text-xs text-gray-500">Address</p>
-                <p className="mt-1 font-semibold text-gray-900">{shop?.address || "—"}</p>
+                <p className="mt-1 font-semibold text-gray-900 wrap-break-word">
+                  {shop?.address || "—"}
+                </p>
               </div>
 
               <div className="rounded-2xl border border-gray-200 bg-white px-4 py-3">

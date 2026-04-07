@@ -180,6 +180,8 @@ const PersonalInfo = ({
                     setIsEditing(false);
                     await handleData();
                   }}
+                  aria-label="Cancel"
+                  title="Cancel"
                 >
                   <ImCross />
                   Cancel Changes
@@ -189,6 +191,8 @@ const PersonalInfo = ({
                   className="inline-flex items-center gap-2 rounded-2xl border border-emerald-300 bg-white px-4 py-3 text-sm font-semibold text-emerald-700 shadow-sm transition-all hover:bg-emerald-50 hover:text-emerald-900 cursor-pointer"
                   disabled={updating}
                   onClick={handleUpdateProfile}
+                  aria-label="Save"
+                  title="Save"
                 >
                   {updating ? "Saving changes..." : "Save Changes"}
                 </button>
@@ -197,6 +201,8 @@ const PersonalInfo = ({
               <button
                 className="inline-flex items-center gap-2 rounded-2xl border border-emerald-300 bg-white px-4 py-3 text-sm font-semibold text-emerald-700 shadow-sm transition-all hover:bg-emerald-50 hover:text-emerald-900 cursor-pointer"
                 onClick={() => setIsEditing(true)}
+                aria-label="Edit"
+                title="Edit"
               >
                 <FiEdit2 />
                 Edit Profile

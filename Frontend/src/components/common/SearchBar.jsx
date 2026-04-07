@@ -18,6 +18,8 @@ const SearchBar = ({ query, setQuery, placeholder = "Search here...", className 
 
         {query && (
           <button
+            aria-label="Clear"
+            title="Clear"
             className="cursor-pointer rounded-xl px-3 py-2 text-xs font-semibold text-gray-500 transition hover:bg-gray-100 hover:text-gray-700"
             onClick={() => setQuery("")}
           >

@@ -310,340 +310,350 @@ const ProductForm = () => {
     };
 
     return (
-        <>
+      <>
+        <div className="mx-auto max-w-4xl space-y-6 mt-5">
+          {/* Header */}
+          <div className="rounded-3xl border border-gray-100 bg-white p-6 sm:p-7 shadow-2xl">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">
+              {isEditMode ? "Edit Product" : "Add Product"}
+            </h2>
+            <p className="text-sm text-gray-500 mt-1">
+              {isEditMode
+                ? "Update your product details."
+                : "Add clean product details (name, category, price, unit, stock and images)."}
+            </p>
+            {isEditMode && (
+              <p className="font-bold text-lg pt-3">
+                Note:{" "}
+                <span className="text-sm font-semibold text-gray-300 p-2 rounded-lg">
+                  You can only edit product's name, shortDescription,
+                  longDescription, price, stock, brand, and productCode.
+                </span>
+              </p>
+            )}
+          </div>
 
-            <div className="mx-auto max-w-4xl space-y-6 mt-5">
-                {/* Header */}
-                <div className="rounded-3xl border border-gray-100 bg-white p-6 sm:p-7 shadow-2xl">
-                    <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">
-                        {isEditMode ? "Edit Product" : "Add Product"}
-                    </h2>
-                    <p className="text-sm text-gray-500 mt-1">
-                        {isEditMode
-                            ? "Update your product details."
-                            : "Add clean product details (name, category, price, unit, stock and images)."}
-                    </p>
-                    {
-                        isEditMode && (
-                            <p className="font-bold text-lg pt-3">Note: <span className="text-sm font-semibold text-gray-300 p-2 rounded-lg">You can only edit product's name, shortDescription, longDescription, price, stock, brand, and productCode.</span></p>
-                        )
-                    }
+          {/* Form Card */}
+          <div className="rounded-3xl border border-gray-100 bg-white p-6 sm:p-8 shadow-2xl">
+            <form className="space-y-8" onSubmit={handleForm}>
+              {/* BASIC PRODUCT DETAILS */}
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <p className="text-lg font-extrabold text-gray-900">
+                    Basic Product Details
+                  </p>
+                  <span className="text-xs font-semibold px-3 py-1 rounded-full bg-orange-50 text-orange-700 border border-orange-100">
+                    Required*
+                  </span>
                 </div>
 
-                {/* Form Card */}
-                <div className="rounded-3xl border border-gray-100 bg-white p-6 sm:p-8 shadow-2xl">
-                    <form className="space-y-8" onSubmit={handleForm}>
-                        {/* BASIC PRODUCT DETAILS */}
-                        <div>
-                            <div className="flex items-center justify-between mb-4">
-                                <p className="text-lg font-extrabold text-gray-900">
-                                    Basic Product Details
-                                </p>
-                                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-orange-50 text-orange-700 border border-orange-100">
-                                    Required*
-                                </span>
-                            </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  {/* Product Name */}
+                  <div className="sm:col-span-2">
+                    <label className={labelCls}>Product Name *</label>
+                    <div className={wrap}>
+                      <div className={iconBox}>
+                        <AiFillProduct size={18} />
+                      </div>
+                      <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="Fresh Apples 1kg"
+                        className={fieldCls}
+                      />
+                    </div>
+                  </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                                {/* Product Name */}
-                                <div className="sm:col-span-2">
-                                    <label className={labelCls}>Product Name *</label>
-                                    <div className={wrap}>
-                                        <div className={iconBox}>
-                                            <AiFillProduct size={18} />
-                                        </div>
-                                        <input
-                                            type="text"
-                                            value={name}
-                                            onChange={(e) => setName(e.target.value)}
-                                            placeholder="Fresh Apples 1kg"
-                                            className={fieldCls}
-                                        />
-                                    </div>
-                                </div>
+                  {/* Short Description */}
+                  <div className="sm:col-span-2">
+                    <label className={labelCls}>
+                      Short Description{" "}
+                      <span className="font-normal text-gray-400">
+                        (1–2 lines)
+                      </span>
+                    </label>
+                    <div className={wrap}>
+                      <div className={iconBox}>
+                        <CgDetailsLess size={18} />
+                      </div>
+                      <input
+                        type="text"
+                        value={shortDescription}
+                        onChange={(e) => setShortDescription(e.target.value)}
+                        placeholder="Crisp, juicy, farm-fresh."
+                        className={fieldCls}
+                      />
+                    </div>
+                  </div>
 
-                                {/* Short Description */}
-                                <div className="sm:col-span-2">
-                                    <label className={labelCls}>
-                                        Short Description{" "}
-                                        <span className="font-normal text-gray-400">
-                                            (1–2 lines)
-                                        </span>
-                                    </label>
-                                    <div className={wrap}>
-                                        <div className={iconBox}>
-                                            <CgDetailsLess size={18} />
-                                        </div>
-                                        <input
-                                            type="text"
-                                            value={shortDescription}
-                                            onChange={(e) => setShortDescription(e.target.value)}
-                                            placeholder="Crisp, juicy, farm-fresh."
-                                            className={fieldCls}
-                                        />
-                                    </div>
-                                </div>
+                  {/* Detailed Description */}
+                  <div className="sm:col-span-2">
+                    <label className={labelCls}>
+                      Detailed Description{" "}
+                      <span className="font-normal text-gray-400">
+                        (optional)
+                      </span>
+                    </label>
+                    <div className={wrap}>
+                      <div className={iconBox}>
+                        <CgDetailsMore size={18} />
+                      </div>
+                      <textarea
+                        rows={4}
+                        value={longDescription}
+                        onChange={(e) => setLongDescription(e.target.value)}
+                        placeholder="Add more info like taste, storage, usage..."
+                        className={`${fieldCls} resize-none`}
+                      />
+                    </div>
+                  </div>
 
-                                {/* Detailed Description */}
-                                <div className="sm:col-span-2">
-                                    <label className={labelCls}>
-                                        Detailed Description{" "}
-                                        <span className="font-normal text-gray-400">
-                                            (optional)
-                                        </span>
-                                    </label>
-                                    <div className={wrap}>
-                                        <div className={iconBox}>
-                                            <CgDetailsMore size={18} />
-                                        </div>
-                                        <textarea
-                                            rows={4}
-                                            value={longDescription}
-                                            onChange={(e) => setLongDescription(e.target.value)}
-                                            placeholder="Add more info like taste, storage, usage..."
-                                            className={`${fieldCls} resize-none`}
-                                        />
-                                    </div>
-                                </div>
+                  {/* Brand */}
+                  <div>
+                    <label className={labelCls}>
+                      Brand{" "}
+                      <span className="font-normal text-gray-400">
+                        (optional)
+                      </span>
+                    </label>
+                    <div className={wrap}>
+                      <div className={iconBox}>
+                        <MdBrandingWatermark size={18} />
+                      </div>
+                      <input
+                        type="text"
+                        value={brand}
+                        onChange={(e) => setBrand(e.target.value)}
+                        placeholder="e.g., FreshMart"
+                        className={fieldCls}
+                      />
+                    </div>
+                  </div>
 
-                                {/* Brand */}
-                                <div>
-                                    <label className={labelCls}>
-                                        Brand{" "}
-                                        <span className="font-normal text-gray-400">
-                                            (optional)
-                                        </span>
-                                    </label>
-                                    <div className={wrap}>
-                                        <div className={iconBox}>
-                                            <MdBrandingWatermark size={18} />
-                                        </div>
-                                        <input
-                                            type="text"
-                                            value={brand}
-                                            onChange={(e) => setBrand(e.target.value)}
-                                            placeholder="e.g., FreshMart"
-                                            className={fieldCls}
-                                        />
-                                    </div>
-                                </div>
+                  {/* SKU */}
+                  <div>
+                    <label className={labelCls}>
+                      SKU / Product Code{" "}
+                      <span className="font-normal text-gray-400">
+                        (optional)
+                      </span>
+                    </label>
+                    <div className={wrap}>
+                      <div className={iconBox}>
+                        <FaBarcode size={18} />
+                      </div>
+                      <input
+                        type="text"
+                        value={productCode}
+                        onChange={(e) => setProductCode(e.target.value)}
+                        placeholder="e.g., APPLE-1KG-001"
+                        className={fieldCls}
+                      />
+                    </div>
+                    <p className={hintCls}>
+                      If empty, you can generate it automatically in backend.
+                    </p>
+                  </div>
 
-                                {/* SKU */}
-                                <div>
-                                    <label className={labelCls}>
-                                        SKU / Product Code{" "}
-                                        <span className="font-normal text-gray-400">
-                                            (optional)
-                                        </span>
-                                    </label>
-                                    <div className={wrap}>
-                                        <div className={iconBox}>
-                                            <FaBarcode size={18} />
-                                        </div>
-                                        <input
-                                            type="text"
-                                            value={productCode}
-                                            onChange={(e) => setProductCode(e.target.value)}
-                                            placeholder="e.g., APPLE-1KG-001"
-                                            className={fieldCls}
-                                        />
-                                    </div>
-                                    <p className={hintCls}>
-                                        If empty, you can generate it automatically in backend.
-                                    </p>
-                                </div>
+                  {/* Category */}
+                  <SelectField
+                    label="Product Category"
+                    required
+                    wrap={wrap}
+                    iconBox={iconBox}
+                    icon={<MdCategory size={18} />}
+                    options={categoryOptions}
+                    value={category}
+                    onChange={setCategory}
+                    isLoading={loadingCats}
+                    isDisabled={isEditMode}
+                    placeholder={
+                      loadingCats ? "Loading categories..." : "Select category"
+                    }
+                    hint={
+                      isEditMode
+                        ? "Category cannot be changed after product creation."
+                        : "Shows only categories selected during shop registration."
+                    }
+                  />
+                </div>
+              </div>
 
-                                {/* Category */}
-                                <SelectField
-                                    label="Product Category"
-                                    required
-                                    wrap={wrap}
-                                    iconBox={iconBox}
-                                    icon={<MdCategory size={18} />}
-                                    options={categoryOptions}
-                                    value={category}
-                                    onChange={setCategory}
-                                    isLoading={loadingCats}
-                                    isDisabled={isEditMode}
-                                    placeholder={
-                                        loadingCats ? "Loading categories..." : "Select category"
-                                    }
-                                    hint={
-                                        isEditMode
-                                            ? "Category cannot be changed after product creation."
-                                            : "Shows only categories selected during shop registration."
-                                    }
-                                />
-                            </div>
-                        </div>
+              {/* PRICING & INVENTORY */}
+              <div>
+                <p className="text-lg font-extrabold text-gray-900 mb-4">
+                  Pricing & Inventory
+                </p>
 
-                        {/* PRICING & INVENTORY */}
-                        <div>
-                            <p className="text-lg font-extrabold text-gray-900 mb-4">
-                                Pricing & Inventory
-                            </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  {/* Price */}
+                  <div>
+                    <label className={labelCls}>Original Price (₹) *</label>
+                    <div className={wrap}>
+                      <div className={iconBox}>
+                        <IoMdPricetags size={18} />
+                      </div>
+                      <input
+                        type="number"
+                        min="0"
+                        step="1"
+                        value={price}
+                        onChange={(e) => setPrice(e.target.value)}
+                        placeholder="e.g., 150"
+                        className={fieldCls}
+                      />
+                    </div>
+                  </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                                {/* Price */}
-                                <div>
-                                    <label className={labelCls}>Original Price (₹) *</label>
-                                    <div className={wrap}>
-                                        <div className={iconBox}>
-                                            <IoMdPricetags size={18} />
-                                        </div>
-                                        <input
-                                            type="number"
-                                            min="0"
-                                            step="1"
-                                            value={price}
-                                            onChange={(e) => setPrice(e.target.value)}
-                                            placeholder="e.g., 150"
-                                            className={fieldCls}
-                                        />
-                                    </div>
-                                </div>
+                  {/* Unit */}
+                  <SelectField
+                    containerClass="sm:col-span-1"
+                    label="Product Unit"
+                    required
+                    wrap={wrap}
+                    iconBox={iconBox}
+                    icon={<GiKitchenScale size={18} />}
+                    options={unitOptions}
+                    value={unit}
+                    onChange={setUnit}
+                    placeholder="Select unit"
+                    hint={
+                      isEditMode
+                        ? "Unit cannot be changed after product creation."
+                        : "Choose how you sell this item."
+                    }
+                    isSearchable={false}
+                    isDisabled={isEditMode}
+                  />
 
-                                {/* Unit */}
-                                <SelectField
-                                    containerClass="sm:col-span-1"
-                                    label="Product Unit"
-                                    required
-                                    wrap={wrap}
-                                    iconBox={iconBox}
-                                    icon={<GiKitchenScale size={18} />}
-                                    options={unitOptions}
-                                    value={unit}
-                                    onChange={setUnit}
-                                    placeholder="Select unit"
-                                    hint={
-                                        isEditMode
-                                            ? "Unit cannot be changed after product creation."
-                                            : "Choose how you sell this item."
-                                    }
-                                    isSearchable={false}
-                                    isDisabled={isEditMode}
-                                />
+                  {/* Stock */}
+                  <div className="sm:col-span-2">
+                    <label className={labelCls}>Stock *</label>
+                    <div className={wrap}>
+                      <div className={iconBox}>
+                        <TbNumbers size={18} />
+                      </div>
+                      <input
+                        type="number"
+                        min="0"
+                        value={stock}
+                        onChange={(e) => setStock(e.target.value)}
+                        placeholder="e.g., 60"
+                        className={fieldCls}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-                                {/* Stock */}
-                                <div className="sm:col-span-2">
-                                    <label className={labelCls}>Stock *</label>
-                                    <div className={wrap}>
-                                        <div className={iconBox}>
-                                            <TbNumbers size={18} />
-                                        </div>
-                                        <input
-                                            type="number"
-                                            min="0"
-                                            value={stock}
-                                            onChange={(e) => setStock(e.target.value)}
-                                            placeholder="e.g., 60"
-                                            className={fieldCls}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+              {/* IMAGES */}
+              <div>
+                <p className="text-lg font-extrabold text-gray-900 mb-4">
+                  Product Images
+                </p>
 
-                        {/* IMAGES */}
-                        <div>
-                            <p className="text-lg font-extrabold text-gray-900 mb-4">
-                                Product Images
-                            </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  {/* Images */}
+                  <div className="sm:col-span-2">
+                    <label className={labelCls}>Product Images *</label>
+                    <div className={wrap}>
+                      <div className={iconBox}>
+                        <FaImages size={18} />
+                      </div>
+                      <input
+                        key={`images-${fileResetKey}`}
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        disabled={isEditMode}
+                        onChange={(e) => {
+                          const files = Array.from(e.target.files || []);
+                          if (files.length > 6)
+                            toast.warning("Max 6 images allowed!");
+                          setImages(files.slice(0, 6));
+                        }}
+                        className="w-full text-sm text-gray-600 file:mr-4 file:rounded-xl file:border-0 file:bg-orange-600 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-orange-700 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+                      />
+                    </div>
+                    <p className={hintCls}>
+                      {isEditMode
+                        ? "Product images cannot be changed after creation."
+                        : "Upload 2–4 clear images for best look."}
+                    </p>
+                  </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                                {/* Images */}
-                                <div className="sm:col-span-2">
-                                    <label className={labelCls}>Product Images *</label>
-                                    <div className={wrap}>
-                                        <div className={iconBox}>
-                                            <FaImages size={18} />
-                                        </div>
-                                        <input
-                                            key={`images-${fileResetKey}`}
-                                            type="file"
-                                            multiple
-                                            accept="image/*"
-                                            disabled={isEditMode}
-                                            onChange={(e) => {
-                                                const files = Array.from(e.target.files || []);
-                                                if (files.length > 6) toast.warning("Max 6 images allowed!");
-                                                setImages(files.slice(0, 6));
-                                            }}
-                                            className="w-full text-sm text-gray-600 file:mr-4 file:rounded-xl file:border-0 file:bg-orange-600 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-orange-700 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
-                                        />
-                                    </div>
-                                    <p className={hintCls}>
-                                        {isEditMode
-                                            ? "Product images cannot be changed after creation."
-                                            : "Upload 2–4 clear images for best look."}
-                                    </p>
-                                </div>
+                  {/* Thumbnail */}
+                  <div className="sm:col-span-2">
+                    <label className={labelCls}>Thumbnail *</label>
+                    <div className={wrap}>
+                      <div className={iconBox}>
+                        <FaImage size={18} />
+                      </div>
+                      <input
+                        key={`thumb-${fileResetKey}`}
+                        type="file"
+                        disabled={isEditMode}
+                        onChange={(e) =>
+                          setThumbnail(e.target.files?.[0] || null)
+                        }
+                        className="w-full text-sm text-gray-600 file:mr-4 file:rounded-xl file:border-0 file:bg-gray-900 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-black cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-                                {/* Thumbnail */}
-                                <div className="sm:col-span-2">
-                                    <label className={labelCls}>Thumbnail *</label>
-                                    <div className={wrap}>
-                                        <div className={iconBox}>
-                                            <FaImage size={18} />
-                                        </div>
-                                        <input
-                                            key={`thumb-${fileResetKey}`}
-                                            type="file"
-                                            disabled={isEditMode}
-                                            onChange={(e) => setThumbnail(e.target.files?.[0] || null)}
-                                            className="w-full text-sm text-gray-600 file:mr-4 file:rounded-xl file:border-0 file:bg-gray-900 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-black cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* ACTIONS */}
-                        <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className={`w-full sm:flex-1 rounded-2xl px-5 py-3 font-semibold text-white transition-all shadow-lg shadow-orange-100
-                                    ${loading
+              {/* ACTIONS */}
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                <button
+                  type="submit"
+                  aria-label="Submit"
+                  title="Submit"
+                  disabled={loading}
+                  className={`w-full sm:flex-1 rounded-2xl px-5 py-3 font-semibold text-white transition-all shadow-lg shadow-orange-100
+                                    ${
+                                      loading
                                         ? "bg-orange-400 cursor-not-allowed opacity-70"
                                         : "bg-orange-600 hover:bg-orange-700 cursor-pointer"
                                     }`}
-                            >
-                                {loading
-                                    ? isEditMode
-                                        ? "Updating product..."
-                                        : "Adding product..."
-                                    : isEditMode
-                                        ? "Update Product"
-                                        : "Add Product"}
-                            </button>
+                >
+                  {loading
+                    ? isEditMode
+                      ? "Updating product..."
+                      : "Adding product..."
+                    : isEditMode
+                      ? "Update Product"
+                      : "Add Product"}
+                </button>
 
-                            {
-                                !isEditMode && (
-                                    <button
-                                        type="button"
-                                        onClick={() => resetForm(false)}
-                                        className="w-full sm:w-auto rounded-2xl px-5 py-3 font-semibold text-gray-800 bg-white border border-gray-200 hover:bg-gray-100 cursor-pointer transition-all"
-                                    >
-                                        Reset
-                                    </button>
-                                )
-                            }
+                {!isEditMode && (
+                  <button
+                    type="button"
+                    aria-label="Reset"
+                    title="Reset"
+                    onClick={() => resetForm(false)}
+                    className="w-full sm:w-auto rounded-2xl px-5 py-3 font-semibold text-gray-800 bg-white border border-gray-200 hover:bg-gray-100 cursor-pointer transition-all"
+                  >
+                    Reset
+                  </button>
+                )}
 
-                            <button
-                                type="button"
-                                className="w-full sm:w-auto rounded-2xl px-5 py-3 font-semibold text-gray-800 bg-red-200/40 border border-red-200 hover:bg-red-200 cursor-pointer transition-all"
-                                onClick={() => navigate(-1)}
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-        </>
-    )
+                <button
+                  type="button"
+                  aria-label="Cancel"
+                  title="Cancel"
+                  className="w-full sm:w-auto rounded-2xl px-5 py-3 font-semibold text-gray-800 bg-red-200/40 border border-red-200 hover:bg-red-200 cursor-pointer transition-all"
+                  onClick={() => navigate(-1)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </>
+    );
 }
 
 export default ProductForm

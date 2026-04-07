@@ -9,7 +9,9 @@ const Story = () => {
         <div className="space-y-5">
           <H3 children="OUR STORY" className="text-emerald-500" />
           <H3>
-            <span className="text-xl md:text-2xl">Fresh food, fair prices, and a greener future</span>
+            <span className="text-xl md:text-2xl">
+              Fresh food, fair prices, and a greener future
+            </span>
           </H3>
           <Description
             children="Founded in 2023, Green Leaf Grocers started with a simple idea:
@@ -32,6 +34,8 @@ const Story = () => {
           alt="Our story"
           loading="lazy"
           decoding="async"
+          width="full"
+          height="full"
           className="w-full h-75 md:h-105 object-cover rounded-3xl shadow-md"
         />
       </section>

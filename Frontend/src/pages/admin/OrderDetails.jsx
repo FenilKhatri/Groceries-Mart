@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { lazy, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { updateStatus } from "../../api/adminApi";
 import { useNavigate } from "react-router-dom";
@@ -16,9 +16,10 @@ import {
   orderSteps,
 } from "../../utils/order";
 import OrderStatusProgress from "../../components/common/OrderStatusProgress";
-import OrderCard from "../../components/common/OrderCard";
 import useOrderDetails from "../../hooks/OrderDetails";
 import H3 from "../../components/ui/H3";
+import OrderDetailsSkeleton from "../../components/skeleton/OrderDetailsSkeleton";
+const OrderCard = lazy(() => import("../../components/common/OrderCard"));
 
 const OrderDetails = () => {
   const [orderStatus, setOrderStatus] = useState("");
@@ -52,16 +53,12 @@ const OrderDetails = () => {
 
   const itemCount = orderDetails?.items?.length || 0;
 
+  const { shippingAddress = {} } = orderDetails || {};
+
   return (
     <div className="min-h-screen p-3 sm:p-4 md:p-6">
       {loading ? (
-        <div>
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
-            <p className="text-center font-semibold text-lg sm:text-xl md:text-2xl animate-pulse">
-              Loading Order Details...
-            </p>
-          </div>
-        </div>
+        <OrderDetailsSkeleton />
       ) : (
         <div className="max-w-7xl mx-auto">
           <div>
@@ -128,6 +125,8 @@ const OrderDetails = () => {
                     <button
                       className="flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-slate-100 px-5 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-200 cursor-pointer"
                       onClick={() => navigate(-1)}
+                      aria-label="Back"
+                      title="Back"
                     >
                       <IoMdArrowBack className="text-base" />
                       Back
@@ -149,26 +148,41 @@ const OrderDetails = () => {
                 value={orderStatus}
                 name="orderStatus"
                 id="orderStatus"
-                onChange={(e) => setOrderStatus(e.target.value)}
-                className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-700 outline-none focus:border-emerald-400"
-              >
-                {
-                  orderSteps?.map((step) => (
-                    <option value={step?.key} key={step?.key}>{step?.label}</option>
-                  ))
+                disabled={
+                  orderStatus === "delivered" || orderStatus === "cancelled"
                 }
+                onChange={(e) => setOrderStatus(e.target.value)}
+                className={`w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-700 ${
+                  orderStatus === "delivered" || orderStatus === "cancelled"
+                    ? "opacity-60"
+                    : "outline-none focus:border-emerald-400"
+                }`}
+              >
+                {orderSteps?.map((step) => (
+                  <option value={step?.key} key={step?.key}>
+                    {step?.label}
+                  </option>
+                ))}
                 <option value="cancelled">Cancel</option>
               </select>
 
               <button
+                disabled={
+                  loadingStatus ||
+                  orderStatus === "delivered" ||
+                  orderStatus === "cancelled"
+                }
+                aria-label="Update Status"
+                title="Update Status"
                 className={`w-full min-w-fit sm:w-auto rounded-xl px-5 py-3 text-sm font-semibold text-white transition
                             ${
-                              loadingStatus
+                              loadingStatus ||
+                              orderStatus === "delivered" ||
+                              orderStatus === "cancelled"
                                 ? "bg-emerald-600 opacity-60 cursor-not-allowed"
                                 : "bg-emerald-600 hover:bg-emerald-700 cursor-pointer"
                             }`}
                 onClick={() => handleStatusUpdate(orderDetails?._id)}
-                disabled={loadingStatus}
               >
                 {loadingStatus ? "Updating status..." : "Update Status"}
               </button>
@@ -258,8 +272,8 @@ const OrderDetails = () => {
                         <p className="text-gray-400 uppercase font-semibold">
                           Shipping Location
                         </p>
-                        <p className="font-medium text-gray-700">
-                          {orderDetails?.shippingAddress?.address || "-"}
+                        <p className="font-medium text-gray-700 wrap-break-word">
+                          {shippingAddress?.address || "-"}
                         </p>
                       </div>
                     </div>
@@ -272,7 +286,7 @@ const OrderDetails = () => {
                           Shipping Name
                         </p>
                         <p className="font-medium text-gray-700">
-                          {orderDetails?.shippingAddress?.name || "-"}
+                          {shippingAddress?.name || "-"}
                         </p>
                       </div>
                     </div>
@@ -285,7 +299,7 @@ const OrderDetails = () => {
                           Phone No.
                         </p>
                         <p className="font-medium text-gray-700">
-                          {orderDetails?.shippingAddress?.phone || "-"}
+                          {shippingAddress?.phone || "-"}
                         </p>
                       </div>
                     </div>

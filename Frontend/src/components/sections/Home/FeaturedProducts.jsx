@@ -61,6 +61,8 @@ const FeaturedProducts = () => {
           <Button
             variant="outline"
             to="/products"
+            aria-label="View Products"
+            title="View Products"
             children="View Products"
             className="min-w-fit"
           ></Button>
@@ -88,6 +90,10 @@ const FeaturedProducts = () => {
                     <img
                       src={item?.thumbnail?.url}
                       alt={item?.name}
+                      loading="lazy"
+                      decoding="async"
+                      width="full"
+                      height="full"
                       className={`h-52 w-full object-cover ${
                         item.stock === 0
                           ? "cursor-not-allowed opacity-60"
@@ -103,6 +109,8 @@ const FeaturedProducts = () => {
 
                     <button
                       type="button"
+                      aria-label="Share"
+                      title="Share"
                       onClick={() => handleShare(item._id)}
                       className="absolute right-3 top-3 grid h-9 w-9 cursor-pointer place-items-center rounded-full bg-emerald-100/90 text-emerald-700 shadow transition-all duration-300 hover:bg-emerald-500 hover:text-white"
                     >
@@ -162,6 +170,8 @@ const FeaturedProducts = () => {
                         variant="secondary"
                         to={`/products/${item?.id}`}
                         children="View"
+                        aria-label="View"
+                        title="View"
                         className="min-w-fit"
                       ></Button>
                     </div>

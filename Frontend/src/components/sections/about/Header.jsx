@@ -29,6 +29,8 @@ const Header = () => {
           alt="About background"
           loading="lazy"
           decoding="async"
+          width="full"
+          height="full"
           className="w-full h-70 md:h-112.5 rounded-3xl object-cover shadow-md"
         />
       </section>

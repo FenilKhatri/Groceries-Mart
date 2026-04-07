@@ -71,6 +71,8 @@ const VendorRegister = () => {
         <div className="flex justify-center md:justify-end">
           <button
             onClick={() => navigate("/")}
+            aria-label="Back"
+            title="Back"
             className="flex items-center gap-2 text-gray-500 hover:text-gray-800 cursor-pointer"
           >
             <FaArrowLeftLong size={14} />
@@ -86,6 +88,8 @@ const VendorRegister = () => {
             loading="lazy"
             decoding="async"
             className="h-10"
+            width="full"
+            height="full"
           />
 
           <div className="flex items-center gap-3">
@@ -196,6 +200,8 @@ const VendorRegister = () => {
 
               <button
                 type="button"
+                aria-label={showPass ? "Hide Pass" : "Show Pass"}
+                title={showPass ? "Hide Pass" : "Show Pass"}
                 onClick={() => setShowPass((p) => !p)}
                 className="text-gray-500 hover:text-orange-600 transition"
               >
@@ -229,6 +235,8 @@ const VendorRegister = () => {
               <button
                 type="button"
                 onClick={() => setShowConfirmPass((p) => !p)}
+                aria-label={showConfirmPass ? "Hide Pass" : "Show Pass"}
+                title={showConfirmPass ? "Hide Pass" : "Show Pass"}
                 className="text-gray-500 hover:text-orange-600 transition"
               >
                 {showConfirmPass ? (
@@ -244,9 +252,11 @@ const VendorRegister = () => {
           <button
             type="submit"
             disabled={registerLoading}
+            aria-label="Register"
+            title="Register"
             className="w-full bg-orange-600 text-white py-4 rounded-xl font-semibold hover:bg-orange-5  00 transition duration-300 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            {registerLoading ? "Creating..." : "Create Account →"}
+            {registerLoading ? "Signing Up..." : "Sign Up →"}
           </button>
 
           {/* Footer */}

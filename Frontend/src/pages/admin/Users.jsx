@@ -155,6 +155,8 @@ const AdminUsers = () => {
                 <button
                   className="rounded-xl border border-red-300 bg-red-100 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-red-200 transition cursor-pointer"
                   onClick={() => handleDeleteUser(user?._id)}
+                  aria-label="Delete"
+                  title="Delete"
                 >
                   Delete
                 </button>

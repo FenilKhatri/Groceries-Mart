@@ -188,6 +188,8 @@ const ProductDetails = () => {
         <div className="flex items-center justify-between gap-3">
           <button
             onClick={() => navigate("/products")}
+            aria-label="Back"
+            title="Back"
             className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-100 cursor-pointer"
             type="button"
           >
@@ -217,7 +219,11 @@ const ProductDetails = () => {
             <img
               src={NoProductImg}
               alt="No Product Found Image"
+              loading="lazy"
+              decoding="async"
               className="h-150 object-contain"
+              width="full"
+              height="full"
             />
           </div>
         ) : (
@@ -242,6 +248,8 @@ const ProductDetails = () => {
                     {/* Share */}
                     <button
                       onClick={() => handleShare(product._id)}
+                      aria-label="Share Product"
+                      title="Share Product"
                       className="cursor-pointer bg-emerald-100 rounded-full text-emerald-800 p-3"
                     >
                       <FaShareAlt title="Share product" />
@@ -259,6 +267,8 @@ const ProductDetails = () => {
                         src={heroSrc}
                         loading="lazy"
                         decoding="async"
+                        width="full"
+                        height="full"
                         alt={product?.name || "Product"}
                         onError={() => setHeroSrc(FALLBACK_IMG)}
                         className="h-full w-full object-contain bg-gray-100"
@@ -283,6 +293,7 @@ const ProductDetails = () => {
                               ? "border-emerald-500 ring-2 ring-emerald-100"
                               : "border-gray-200"
                           }`}
+                          aria-label="Preview"
                           title="Preview"
                         >
                           <img
@@ -290,6 +301,8 @@ const ProductDetails = () => {
                             loading="lazy"
                             decoding="async"
                             alt="thumb"
+                            width="full"
+                            height="full"
                             onError={(e) =>
                               (e.currentTarget.src = FALLBACK_IMG)
                             }
@@ -366,10 +379,12 @@ const ProductDetails = () => {
                 </div>
 
                 {/* add to cart */}
-                <div className="mt-5 flex items-stretch gap-3">
+                <div className="mt-5">
                   <button
                     type="button"
-                    className={`flex-1 h-11 rounded-xl text-white font-bold shadow-sm
+                    aria-label="Add to Cart"
+                    title="Add to Cart"
+                    className={`flex-1 h-11 rounded-xl text-white font-bold shadow-sm p-3
                             ${
                               !inStock || addLoading === id
                                 ? "bg-emerald-300 cursor-not-allowed"
@@ -384,12 +399,6 @@ const ProductDetails = () => {
                     ) : (
                       <p>Add to cart</p>
                     )}
-                  </button>
-                  <button
-                    type="button"
-                    className="flex-1 h-11 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold shadow-sm cursor-pointer"
-                  >
-                    Buy Now
                   </button>
                 </div>
 
@@ -431,6 +440,8 @@ const ProductDetails = () => {
               <div className="flex items-center gap-6 border-b border-gray-200">
                 <button
                   type="button"
+                  aria-label="Description"
+                  title="Description"
                   className={`pb-3 text-sm font-extrabold transition ${
                     activeTab === "description"
                       ? "text-gray-900 border-b-2 border-emerald-600"
@@ -443,6 +454,8 @@ const ProductDetails = () => {
 
                 <button
                   type="button"
+                  aria-label="Nutrition"
+                  title="Nutrition"
                   className={`pb-3 text-sm font-extrabold transition ${
                     activeTab === "nutrition"
                       ? "text-gray-900 border-b-2 border-emerald-600"
@@ -455,6 +468,8 @@ const ProductDetails = () => {
 
                 <button
                   type="button"
+                  aria-label="Details"
+                  title="Details"
                   className={`pb-3 text-sm font-extrabold transition ${
                     activeTab === "details"
                       ? "text-gray-900 border-b-2 border-emerald-600"
@@ -517,6 +532,8 @@ const ProductDetails = () => {
                 </div>
                 <button
                   type="button"
+                  aria-label="Write Review"
+                  title="Write Review"
                   className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-extrabold text-gray-900 hover:bg-gray-50"
                   onClick={() => toast.info("Write review (demo)")}
                 >

@@ -34,14 +34,14 @@ const OrderSummary = ({ items, handlePayment }) => {
                       alt={item?.product?.name}
                       loading="lazy"
                       decoding="async"
+                      width="full"
+                      height="full"
                       className="h-full w-full rounded-md object-cover"
                     />
                   </div>
 
                   <div className="flex flex-col items-start justify-center gap-2">
-                    <p className="text-sm font-medium">
-                      {item?.product?.name}
-                    </p>
+                    <p className="text-sm font-medium">{item?.product?.name}</p>
                     <p className="text-sm font-medium text-slate-500">
                       Qty: {item?.quantity}
                     </p>
@@ -88,6 +88,7 @@ const OrderSummary = ({ items, handlePayment }) => {
         <div className="mt-6 space-y-4">
           <button
             type="button"
+            aria-label="Payment"
             onClick={handlePayment}
             className="w-full cursor-pointer rounded-xl bg-emerald-600 px-4 py-3.5 text-base font-semibold text-white shadow-md transition duration-300 hover:bg-emerald-700"
           >

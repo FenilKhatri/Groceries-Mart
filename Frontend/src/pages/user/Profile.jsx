@@ -100,6 +100,8 @@ const UserProfile = () => {
           className="px-4 py-2 text-sm font-semibold text-red-600 bg-red-100 rounded-lg hover:bg-red-200 transition duration-300 cursor-pointer"
           onClick={handleDelete}
           disabled={deleting}
+          aria-label="Delete"
+          title="Delete"
         >
           {deleting ? "Deleting profile..." : "Delete Account"}
         </button>
@@ -160,6 +162,8 @@ const UserProfile = () => {
             <div className="pt-2 flex flex-col md:flex-row gap-3">
               <button
                 type="button"
+                aria-label="Edit"
+                title="Edit"
                 className={`px-5 py-2.5 rounded-lg font-semibold transition duration-300 cursor-pointer
                   ${
                     isEditing
@@ -176,6 +180,8 @@ const UserProfile = () => {
               {isEditing && (
                 <button
                   type="button"
+                  aria-label="Save"
+                  title="Save"
                   className="px-5 py-2.5 bg-emerald-500 text-white rounded-lg font-semibold hover:bg-emerald-600 transition duration-300 cursor-pointer"
                   onClick={handleSave}
                   disabled={isUpdating}

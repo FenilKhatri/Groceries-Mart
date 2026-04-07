@@ -118,6 +118,8 @@ const Navbar = () => {
             alt="web-logo"
             width="76"
             height="56"
+            loading="eager"
+            decoding="async"
             className="h-12 w-auto sm:h-14"
           />
         </NavLink>
@@ -141,6 +143,8 @@ const Navbar = () => {
                 children="Login"
                 variant="secondary"
                 className="py-2"
+                aria-label="Login"
+                title="Login"
               />
 
               <Button
@@ -149,6 +153,8 @@ const Navbar = () => {
                 children="Vendor Login"
                 variant="primary"
                 className="py-2"
+                aria-label="Vendor Login"
+                title="Vendor Login"
               />
             </>
           )}
@@ -166,6 +172,8 @@ const Navbar = () => {
             <button
               type="button"
               onClick={handleLogout}
+              aria-label="Logout"
+              title="Logout"
               className="flex cursor-pointer items-center justify-center gap-3 rounded-lg bg-red-500 px-4 py-2 text-white transition-all hover:bg-red-600"
             >
               Logout <MdLogout />
@@ -178,6 +186,7 @@ const Navbar = () => {
           className="text-3xl text-emerald-700 md:hidden"
           onClick={() => setOpen((prev) => !prev)}
           aria-label="Toggle menu"
+          title="Toggle menu"
         >
           {open ? <HiX /> : <HiMenu />}
         </button>
@@ -233,6 +242,8 @@ const Navbar = () => {
             {role && showLogout && (
               <button
                 type="button"
+                aria-label="Logout"
+                title="Logout"
                 onClick={handleLogout}
                 className="flex items-center justify-center gap-3 rounded-lg bg-red-600 px-4 py-2 text-center text-white transition-all hover:bg-red-500"
               >

@@ -92,6 +92,10 @@ const ProductList = () => {
         <img
           src={image}
           alt={product?.name || "Product"}
+          loading="lazy"
+          decoding="async"
+          width="full"
+          height="full"
           className="h-14 w-14 rounded-2xl object-cover ring-1 ring-gray-200 md:h-16 md:w-16"
         />
       );

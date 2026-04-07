@@ -63,6 +63,8 @@ const VendorLogin = () => {
         <div className="flex justify-center md:justify-end">
           <button
             onClick={() => navigate("/")}
+            aria-label="Back"
+            title="Back"
             className="flex items-center gap-2 text-gray-500 hover:text-gray-800 cursor-pointer"
           >
             <FaArrowLeftLong size={14} />
@@ -77,6 +79,8 @@ const VendorLogin = () => {
             loading="lazy"
             decoding="async"
             className="h-10"
+            width="full"
+            height="full"
           />
           <div className="flex items-center gap-3">
             <p className="text-xl font-bold text-orange-600">Green Leaf</p>
@@ -136,6 +140,7 @@ const VendorLogin = () => {
                 onClick={() => setShowPass((prev) => !prev)}
                 className="text-gray-500 hover:text-orange-600 transition"
                 aria-label={showPass ? "Hide password" : "Show password"}
+                title={showPass ? "Hide Password" : "Show Password"}
               >
                 {showPass ? (
                   <BiSolidShow size={20} />
@@ -149,6 +154,8 @@ const VendorLogin = () => {
           <Button
             type="submit"
             disabled={loading}
+            aria-label="Sign In"
+            title="Sign In"
             children={loading ? "Signing In..." : "Sign In →"}
             variant="primary"
             className="py-4 min-w-full cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"

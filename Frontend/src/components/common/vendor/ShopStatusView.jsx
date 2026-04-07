@@ -50,7 +50,7 @@ const ShopStatusView = ({ shopData, onResubmit }) => {
             <DetailCard
               label="Address"
               value={shopData?.address}
-              className="md:col-span-2"
+              className="md:col-span-2 wrap-break-word"
             />
             <DetailCard
               label="Description"
@@ -65,6 +65,8 @@ const ShopStatusView = ({ shopData, onResubmit }) => {
                 loading="lazy"
                 decoding="async"
                 alt="shop"
+                width="full"
+                height="full"
                 className="w-full h-full object-cover rounded-2xl border"
               />
             </div>
@@ -74,6 +76,8 @@ const ShopStatusView = ({ shopData, onResubmit }) => {
             <div className="mt-6 flex justify-end">
               <button
                 onClick={onResubmit}
+                aria-label="Submit"
+                title="Submit"
                 className="rounded-2xl px-4 py-3 font-semibold bg-orange-600 text-white hover:bg-orange-700"
               >
                 Submit again

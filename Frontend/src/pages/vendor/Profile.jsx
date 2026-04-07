@@ -115,6 +115,8 @@ const Profile = () => {
         <button
           type="button"
           disabled={deleting}
+          aria-label="Delete"
+          title="Delete"
           onClick={handleDelete}
           className="rounded-2xl border border-red-600 px-4 py-3 text-sm font-semibold text-red-500 hover:bg-red-100 disabled:opacity-60 cursor-pointer transition duration-300"
         >
@@ -217,6 +219,8 @@ const Profile = () => {
                 <div className="flex items-center gap-3">
                   <button
                     type="button"
+                    aria-label="Edit"
+                    title="Edit"
                     className={`inline-flex items-center gap-2 rounded-2xl border bg-white px-4 py-3 text-sm font-semibold shadow-sm transition-all cursor-pointer
                 ${
                   isEditing
@@ -234,6 +238,8 @@ const Profile = () => {
                       type="button"
                       onClick={handleSave}
                       disabled={updating}
+                      aria-label="Save"
+                      title="Save"
                       className="rounded-2xl bg-orange-600 px-4 py-3 text-sm font-semibold text-white hover:bg-orange-700 disabled:opacity-60 cursor-pointer transition duration-300"
                     >
                       {isEditing ? "Save Changes" : "Edit Profile"}

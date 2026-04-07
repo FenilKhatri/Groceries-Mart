@@ -6,6 +6,10 @@ const UserAuthBackground = () => {
       <img
         src={LoginRegisterBG}
         alt="User auth background"
+        loading="lazy"
+        decoding="async"
+        width="full"
+        height="full"
         className="h-full w-full object-cover"
       />
 
@@ -23,7 +27,9 @@ const UserAuthBackground = () => {
 
         <div className="mt-6">
           <p className="font-semibold">Happy FreshMart Customer</p>
-          <p className="text-sm text-white/70">Fast delivery • Fresh products</p>
+          <p className="text-sm text-white/70">
+            Fast delivery • Fresh products
+          </p>
         </div>
       </div>
     </div>

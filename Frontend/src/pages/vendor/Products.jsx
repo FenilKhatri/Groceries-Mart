@@ -22,7 +22,14 @@ const VendorProducts = () => {
               Manage your products here.
             </p>
           </div>
-          <button onClick={() => navigate(-1)} className="flex items-center jusitfy-center gap-5 px-3 py-2 rounded-md border border-gray-300 shadow-md hover:bg-gray-100 transition duration-300 cursor-pointer"><IoMdArrowRoundBack /> Back</button>
+          <button
+            onClick={() => navigate(-1)}
+            aria-label="Back"
+            title="Back"
+            className="flex items-center jusitfy-center gap-5 px-3 py-2 rounded-md border border-gray-300 shadow-md hover:bg-gray-100 transition duration-300 cursor-pointer"
+          >
+            <IoMdArrowRoundBack /> Back
+          </button>
         </div>
 
         <Outlet />

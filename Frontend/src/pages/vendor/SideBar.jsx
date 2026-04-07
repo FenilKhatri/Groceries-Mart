@@ -142,6 +142,8 @@ const VendorSideBar = () => {
             ) : (
               <button
                 type="button"
+                aria-label="Dashboard"
+                title="Dashboard"
                 className={lockedClasses}
                 onClick={() => toast.info(getLockMessage())}
               >
@@ -162,6 +164,8 @@ const VendorSideBar = () => {
             ) : (
               <button
                 type="button"
+                aria-label="Shop"
+                title="Shop"
                 className={lockedClasses}
                 onClick={() => toast.info(getLockMessage())}
               >
@@ -182,6 +186,8 @@ const VendorSideBar = () => {
             ) : (
               <button
                 type="button"
+                aria-label="Products"
+                title="Products"
                 className={lockedClasses}
                 onClick={() => toast.info(getLockMessage())}
               >
@@ -211,6 +217,7 @@ const VendorSideBar = () => {
           onClick={() => setOpen(true)}
           className="p-2 rounded-xl hover:bg-gray-100"
           aria-label="Open menu"
+          title="Open Menu"
         >
           <MdMenu size={24} />
         </button>
@@ -226,6 +233,7 @@ const VendorSideBar = () => {
             className="absolute inset-0 bg-black/40"
             onClick={() => setOpen(false)}
             aria-label="Close overlay"
+            title="Close Overlay"
           />
           <div className="absolute left-0 top-0 h-full w-72 bg-white border-r border-gray-200 overflow-y-auto flex flex-col">
             <div className="px-4 py-4 border-b border-gray-100 flex items-center justify-between">
@@ -234,6 +242,7 @@ const VendorSideBar = () => {
                 onClick={() => setOpen(false)}
                 className="p-2 rounded-xl hover:bg-gray-100"
                 aria-label="Close menu"
+                title="Close Menu"
               >
                 <MdClose size={22} />
               </button>
@@ -260,6 +269,8 @@ const VendorSideBar = () => {
             <div className="mt-auto px-4 pb-5">
               <button
                 onClick={handleLogOut}
+                aria-label="Logout"
+                title="Logout"
                 className="w-full flex items-center justify-between px-4 py-3 rounded-2xl border border-red-200 bg-red-100 text-red-800 font-semibold hover:bg-red-200 transition-all"
               >
                 <span className="flex items-center gap-3">
@@ -305,6 +316,8 @@ const VendorSideBar = () => {
         <div className="px-4 py-5 border-t border-gray-100 shrink-0">
           <button
             onClick={handleLogOut}
+            aria-label="Logout"
+            title="Logout"
             className="w-full flex items-center justify-between px-4 py-3 rounded-2xl border border-red-200 bg-red-100 text-red-800 font-semibold hover:bg-red-200 hover:rounded-3xl cursor-pointer transition-all"
           >
             <span className="flex items-center gap-3">

@@ -48,6 +48,10 @@ const OrderCard = () => {
                         <img
                           src={product?.thumbnail?.url || "/placeholder.png"}
                           alt={product?.name || "Product"}
+                          loading="lazy"
+                          decoding="async"
+                          width="full"
+                          height="full"
                           className="h-full w-full object-cover"
                         />
                       </div>

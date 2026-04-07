@@ -80,6 +80,8 @@ const Login = () => {
         <div className="flex justify-center md:justify-end">
           <button
             onClick={() => navigate("/")}
+            aria-label="Back"
+            title="Back"
             className="flex items-center gap-2 text-gray-500 hover:text-gray-800 cursor-pointer"
           >
             <FaArrowLeftLong size={14} />
@@ -95,6 +97,8 @@ const Login = () => {
             loading="lazy"
             decoding="async"
             className="h-10"
+            width="full"
+            height="full"
           />
 
           <div className="flex items-center gap-3">
@@ -164,6 +168,7 @@ const Login = () => {
                 onClick={() => setShowPass((prev) => !prev)}
                 className="text-gray-500 hover:text-emerald-600 transition"
                 aria-label={showPass ? "Hide password" : "Show password"}
+                title={showPass ? "Hide password" : "Show password"}
               >
                 {showPass ? (
                   <BiSolidShow size={20} />
@@ -180,6 +185,8 @@ const Login = () => {
             disabled={loading}
             children={loading ? "Signing In..." : "Sign In →"}
             variant="secondary"
+            aria-label="Sign In"
+            title="Sign In"
             className="py-3 min-w-full cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
           />
 

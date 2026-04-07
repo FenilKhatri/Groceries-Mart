@@ -108,6 +108,7 @@ const UpdatePassword = () => {
                       aria-label={
                         showPassword ? "Hide Password" : "Show Password"
                       }
+                      title={showPassword ? "Hide Password" : "Show Password"}
                       className="grid h-10 w-10 shrink-0 place-items-center text-orange-600 transition duration-300 cursor-pointer"
                     >
                       {showPassword ? (
@@ -139,7 +140,9 @@ const UpdatePassword = () => {
                       type="button"
                       onClick={() => setShowConfirmPassword((prev) => !prev)}
                       aria-label={
-                        showConfirmPassword ? "Hide Password" : "Show Confirm Password"
+                        showConfirmPassword
+                          ? "Hide Password"
+                          : "Show Confirm Password"
                       }
                       className="grid h-10 w-10 shrink-0 place-items-center text-orange-600 transition duration-300 cursor-pointer"
                     >
@@ -166,6 +169,8 @@ const UpdatePassword = () => {
             <div className="px-5 sm:px-6 py-4 flex gap-3 justify-end">
               <button
                 type="button"
+                aria-label="Reset"
+                title="Reset"
                 disabled={
                   loading || (!password?.trim() && !confirmPassword?.trim())
                 }
@@ -176,6 +181,8 @@ const UpdatePassword = () => {
               </button>
               <button
                 type="submit"
+                aria-label="Update"
+                title="Update"
                 disabled={
                   loading || (!password?.trim() && !confirmPassword?.trim())
                 }

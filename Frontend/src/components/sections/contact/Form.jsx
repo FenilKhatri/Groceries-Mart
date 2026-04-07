@@ -99,6 +99,8 @@ const Form = () => {
 
         <button
           type="submit"
+          aria-label="Send"
+          title="Send"
           disabled={loading}
           className={`w-full text-white py-3 rounded-xl font-semibold transition-all duration-300 shadow-md hover:shadow-lg 
                 ${loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer bg-emerald-500 hover:bg-emerald-600"}`}

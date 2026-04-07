@@ -1,5 +1,6 @@
 import { getOrderStatusName, orderSteps } from "../../utils/order";
 import useOrderDetails from "../../hooks/OrderDetails";
+import { useMemo } from "react";
 
 const getCurrentStepIndex = (status, steps) =>
   status === "cancelled" ? -1 : steps.findIndex((s) => s.key === status);
@@ -7,7 +8,7 @@ const getCurrentStepIndex = (status, steps) =>
 const OrderStatusProgress = () => {
   const { orderDetails } = useOrderDetails();
 
-  const steps = orderSteps;
+  const steps = useMemo(() => orderSteps, []);
   const currentStatus = orderDetails?.orderStatus || "placed";
   const currentStepIndex = getCurrentStepIndex(currentStatus, steps);
 
@@ -116,7 +117,7 @@ const StepItem = ({
   const isCurrent = state === "current";
 
   const circleStyle = isCompleted
-    ? "border-emerald-500 bg-emerald-500 text-white"
+    ? "border-emerald-500 bg-emerald-100 text-white"
     : "border-gray-300 bg-white text-gray-400";
 
   const textStyle = isCurrent
