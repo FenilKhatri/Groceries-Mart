@@ -1,6 +1,5 @@
 import express from "express";
-import Product from "../models/Product.js";
-import Category from "../models/Category.js";
+import Product from "../models/productModel";
 
 const sitemapRouter = express.Router();
 
@@ -9,7 +8,6 @@ sitemapRouter.get("/sitemap.xml", async (req, res) => {
         const baseUrl = "https://groceries-mart.vercel.app";
 
         const products = await Product.find({}, "slug updatedAt");
-        const categories = await Category.find({}, "slug");
 
         let xml = `<?xml version="1.0" encoding="UTF-8"?>`;
         xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
@@ -23,16 +21,6 @@ sitemapRouter.get("/sitemap.xml", async (req, res) => {
           <loc>${baseUrl}${page}</loc>
           <changefreq>daily</changefreq>
           <priority>${page === "" ? "1.0" : "0.8"}</priority>
-        </url>`;
-        });
-
-        // Category pages
-        categories.forEach((cat) => {
-            xml += `
-        <url>
-          <loc>${baseUrl}/category/${cat._id}</loc>
-          <changefreq>weekly</changefreq>
-          <priority>0.7</priority>
         </url>`;
         });
 
