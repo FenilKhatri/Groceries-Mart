@@ -16,23 +16,21 @@ const Header = () => {
           </div>
 
           <h1 className="text-3xl leading-tight font-bold text-gray-900 sm:text-5xl lg:text-6xl">
-            Get fresh Frocery
-            <span className="mt-2 block text-emerald-600">
-              Enjoy healthy life.
+            FreshMart – Online Grocery Store
+            <span className="mt-2 block text-lg md:text-2xl text-emerald-600">
+              Fresh Vegetables, Fruits & Daily Essentials Delivered Fast
             </span>
           </h1>
           <Description
-            children="Shop from local vendors and get the best quality fruits, vegetables,
-            and daily essentials delivered fast. Join thousands of happy
-            customers today."
-            className="rounded-xl p-2 bg-emerald-200/30 text-base text-emerald-900 md:text-emerald-900/50 backfrop-blur-md md:backdrop-blur-none sm:text-lg lg:bg-transparent"
+            children="FreshMart is a trusted online grocery store online where you can buy fresh vegetables, fruits, dairy products and daily essentials. Shop from local vendors with fast delivery and secure checkout."
+            className="rounded-xl p-2 md:p-0 text-justify bg-emerald-200/60 text-base text-emerald-900 md:text-emerald-900/50 backfrop-blur-md md:backdrop-blur-none sm:text-lg lg:bg-transparent"
           />
 
           <div className="flex flex-col gap-3 sm:flex-row sm:gap-5">
             <Button
               to="/products"
               icon={<FaArrowRight size={20} />}
-              children="Shop Now"
+              children="Shop Groceries"
               variant="primary"
               className="py-3"
               aria-label="Shop Now"
@@ -42,7 +40,7 @@ const Header = () => {
             <Button
               to="/products"
               icon={<FaHouseUser size={20} />}
-              children="Become a vendor"
+              children="Sell on FreshMart"
               variant="secondary"
               className="py-3"
               aria-label="Become a vendor"
@@ -52,7 +50,7 @@ const Header = () => {
 
           <div className="grid grid-cols-3 gap-4 rounded-xl bg-emerald-200/30 p-2 text-emerald-900 backdrop-blur-md md:backdrop-blur-none lg:bg-transparent">
             {counts?.map((data, index) => (
-              <div key={index}>
+              <div key={index} className="md:space-y-3">
                 <p className="text-xl font-bold sm:text-3xl">{data?.count}</p>
                 <p className="text-xs font-medium sm:text-sm">
                   {data?.description}
