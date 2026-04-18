@@ -20,6 +20,9 @@ dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
 const app = express();
 
+app.use(express.json());
+app.use(cookieParser());
+
 const allowedOrigins = [
   "http://localhost:5173",
   "https://groceries-mart.vercel.app",
@@ -41,10 +44,7 @@ app.use(
 );
 // Handle preflight
 app.options(/.*/, cors());
-
-app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 
 // Disable caching
 app.set("etag", false);
