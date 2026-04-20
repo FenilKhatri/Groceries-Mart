@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 
-import { getDashboardData } from "../../api/adminApi";
+
 
 import {
   getOrderStats,
@@ -27,7 +27,6 @@ const Dashboard = () => {
     refetch,
   } = useQuery({
     queryKey: ["dashboard"],
-    queryFn: getDashboardData,
     staleTime: 5 * 60 * 1000, // 5 min cache
   });
 

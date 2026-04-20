@@ -48,7 +48,8 @@ const formatProduct = (product) => ({
 
 // Get products
 const getProducts = asyncHandler(async (req, res) => {
-  const { category, vendor } = req.query;
+  const { category, vendor, page = 1, limit = 12 } = req.query;
+
   const filter = {};
 
   if (category) {
@@ -59,16 +60,22 @@ const getProducts = asyncHandler(async (req, res) => {
     filter["vendor.vendorId"] = vendor;
   }
 
-  const products = (await Product.find(filter).lean().sort({ createdAt: -1 }));
+  const pageNum = Math.max(1, Number(page) || 1);
+  const limitNum = Math.max(1, Number(limit) || 12);
 
-  if (!products || products.length === 0) {
-    return sendResponse(res, 200, "No products found!", { products: [] });
-  }
+  const skip = (pageNum - 1) * limitNum;
 
-  const formattedProducts = products.map(formatProduct);
+  const products = await Product.find(filter)
+    .sort({ createdAt: -1, _id: -1 })
+    .skip(skip)
+    .limit(Number(limit))
+    .lean();
+
+  const total = await Product.countDocuments(filter);
 
   return sendResponse(res, 200, "Products fetched successfully!", {
-    products: formattedProducts,
+    products: products.map(formatProduct),
+    hasMore: skip + products.length < total,
   });
 });
 
