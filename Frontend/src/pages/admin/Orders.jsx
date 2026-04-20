@@ -9,8 +9,8 @@ import H3 from "../../components/ui/H3";
 import Description from "../../components/ui/Description";
 import TotalCounts from "../../components/sections/admin/TotalCounts";
 import useDebounce from "../../utils/useDebounce";
-import TableTitle from "../../components/sections/about/TableTitle";
-import { orderColumns } from "../../data/adminTable";
+import TableTitle from "../../components/sections/admin/TableTitle";
+import { orderColumns } from "../../data/pages/adminTable";
 import AdminTable from "../../components/sections/admin/Table";
 import Button from "../../components/ui/Button";
 

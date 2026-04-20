@@ -2,7 +2,7 @@ import React from 'react'
 import { FaPhoneAlt } from 'react-icons/fa';
 import { IoLogoWhatsapp } from 'react-icons/io';
 import { SiGmail } from 'react-icons/si';
-import { contactInfo } from '../../../data/contactInfo';
+import { contactInfo } from '../../../data/pages/contact';
 
 const ContactInfo = () => {
   return (

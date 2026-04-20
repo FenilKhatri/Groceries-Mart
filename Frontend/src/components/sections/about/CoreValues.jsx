@@ -1,7 +1,7 @@
 import { GiLeafSwirl } from "react-icons/gi";
 import { HiOutlineEye } from "react-icons/hi";
 import { FaTruckFast } from "react-icons/fa6";
-import { coreValues } from "../../../data/CoreValues";
+import { coreValues } from "../../../data/pages/about";
 import H3 from "../../ui/H3";
 import Description from "../../ui/Description";
 

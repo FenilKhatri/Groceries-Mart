@@ -13,9 +13,9 @@ import Description from "../../components/ui/Description";
 import H3 from "../../components/ui/H3";
 import TotalCounts from "../../components/sections/admin/TotalCounts";
 import useDebounce from "../../utils/useDebounce";
-import TableTitle from "../../components/sections/about/TableTitle";
+import TableTitle from "../../components/sections/admin/TableTitle";
 import AdminTable from "../../components/sections/admin/Table";
-import { vendorColumns } from "../../data/adminTable";
+import { vendorColumns } from "../../data/pages/adminTable";
 
 const AdminVendors = () => {
   const [vendors, setVendors] = useState([]);

@@ -1,7 +1,7 @@
 import Button from "../../ui/Button";
 import { FaArrowRight, FaHouseUser } from "react-icons/fa6";
 import Description from "../../ui/Description";
-import { counts } from "../../../data/counts";
+import { counts } from "../../../data/pages/about";
 
 const Header = () => {
   return (

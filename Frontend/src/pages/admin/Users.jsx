@@ -14,9 +14,9 @@ import Description from "../../components/ui/Description";
 import H3 from "../../components/ui/H3";
 import TotalCounts from "../../components/sections/admin/TotalCounts";
 import useDebounce from "../../utils/useDebounce";
-import TableTitle from "../../components/sections/about/TableTitle";
+import TableTitle from "../../components/sections/admin/TableTitle";
 import AdminTable from "../../components/sections/admin/Table";
-import { userColumns } from "../../data/adminTable";
+import { userColumns } from "../../data/pages/adminTable";
 
 const AdminUsers = () => {
   const [loading, setLoading] = useState(true);

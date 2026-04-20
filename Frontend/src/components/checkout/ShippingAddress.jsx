@@ -1,4 +1,12 @@
+import cityName from "../../data/cityName";
+import Select from "react-select";
+
 const ShippingAddress = ({ address, handleAddress }) => {
+  const cityOptions = cityName?.map((city) => ({
+    label: city,
+    value: city,
+  }));
+
   return (
     <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
       <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4 md:px-6">
@@ -66,14 +74,38 @@ const ShippingAddress = ({ address, handleAddress }) => {
             <label htmlFor="city" className="text-sm font-medium text-gray-700">
               City{" * "}
             </label>
-            <input
-              type="text"
-              id="city"
-              name="city"
-              placeholder="City"
-              value={address.city}
-              onChange={handleAddress}
-              className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+            <Select
+              options={cityOptions}
+              placeholder="Select city"
+              value={cityOptions.find((c) => c.value === address.city) || null}
+              onChange={(selectedOption) =>
+                handleAddress({
+                  target: {
+                    name: "city",
+                    value: selectedOption?.value || "",
+                  },
+                })
+              }
+              isSearchable
+              className="text-sm"
+              styles={{
+                control: (base, state) => ({
+                  ...base,
+                  borderRadius: "6px",
+                  borderColor: state.isFocused ? "#10b981" : "#d1d5db",
+                  boxShadow: state.isFocused
+                    ? "0 0 0 2px rgba(16,185,129,0.2)"
+                    : "none",
+                  "&:hover": {
+                    borderColor: "#10b981",
+                  },
+                  minHeight: "38px",
+                }),
+                menu: (base) => ({
+                  ...base,
+                  zIndex: 9999,
+                }),
+              }}
             />
           </div>
 

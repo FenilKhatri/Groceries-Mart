@@ -2,19 +2,16 @@ import React, { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { getShops } from "../../api/adminApi";
-import {
-  IoMdArrowRoundDown,
-  IoMdArrowRoundUp,
-} from "react-icons/io";
+import { IoMdArrowRoundDown, IoMdArrowRoundUp } from "react-icons/io";
 import SearchBar from "../../components/common/SearchBar";
 import RefreshButton from "../../components/common/RefreshButton";
 import H3 from "../../components/ui/H3";
 import Description from "../../components/ui/Description";
 import TotalCounts from "../../components/sections/admin/TotalCounts";
-import TableTitle from "../../components/sections/about/TableTitle";
+import TableTitle from "../../components/sections/admin/TableTitle";
 import useDebounce from "../../utils/useDebounce";
 import AdminTable from "../../components/sections/admin/Table";
-import { shopColumns } from "../../data/adminTable";
+import { shopColumns } from "../../data/pages/adminTable";
 import Button from "../../components/ui/Button";
 
 const LINKS = "px-5 py-3 text-left font-semibold";
