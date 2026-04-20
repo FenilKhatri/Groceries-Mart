@@ -89,6 +89,11 @@ const UserCart = () => {
 
   useEffect(() => {
     handleCart();
+    const handleFocus = () => handleCart();
+    window.addEventListener("focus", handleFocus);
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+    };
   }, []);
 
   const ProductImage = ({ src, alt, priority }) => {

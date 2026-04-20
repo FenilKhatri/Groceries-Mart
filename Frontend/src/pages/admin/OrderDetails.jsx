@@ -2,13 +2,7 @@ import { lazy, useEffect, useState, useCallback } from "react";
 import { toast } from "react-toastify";
 import { updateStatus, getOrderById } from "../../api/adminApi";
 import { useNavigate, useParams } from "react-router-dom";
-
-import { FaRegCalendar, IoCardSharp } from "react-icons/io5";
-import { IoMdArrowBack } from "react-icons/io";
-import { FiUser, FiPhone, FiTruck } from "react-icons/fi";
-import { MdOutlineEmail } from "react-icons/md";
-import { GrLocation } from "react-icons/gr";
-import { RiBillLine } from "react-icons/ri";
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 import {
   getOrderBadge,
@@ -32,7 +26,6 @@ const OrderDetails = () => {
   const [orderStatus, setOrderStatus] = useState("");
   const [loadingStatus, setLoadingStatus] = useState(false);
 
-  // FETCH ORDER (stable function)
   const fetchOrder = useCallback(async () => {
     try {
       setLoading(true);
@@ -52,15 +45,7 @@ const OrderDetails = () => {
     fetchOrder();
   }, [fetchOrder]);
 
-  // UPDATE STATUS
   const handleStatusUpdate = async () => {
-    if (!orderDetails?._id) return;
-
-    const confirmUpdate = window.confirm(
-      "Are you sure you want to update status?",
-    );
-    if (!confirmUpdate) return;
-
     try {
       setLoadingStatus(true);
 
@@ -73,9 +58,9 @@ const OrderDetails = () => {
       setOrderDetails(updatedOrder);
       setOrderStatus(updatedOrder?.orderStatus);
 
-      toast.success(res?.data?.message || "Status updated!");
+      toast.success("Status updated!");
     } catch (err) {
-      toast.error(err?.message || "Failed to update status!");
+      toast.error("Failed to update status!");
     } finally {
       setLoadingStatus(false);
     }
@@ -91,12 +76,12 @@ const OrderDetails = () => {
   }
 
   return (
-    <div className="min-h-screen p-4">
+    <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
         {/* HEADER */}
-        <div className="flex flex-col gap-4 xl:flex-row xl:justify-between">
+        <div className="flex items-start justify-between mb-6">
           <div>
-            <p className="text-xs font-bold uppercase text-emerald-600">
+            <p className="text-xs font-semibold text-emerald-600 uppercase">
               Order Overview
             </p>
 
@@ -104,7 +89,7 @@ const OrderDetails = () => {
 
             <div className="flex items-center gap-3 mt-2">
               <span
-                className={`px-3 py-1 rounded-full text-sm font-semibold ${getOrderStatusColor(
+                className={`px-3 py-1 text-sm rounded-full font-semibold ${getOrderStatusColor(
                   orderDetails?.orderStatus,
                 )}`}
               >
@@ -116,73 +101,97 @@ const OrderDetails = () => {
             </div>
           </div>
 
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 border px-4 py-2 rounded-xl"
-          >
-            <IoMdArrowBack />
-            Back
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={() => navigate(-1)}
+              className="border px-4 py-2 rounded-lg bg-white flex items-center gap-2"
+            >
+              <IoMdArrowRoundBack />
+              Back
+            </button>
+          </div>
         </div>
 
-        {/* STATUS UPDATE */}
-        <div className="my-6 flex gap-3">
+        {/* STATUS UPDATE BAR */}
+        <div className="flex gap-3 mb-6">
           <select
             value={orderStatus}
             onChange={(e) => setOrderStatus(e.target.value)}
-            disabled={
-              orderStatus === "delivered" || orderStatus === "cancelled"
-            }
-            className="border p-3 rounded-xl w-full"
+            className="border border-emerald-100 p-3 rounded-lg w-full bg-white"
           >
             {orderSteps.map((s) => (
-              <option key={s.key} value={s.key}>
-                {s.label}
-              </option>
+              <>
+                <option key={s.key} value={s.key}>
+                  {s.label}
+                </option>
+              </>
             ))}
+            <option value="cancelled">Cancel</option>
           </select>
 
           <button
             onClick={handleStatusUpdate}
             disabled={loadingStatus}
-            className="bg-emerald-600 text-white px-5 py-3 rounded-xl disabled:opacity-50"
+            className="min-w-fit bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold"
           >
-            {loadingStatus ? "Updating..." : "Update"}
+            {loadingStatus ? "Updating..." : "Update Status"}
           </button>
         </div>
 
         {/* MAIN GRID */}
         <div className="grid grid-cols-12 gap-6">
-          {/* LEFT */}
-          <div className="col-span-12 lg:col-span-8">
-            <OrderCard order={orderDetails} />
-            <OrderStatusProgress />
+          {/* LEFT SIDE */}
+          <div className="col-span-12 lg:col-span-8 space-y-6">
+            {/* ORDER ITEMS */}
+            <div className="bg-white p-5 rounded-xl shadow-sm">
+              <h2 className="font-semibold mb-3">Order Items</h2>
+
+              {orderDetails?.items?.length ? (
+                <OrderCard order={orderDetails} />
+              ) : (
+                <p className="text-gray-500 text-sm">No items found</p>
+              )}
+            </div>
+
+            {/* ORDER ACTIVITY */}
+            <div className="bg-white p-5 rounded-xl shadow-sm">
+              <div className="flex justify-between mb-4">
+                <h2 className="font-semibold">Order Activity</h2>
+                <span className="text-sm text-emerald-600 font-semibold">
+                  1 / 5 Completed
+                </span>
+              </div>
+
+              <OrderStatusProgress />
+            </div>
           </div>
 
-          {/* RIGHT */}
+          {/* RIGHT SIDE */}
           <div className="col-span-12 lg:col-span-4 space-y-5">
             {/* CUSTOMER */}
-            <div className="border p-5 rounded-xl">
-              <p className="font-semibold mb-3">Customer</p>
-
-              <p>{orderDetails?.user?.name || "-"}</p>
-              <p>{orderDetails?.user?.email || "-"}</p>
+            <div className="bg-white p-5 rounded-xl shadow-sm">
+              <h2 className="font-semibold mb-3">Customer Details</h2>
+              <p className="font-medium">{orderDetails?.user?.name}</p>
+              <p className="text-sm text-gray-500">
+                {orderDetails?.user?.email}
+              </p>
             </div>
 
             {/* SHIPPING */}
-            <div className="border p-5 rounded-xl">
-              <p className="font-semibold mb-3">Shipping</p>
+            <div className="bg-white p-5 rounded-xl shadow-sm">
+              <h2 className="font-semibold mb-3">Shipping Details</h2>
 
-              <p>{shippingAddress?.name}</p>
-              <p>{shippingAddress?.phone}</p>
-              <p>{shippingAddress?.address}</p>
+              <p className="text-sm">{shippingAddress?.address}</p>
+              <p className="text-sm">{shippingAddress?.phone}</p>
+              <p className="text-sm">{shippingAddress?.name}</p>
             </div>
 
             {/* PAYMENT */}
-            <div className="border p-5 rounded-xl">
-              <p className="font-semibold mb-3">Payment</p>
-
-              <p>{orderDetails?.paymentMethod || "Razorpay"}</p>
+            <div className="bg-white p-5 rounded-xl shadow-sm">
+              <h2 className="font-semibold mb-3">Payment</h2>
+              <p className="text-sm">
+                {orderDetails?.paymentMethod || "Razorpay"}
+              </p>
             </div>
           </div>
         </div>

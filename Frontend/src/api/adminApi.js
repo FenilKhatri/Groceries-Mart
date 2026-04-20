@@ -80,6 +80,11 @@ export const getOrderDetails = async (id) => {
   return res.data;
 };
 
+export const getOrderById = async (id) => {
+  const res = await http.get(`/admin/orders/${id}`);
+  return res.data;
+};
+
 export const updateStatus = async (id, orderStatus) => {
   const res = await http.put(`/admin/orders/${id}/update-status`, orderStatus);
   return res.data;
@@ -117,4 +122,9 @@ export const getContacts = async () => {
 export const getContactDetails = async (id) => {
   const res = await http.get(`/admin/contact/${id}`);
   return res.data;
-}
+};
+
+export const getDashboardData = async () => {
+  const res = await http.get("/admin/dashboard");
+  return res.data;
+};

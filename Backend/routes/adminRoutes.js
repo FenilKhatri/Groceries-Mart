@@ -47,4 +47,7 @@ adminRouter.get("/contact/:id", admin.getContactDetails);
 adminRouter.delete("/users/delete-profile", admin.deleteUser);
 adminRouter.delete("/vendors/delete-profile", admin.deleteVendor);
 
+// Dashboard
+adminRouter.get("/dashboard", admin.getDashboardData);
+
 export default adminRouter;

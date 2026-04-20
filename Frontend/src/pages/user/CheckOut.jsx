@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
-import { userCart } from "../../api/userApi";
+import { deleteCart, userCart } from "../../api/userApi";
 import { toast } from "react-toastify";
-import {
-  createRazorPayOrder,
-  verifyRazorPayOrder,
-} from "../../api/paymentApi";
+import { createRazorPayOrder, verifyRazorPayOrder } from "../../api/paymentApi";
 import { useNavigate } from "react-router-dom";
 import ShippingAddress from "../../components/checkout/ShippingAddress";
 import OrderSummary from "../../components/checkout/OrderSummary";
@@ -100,31 +97,36 @@ const CheckOut = () => {
         currency: currency || "INR",
         name: "Green Leaf Grocers",
         order_id: order.id,
+
         handler: async function (response) {
           try {
             const verifyRes = await verifyRazorPayOrder({
               ...response,
               ...address,
             });
+            await deleteCart();
             toast.success(verifyRes?.message || "Payment successful!");
+
             navigate("/users/orders");
           } catch (error) {
             toast.error(error?.message || "Verification failed");
           }
         },
+
         prefill: {
-          name: "",
-          email: "",
-          contact: "",
+          name: address.name,
+          email: "test@example.com",
+          contact: address.phone,
         },
-        theme: {
-          color: "#10b981",
+
+        method: {
+          upi: true,
+          card: true,
+          netbanking: true,
+          wallet: true,
         },
-        modal: {
-          ondismiss: function () {
-            toast.info("Payment popup closed!");
-          },
-        },
+
+        theme: { color: "#10b981" },
       };
 
       const paymentObject = new window.Razorpay(options);
@@ -159,10 +161,7 @@ const CheckOut = () => {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           {/* Left Section */}
           <div className="lg:col-span-3">
-            <ShippingAddress
-              address={address}
-              handleAddress={handleAddress}
-            />
+            <ShippingAddress address={address} handleAddress={handleAddress} />
           </div>
 
           {/* Right Section */}

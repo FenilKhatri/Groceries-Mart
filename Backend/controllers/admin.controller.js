@@ -564,6 +564,25 @@ const deleteVendor = asyncHandler(async (req, res) => {
   return sendResponse(res, 200, "Account deleted!");
 });
 
+// Dashboard
+export const getDashboardData = asyncHandler(async (req, res) => {
+  const [users, vendors, shops, orders, products] = await Promise.all([
+    User.find().lean(),
+    Vendor.find().lean(),
+    Shop.find().lean(),
+    Order.find().lean(),
+    Product.find().lean(),
+  ]);
+
+  return sendResponse(res, 200, "Dashboard data fetched successfully!", {
+    users,
+    vendors,
+    shops,
+    orders,
+    products,
+  });
+});
+
 export default {
   getVendors,
   getShops,
@@ -571,9 +590,10 @@ export default {
   getOrders,
   getContacts,
   getProducts,
-  getShopProducts,
   getShopDetails,
   getOrderDetails,
+  getShopProducts,
+  getDashboardData,
   getContactDetails,
   updateOrderStatus,
   updateprofile,
