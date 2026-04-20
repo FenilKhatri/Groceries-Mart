@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useCallback, useState } from "react";
 import { getProducts } from "../../api/productApi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -7,34 +7,70 @@ import ProductGrid from "../../components/common/ProductGrid";
 import SearchBar from "../../components/common/SearchBar";
 import useDebounce from "../../utils/useDebounce";
 
+const LIMIT = 12;
+
 const Products = () => {
   const [products, setProducts] = useState([]);
+  const [page, setPage] = useState(1);
+
+  const [hasMore, setHasMore] = useState(true);
+
   const [loading, setLoading] = useState(false);
+  const [loadMoreLoading, setLoadMoreLoading] = useState(false);
+
   const [addLoading, setAddLoading] = useState(null);
   const [cooldownMap, setCooldownMap] = useState({});
 
   const [query, setQuery] = useState("");
+  const [sortConfig, setSortConfig] = useState({ key: "", direction: "" });
 
   const navigate = useNavigate();
 
-  const [sortConfig, setSortConfig] = useState({ key: "", direction: "" });
-
-  const handleProducts = async () => {
+  const fetchProducts = useCallback(async (currentPage, isLoadMore = false) => {
     try {
-      setLoading(true);
-      const res = await getProducts();
-      setProducts(res?.data?.products || []);
+      isLoadMore ? setLoadMoreLoading(true) : setLoading(true);
+
+      const res = await getProducts({
+        page: currentPage,
+        limit: LIMIT,
+      });
+
+      const newProducts = res?.data?.products || [];
+
+      setProducts((prev) => {
+        const map = new Map();
+
+        [...prev, ...newProducts].forEach((p) => {
+          map.set(p._id, p);
+        });
+
+        return Array.from(map.values());
+      });
+
+      if (res?.data?.hasMore !== undefined) {
+        setHasMore(res.data.hasMore);
+      } else {
+        setHasMore(newProducts.length === LIMIT);
+      }
     } catch (error) {
-      toast.error(error?.message || "Failed to fetch!");
-      setProducts([]);
+      toast.error(error?.message || "Failed to fetch products!");
     } finally {
       setLoading(false);
+      setLoadMoreLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    handleProducts();
-  }, []);
+    fetchProducts(1, false);
+  }, [fetchProducts]);
+
+  const handleLoadMore = () => {
+    setPage((prev) => {
+      const nextPage = prev + 1;
+      fetchProducts(nextPage, true);
+      return nextPage;
+    });
+  };
 
   const handleSortChange = (e) => {
     const value = e.target.value;
@@ -48,11 +84,12 @@ const Products = () => {
     setSortConfig({ key, direction });
   };
 
-  const debouncingQuery = useDebounce(query, 500);
-  const finalProducts = useMemo(() => {
-    const search = debouncingQuery.toLowerCase().trim();
+  const debouncedQuery = useDebounce(query, 500);
 
-    let filtered = products?.filter((product) => {
+  const finalProducts = useMemo(() => {
+    const search = debouncedQuery.toLowerCase().trim();
+
+    let filtered = products.filter((product) => {
       return (
         product?.name?.toLowerCase().includes(search) ||
         product?.brand?.toLowerCase().includes(search) ||
@@ -62,7 +99,7 @@ const Products = () => {
       );
     });
 
-    if (!sortConfig.key || !sortConfig.direction) return filtered;
+    if (!sortConfig.key) return filtered;
 
     return [...filtered].sort((a, b) => {
       const aValue = a?.[sortConfig.key] ?? "";
@@ -78,11 +115,10 @@ const Products = () => {
         ? String(aValue).localeCompare(String(bValue))
         : String(bValue).localeCompare(String(aValue));
     });
-  }, [products, debouncingQuery, sortConfig]);
+  }, [products, debouncedQuery, sortConfig]);
 
-  // Product
-  const handleProductDetails = (productId) => {
-    navigate(`/products/${productId}`);
+  const handleProductDetails = (id) => {
+    navigate(`/products/${id}`);
   };
 
   const handleAddToCart = async (productId) => {
@@ -90,19 +126,15 @@ const Products = () => {
 
     try {
       setAddLoading(productId);
+
       const data = await addToCart({ productId, quantity: 1 });
+
       toast.success(data?.message || "Added to cart!");
 
-      setCooldownMap((prev) => ({
-        ...prev,
-        [productId]: true,
-      }));
+      setCooldownMap((prev) => ({ ...prev, [productId]: true }));
 
       setTimeout(() => {
-        setCooldownMap((prev) => ({
-          ...prev,
-          [productId]: false,
-        }));
+        setCooldownMap((prev) => ({ ...prev, [productId]: false }));
       }, 3000);
     } catch (error) {
       toast.error(error?.message || "Failed to add!");
@@ -114,75 +146,61 @@ const Products = () => {
   return (
     <section className="bg-gray-50 px-0 py-10 md:px-5">
       <div className="mx-auto max-w-screen-2xl px-4">
-        <div className="mb-6 flex flex-col md:gap-10 md:flex-row md:items-center md:justify-between">
+        {/* HEADER */}
+        <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between md:gap-10">
           <div>
             <h2 className="text-3xl font-bold text-gray-900">
               Grocery Products
             </h2>
             <p className="font-semibold text-gray-500">
-              Showing {finalProducts?.length} products
+              Showing {finalProducts.length} products
             </p>
           </div>
 
-          {/* Search */}
           <SearchBar
             query={query}
             setQuery={setQuery}
             placeholder="Search for products..."
           />
 
-          {/* Sort */}
-          <div className="mt-4 md:mt-0">
-            <label className="mb-2 block text-sm font-semibold text-gray-700">
-              Sort Products
-            </label>
-
-            <div className="relative min-w-55">
-              <select
-                value={
-                  sortConfig.key && sortConfig.direction
-                    ? `${sortConfig.key}-${sortConfig.direction}`
-                    : ""
-                }
-                onChange={handleSortChange}
-                className="w-full appearance-none rounded-xl border border-gray-200 bg-white px-4 py-3 pr-10 text-sm font-medium text-gray-700 shadow-sm outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
-              >
-                <option value="">Sort By</option>
-                <option value="name-asc">Name A-Z</option>
-                <option value="name-desc">Name Z-A</option>
-                <option value="price-asc">Price Low-High</option>
-                <option value="price-desc">Price High-Low</option>
-              </select>
-
-              <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
+          <select
+            value={
+              sortConfig.key ? `${sortConfig.key}-${sortConfig.direction}` : ""
+            }
+            onChange={handleSortChange}
+            className="w-full md:w-56 rounded-xl border px-4 py-3 text-sm"
+          >
+            <option value="">Sort By</option>
+            <option value="name-asc">Name A-Z</option>
+            <option value="name-desc">Name Z-A</option>
+            <option value="price-asc">Price Low-High</option>
+            <option value="price-desc">Price High-Low</option>
+          </select>
         </div>
 
+        {/* PRODUCTS */}
         <ProductGrid
           products={finalProducts}
           loading={loading}
           addLoading={addLoading}
           onView={handleProductDetails}
           onAddToCart={handleAddToCart}
-          cooldownMap={cooldownMap}
+          coolDownMap={cooldownMap}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5"
         />
+
+        {/* LOAD MORE */}
+        {hasMore && (
+          <div className="flex justify-center mt-8">
+            <button
+              onClick={handleLoadMore}
+              disabled={loadMoreLoading}
+              className="px-6 py-3 rounded-xl bg-emerald-600 text-white font-semibold hover:bg-emerald-500 disabled:opacity-50"
+            >
+              {loadMoreLoading ? "Loading..." : "Load More"}
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

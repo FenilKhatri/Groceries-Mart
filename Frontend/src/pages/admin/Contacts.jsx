@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { getContacts } from "../../api/adminApi";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 import SearchBar from "../../components/common/SearchBar";
 import RefreshButton from "../../components/common/RefreshButton";
-import { IoMdArrowRoundDown, IoMdArrowRoundUp } from "react-icons/io";
 import Description from "../../components/ui/Description";
 import H3 from "../../components/ui/H3";
 import TotalCounts from "../../components/sections/admin/TotalCounts";
@@ -14,36 +14,52 @@ import AdminTable from "../../components/sections/admin/Table";
 import { contactColumns } from "../../data/pages/adminTable";
 import Button from "../../components/ui/Button";
 
-const AdminContacts = () => {
-  const [loading, setLoading] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
-  const [contacts, setContacts] = useState([]);
+import { useQuery } from "@tanstack/react-query";
 
+const AdminContacts = () => {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
+  const debouncedQuery = useDebounce(query, 500);
 
-  const [sorted, setSorted] = useState({ key: "", direction: "" });
+  const [sorted, setSorted] = useState({
+    key: "",
+    direction: "",
+  });
 
-  const LINKS = "px-5 py-3 text-left font-semibold";
+  const {
+    data: contacts = [],
+    isLoading,
+    refetch,
+    isFetching,
+    error,
+  } = useQuery({
+    queryKey: ["contacts"],
+    queryFn: getContacts,
+    staleTime: 5 * 60 * 1000, // 5 min cache
+    onError: (err) => {
+      toast.error(err?.message || "Failed to fetch contacts");
+    },
+    select: (res) => res?.data || [],
+  });
 
-  const handleData = async () => {
-    try {
-      setLoading(true);
-      const res = await getContacts();
-      setContacts(res?.data || []);
-    } catch (error) {
-      toast.error(error?.message || "Failed to fetch!");
-      setContacts([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const sortedContacts = useMemo(() => {
+    if (!sorted.key) return contacts;
 
-  const debouncingQuery = useDebounce(query, 500);
+    return [...contacts].sort((a, b) => {
+      const aValue = a[sorted.key] ?? "";
+      const bValue = b[sorted.key] ?? "";
+
+      return sorted.direction === "asc"
+        ? String(aValue).localeCompare(bValue)
+        : String(bValue).localeCompare(aValue);
+    });
+  }, [contacts, sorted]);
+
+  // Search filter
   const filteredContacts = useMemo(() => {
-    const search = debouncingQuery.toLowerCase().trim();
+    const search = debouncedQuery.toLowerCase().trim();
 
-    return contacts.filter((contact) => {
+    return sortedContacts.filter((contact) => {
       return (
         contact?.name?.toLowerCase().includes(search) ||
         contact?.email?.toLowerCase().includes(search) ||
@@ -51,28 +67,16 @@ const AdminContacts = () => {
         contact?.message?.toLowerCase().includes(search)
       );
     });
-  }, [contacts, debouncingQuery]);
+  }, [sortedContacts, debouncedQuery]);
 
-  useEffect(() => {
-    handleData();
-  }, []);
-
+  // Sorting handler
   const handleSorted = (key, direction) => {
-    const sorted = [...contacts].sort((a, b) => {
-      const aValue = a[key] ?? "";
-      const bValue = b[key] ?? "";
-
-      return direction === "asc"
-        ? String(aValue).localeCompare(bValue)
-        : String(bValue).localeCompare(aValue);
-    });
-    setContacts(sorted);
     setSorted({ key, direction });
   };
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-      {/* Top Bar */}
+      {/* HEADER */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-600">
@@ -85,42 +89,44 @@ const AdminContacts = () => {
           />
         </div>
 
-        <div className="flex items-center gap-3">
-          <TotalCounts children="Contacts" length={contacts?.length} />
-        </div>
+        <TotalCounts children="Contacts" length={contacts?.length} />
       </div>
 
-      {/* Search */}
+      {/* SEARCH */}
       <SearchBar
         query={query}
         setQuery={setQuery}
         placeholder="Search for contacts..."
       />
 
-      {/* Card */}
+      {/* TABLE CARD */}
       <div className="mt-8 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-        {/* Header */}
+        {/* HEADER BAR */}
         <div className="flex items-center justify-between border-b border-gray-100 px-5 sm:px-6 py-4">
           <TableTitle
             Title="Contacts Directory"
             Description="Below is the list of all contacts."
           />
-          {/* Refresh button */}
+
+          {/* REFRESH (React Query refetch) */}
           <RefreshButton
-            refreshing={refreshing}
-            setRefreshing={setRefreshing}
-            onRefresh={handleData}
+            refreshing={isFetching}
+            setRefreshing={() => {}}
+            onRefresh={refetch}
             aria-label="Refresh"
             title="Refresh"
           />
         </div>
 
+        {/* TABLE */}
         <AdminTable
           columns={contactColumns}
           data={filteredContacts}
-          loading={loading}
+          loading={isLoading}
           onSort={handleSorted}
           emptyMessage="No contacts found"
+          children="contact"
+          length={contacts?.length}
           renderRow={(contact, index) => (
             <tr
               key={contact?._id || index}
@@ -135,15 +141,11 @@ const AdminContacts = () => {
                 <Button
                   variant="outline"
                   children="View Contact"
-                  aria-label="View"
-                  title="View"
                   onClick={() => navigate(`/admin/contacts/${contact?._id}`)}
                 />
               </td>
             </tr>
           )}
-          children="contact"
-          length={contacts?.length}
         />
       </div>
     </div>

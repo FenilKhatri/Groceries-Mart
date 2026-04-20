@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getOrders } from "../../api/adminApi";
@@ -20,46 +20,34 @@ import {
   getOrderStatusColor,
 } from "../../utils/order";
 
+import { useQuery } from "@tanstack/react-query";
+
 const AdminOrders = () => {
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-  const [orders, setOrders] = useState([]);
-  const [query, setQuery] = useState("");
-  const [sorted, setSorted] = useState({ key: "", direction: "" });
-
   const navigate = useNavigate();
+  const [query, setQuery] = useState("");
+  const debouncedQuery = useDebounce(query, 500);
 
-  // 🔹 Fetch Orders
-  const handleData = async () => {
-    setLoading(true);
-    try {
-      const res = await getOrders();
-      setOrders(res.orders);
-    } catch (error) {
-      toast.error(error?.message || "Failed to fetch!");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [sorted, setSorted] = useState({
+    key: "",
+    direction: "",
+  });
 
-  useEffect(() => {
-    handleData();
-  }, []);
+  const {
+    data: orders = [],
+    isLoading,
+    isFetching,
+    refetch,
+  } = useQuery({
+    queryKey: ["orders"],
+    queryFn: getOrders,
+    staleTime: 5 * 60 * 1000,
+    select: (res) => res?.orders || [],
+    onError: (err) => {
+      toast.error(err?.message || "Failed to fetch orders");
+    },
+  });
 
-  const debouncingQuery = useDebounce(query, 500);
-
-  const filteredOrders = useMemo(() => {
-    const search = debouncingQuery.toLowerCase().trim();
-
-    return orders.filter((o) => {
-      const { _id, orderStatus, shippingAddress = {} } = o;
-
-      return [_id, orderStatus, shippingAddress.name, shippingAddress.phone]
-        .filter(Boolean)
-        .some((field) => field.toLowerCase().includes(search));
-    });
-  }, [debouncingQuery, orders]);
-
+  // Safe field mapping for sorting
   const getFieldValue = (order, key) => {
     const map = {
       items: order?.items?.length,
@@ -71,27 +59,44 @@ const AdminOrders = () => {
     return map[key] ?? order?.[key] ?? "";
   };
 
-  const handleSorted = (key, direction) => {
-    const sortedData = [...orders].sort((a, b) => {
-      const aValue = getFieldValue(a, key);
-      const bValue = getFieldValue(b, key);
+  // Sorting
+  const sortedOrders = useMemo(() => {
+    if (!sorted.key) return orders;
+
+    return [...orders].sort((a, b) => {
+      const aValue = getFieldValue(a, sorted.key);
+      const bValue = getFieldValue(b, sorted.key);
 
       if (typeof aValue === "number" && typeof bValue === "number") {
-        return direction === "asc" ? aValue - bValue : bValue - aValue;
+        return sorted.direction === "asc" ? aValue - bValue : bValue - aValue;
       }
 
-      return direction === "asc"
+      return sorted.direction === "asc"
         ? String(aValue).localeCompare(String(bValue))
         : String(bValue).localeCompare(String(aValue));
     });
+  }, [orders, sorted]);
 
-    setOrders(sortedData);
+  // Filtering
+  const filteredOrders = useMemo(() => {
+    const search = debouncedQuery.toLowerCase().trim();
+
+    return sortedOrders.filter((o) => {
+      const { _id, orderStatus, shippingAddress = {} } = o;
+
+      return [_id, orderStatus, shippingAddress.name, shippingAddress.phone]
+        .filter(Boolean)
+        .some((field) => String(field).toLowerCase().includes(search));
+    });
+  }, [debouncedQuery, sortedOrders]);
+
+  const handleSorted = (key, direction) => {
     setSorted({ key, direction });
   };
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-      {/* Top Bar */}
+      {/* HEADER */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-600">
@@ -103,21 +108,19 @@ const AdminOrders = () => {
           </Description>
         </div>
 
-        <div className="flex items-center gap-3">
-          <TotalCounts length={orders?.length}>Orders</TotalCounts>
-        </div>
+        <TotalCounts length={orders?.length}>Orders</TotalCounts>
       </div>
 
-      {/* Search */}
+      {/* SEARCH */}
       <SearchBar
         query={query}
         setQuery={setQuery}
         placeholder="Search for orders..."
       />
 
-      {/* Table Card */}
+      {/* TABLE */}
       <div className="mt-8 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-        {/* Header */}
+        {/* HEADER BAR */}
         <div className="flex items-center justify-between border-b border-gray-100 px-5 sm:px-6 py-4">
           <TableTitle
             Title="Orders Directory"
@@ -125,19 +128,21 @@ const AdminOrders = () => {
           />
 
           <RefreshButton
-            refreshing={refreshing}
-            setRefreshing={setRefreshing}
-            onRefresh={handleData}
+            refreshing={isFetching}
+            setRefreshing={() => {}}
+            onRefresh={refetch}
           />
         </div>
 
-        {/* Table */}
+        {/* TABLE */}
         <AdminTable
           columns={orderColumns}
           data={filteredOrders}
-          loading={loading}
+          loading={isLoading}
           onSort={handleSorted}
           emptyMessage="No orders found"
+          children="order"
+          length={orders?.length}
           renderRow={(order, index) => (
             <OrderRow
               key={order._id || index}
@@ -146,8 +151,6 @@ const AdminOrders = () => {
               navigate={navigate}
             />
           )}
-          children="order"
-          length={orders?.length}
         />
       </div>
     </div>
@@ -156,28 +159,25 @@ const AdminOrders = () => {
 
 export default AdminOrders;
 
+//  ORDER ROW 
+
 const OrderRow = ({ order, index, navigate }) => {
   const { shippingAddress = {}, items = [], orderStatus } = order;
 
   return (
     <tr className="hover:bg-emerald-50/60 transition">
       <td className="px-5 py-4">{index + 1}</td>
-
       <td className="px-5 py-4">{items.length}</td>
 
-      <td className="px-5 py-4">
-        <p className="font-semibold text-gray-900 line-clamp-1">
-          {shippingAddress.name || "-"}
-        </p>
+      <td className="px-5 py-4 font-semibold text-gray-900">
+        {shippingAddress.name || "-"}
       </td>
 
       <td className="px-5 py-4">{shippingAddress.phone || "-"}</td>
 
-      <td className="px-5 py-4">
-        <div className="line-clamp-1">
-          {(shippingAddress.address || "-").slice(0, 20)}
-          {shippingAddress.address?.length > 20 && "..."}
-        </div>
+      <td className="px-5 py-4 line-clamp-1">
+        {(shippingAddress.address || "-").slice(0, 20)}
+        {shippingAddress.address?.length > 20 && "..."}
       </td>
 
       <td className="px-5 py-4">
@@ -194,8 +194,6 @@ const OrderRow = ({ order, index, navigate }) => {
       <td className="px-5 py-4">
         <Button
           variant="outline"
-          aria-label="View"
-          title="View"
           onClick={() => navigate(`/admin/orders/${order._id}`)}
         >
           View Order

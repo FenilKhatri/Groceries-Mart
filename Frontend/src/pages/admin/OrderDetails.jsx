@@ -1,365 +1,192 @@
-import { lazy, useEffect, useState } from "react";
+import { lazy, useEffect, useState, useCallback } from "react";
 import { toast } from "react-toastify";
-import { updateStatus } from "../../api/adminApi";
-import { useNavigate } from "react-router-dom";
-import { FaRegCalendar } from "react-icons/fa";
-import { IoPrintSharp, IoCardSharp } from "react-icons/io5";
+import { updateStatus, getOrderById } from "../../api/adminApi";
+import { useNavigate, useParams } from "react-router-dom";
+
+import { FaRegCalendar, IoCardSharp } from "react-icons/io5";
 import { IoMdArrowBack } from "react-icons/io";
 import { FiUser, FiPhone, FiTruck } from "react-icons/fi";
 import { MdOutlineEmail } from "react-icons/md";
 import { GrLocation } from "react-icons/gr";
 import { RiBillLine } from "react-icons/ri";
+
 import {
   getOrderBadge,
   getOrderStatusName,
   getOrderStatusColor,
   orderSteps,
 } from "../../utils/order";
+
 import OrderStatusProgress from "../../components/common/OrderStatusProgress";
-import useOrderDetails from "../../hooks/OrderDetails";
 import H3 from "../../components/ui/H3";
 import OrderDetailsSkeleton from "../../components/skeleton/OrderDetailsSkeleton";
+
 const OrderCard = lazy(() => import("../../components/common/OrderCard"));
 
 const OrderDetails = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const [orderDetails, setOrderDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [orderStatus, setOrderStatus] = useState("");
   const [loadingStatus, setLoadingStatus] = useState(false);
 
-  const navigate = useNavigate();
-  const { orderDetails, setOrderDetails, loading } = useOrderDetails();
+  // FETCH ORDER (stable function)
+  const fetchOrder = useCallback(async () => {
+    try {
+      setLoading(true);
+      const res = await getOrderById(id);
+
+      const order = res?.data?.order;
+      setOrderDetails(order);
+      setOrderStatus(order?.orderStatus || "");
+    } catch (err) {
+      toast.error(err?.message || "Failed to load order");
+    } finally {
+      setLoading(false);
+    }
+  }, [id]);
 
   useEffect(() => {
-    if (orderDetails?.orderStatus) {
-      setOrderStatus(orderDetails.orderStatus);
-    }
-  }, [orderDetails]);
+    fetchOrder();
+  }, [fetchOrder]);
 
-  const handleStatusUpdate = async (id) => {
-    const adminRes = confirm("Are you sure you want to update status?");
-    if (!adminRes) return;
+  // UPDATE STATUS
+  const handleStatusUpdate = async () => {
+    if (!orderDetails?._id) return;
+
+    const confirmUpdate = window.confirm(
+      "Are you sure you want to update status?",
+    );
+    if (!confirmUpdate) return;
 
     try {
       setLoadingStatus(true);
-      const res = await updateStatus(id, { orderStatus });
-      setOrderDetails(res?.data?.order);
-      setOrderStatus(res?.data?.order?.orderStatus);
+
+      const res = await updateStatus(orderDetails._id, {
+        orderStatus,
+      });
+
+      const updatedOrder = res?.data?.order;
+
+      setOrderDetails(updatedOrder);
+      setOrderStatus(updatedOrder?.orderStatus);
+
       toast.success(res?.data?.message || "Status updated!");
-    } catch (error) {
-      toast.error(error?.message || "Failed to update status!");
+    } catch (err) {
+      toast.error(err?.message || "Failed to update status!");
     } finally {
       setLoadingStatus(false);
     }
   };
 
   const itemCount = orderDetails?.items?.length || 0;
+  const shippingAddress = orderDetails?.shippingAddress || {};
 
-  const { shippingAddress = {} } = orderDetails || {};
+  if (loading) return <OrderDetailsSkeleton />;
+
+  if (!orderDetails) {
+    return <div className="p-6 text-center text-gray-500">Order not found</div>;
+  }
 
   return (
-    <div className="min-h-screen p-3 sm:p-4 md:p-6">
-      {loading ? (
-        <OrderDetailsSkeleton />
-      ) : (
-        <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen p-4">
+      <div className="max-w-7xl mx-auto">
+        {/* HEADER */}
+        <div className="flex flex-col gap-4 xl:flex-row xl:justify-between">
           <div>
-            <div className="px-4 py-5 sm:px-6">
-              <div className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
-                {/* Left Section */}
-                <div className="min-w-0 flex-1">
-                  {/* Top row */}
-                  <div className="flex flex-col gap-3">
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-start">
-                      <div className="min-w-0">
-                        <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-600">
-                          Order Overview
-                        </p>
-
-                        <H3>
-                          Order #
-                          {orderDetails?.razorpay?.orderId
-                            ? orderDetails?.razorpay?.orderId.slice(6)
-                            : "N/A"}
-                        </H3>
-                      </div>
-
-                      <span
-                        className={`inline-flex w-fit items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold shadow-sm ${getOrderStatusColor(
-                          orderDetails?.orderStatus,
-                        )}`}
-                      >
-                        {getOrderBadge(orderDetails?.orderStatus)}
-                        {getOrderStatusName(orderDetails?.orderStatus)}
-                      </span>
-                    </div>
-
-                    {/* Meta info */}
-                    <div className="flex flex-col gap-2 text-sm text-gray-500 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
-                      <p className="flex items-center gap-2 font-medium">
-                        <FaRegCalendar className="shrink-0 text-gray-400" />
-                        {orderDetails?.createdAt
-                          ? new Date(orderDetails?.createdAt).toLocaleString(
-                              "en-IN",
-                              {
-                                day: "2-digit",
-                                month: "short",
-                                year: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              },
-                            )
-                          : "N/A"}
-                      </p>
-
-                      <span className="hidden sm:inline text-gray-300">|</span>
-
-                      <p className="font-medium">
-                        {itemCount} {itemCount === 1 ? "Item" : "Items"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Right Section */}
-                <div className="w-full xl:w-auto">
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-1">
-                    <button
-                      className="flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-slate-100 px-5 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-200 cursor-pointer"
-                      onClick={() => navigate(-1)}
-                      aria-label="Back"
-                      title="Back"
-                    >
-                      <IoMdArrowBack className="text-base" />
-                      Back
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Action buttons */}
-          <div className="my-5">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-gray-400">
-              Update Order Status
+            <p className="text-xs font-bold uppercase text-emerald-600">
+              Order Overview
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-3">
-              <select
-                value={orderStatus}
-                name="orderStatus"
-                id="orderStatus"
-                disabled={
-                  orderStatus === "delivered" || orderStatus === "cancelled"
-                }
-                onChange={(e) => setOrderStatus(e.target.value)}
-                className={`w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-700 ${
-                  orderStatus === "delivered" || orderStatus === "cancelled"
-                    ? "opacity-60"
-                    : "outline-none focus:border-emerald-400"
-                }`}
-              >
-                {orderSteps?.map((step) => (
-                  <option value={step?.key} key={step?.key}>
-                    {step?.label}
-                  </option>
-                ))}
-                <option value="cancelled">Cancel</option>
-              </select>
+            <H3>Order #{orderDetails?.razorpay?.orderId?.slice(6) || "N/A"}</H3>
 
-              <button
-                disabled={
-                  loadingStatus ||
-                  orderStatus === "delivered" ||
-                  orderStatus === "cancelled"
-                }
-                aria-label="Update Status"
-                title="Update Status"
-                className={`w-full min-w-fit sm:w-auto rounded-xl px-5 py-3 text-sm font-semibold text-white transition
-                            ${
-                              loadingStatus ||
-                              orderStatus === "delivered" ||
-                              orderStatus === "cancelled"
-                                ? "bg-emerald-600 opacity-60 cursor-not-allowed"
-                                : "bg-emerald-600 hover:bg-emerald-700 cursor-pointer"
-                            }`}
-                onClick={() => handleStatusUpdate(orderDetails?._id)}
+            <div className="flex items-center gap-3 mt-2">
+              <span
+                className={`px-3 py-1 rounded-full text-sm font-semibold ${getOrderStatusColor(
+                  orderDetails?.orderStatus,
+                )}`}
               >
-                {loadingStatus ? "Updating status..." : "Update Status"}
-              </button>
+                {getOrderBadge(orderDetails?.orderStatus)}{" "}
+                {getOrderStatusName(orderDetails?.orderStatus)}
+              </span>
+
+              <p className="text-sm text-gray-500">{itemCount} items</p>
             </div>
           </div>
 
-          {/* Order Section */}
-          <div className="grid grid-cols-12 gap-6">
-            {/* Left Section */}
-            <div className="col-span-12 lg:col-span-8">
-              <div className="flex flex-col gap-2 lg:gap-5">
-                {/* Order Items */}
-                <OrderCard />
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2 border px-4 py-2 rounded-xl"
+          >
+            <IoMdArrowBack />
+            Back
+          </button>
+        </div>
 
-                {/* Order Activity */}
-                <OrderStatusProgress />
+        {/* STATUS UPDATE */}
+        <div className="my-6 flex gap-3">
+          <select
+            value={orderStatus}
+            onChange={(e) => setOrderStatus(e.target.value)}
+            disabled={
+              orderStatus === "delivered" || orderStatus === "cancelled"
+            }
+            className="border p-3 rounded-xl w-full"
+          >
+            {orderSteps.map((s) => (
+              <option key={s.key} value={s.key}>
+                {s.label}
+              </option>
+            ))}
+          </select>
 
-                {/* Customer Note */}
-                <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
-                  <div className="p-6">
-                    <p className="text-lg font-semibold text-gray-800">
-                      Customer Note
-                    </p>
-                  </div>
-                  <div className="border-t border-gray-300">
-                    <div className="p-6">
-                      <p className="font-regular text-gray-500">
-                        {orderDetails?.customerNote || "NA"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          <button
+            onClick={handleStatusUpdate}
+            disabled={loadingStatus}
+            className="bg-emerald-600 text-white px-5 py-3 rounded-xl disabled:opacity-50"
+          >
+            {loadingStatus ? "Updating..." : "Update"}
+          </button>
+        </div>
+
+        {/* MAIN GRID */}
+        <div className="grid grid-cols-12 gap-6">
+          {/* LEFT */}
+          <div className="col-span-12 lg:col-span-8">
+            <OrderCard order={orderDetails} />
+            <OrderStatusProgress />
+          </div>
+
+          {/* RIGHT */}
+          <div className="col-span-12 lg:col-span-4 space-y-5">
+            {/* CUSTOMER */}
+            <div className="border p-5 rounded-xl">
+              <p className="font-semibold mb-3">Customer</p>
+
+              <p>{orderDetails?.user?.name || "-"}</p>
+              <p>{orderDetails?.user?.email || "-"}</p>
             </div>
 
-            {/* Right Section */}
-            <div className="col-span-12 lg:col-span-4">
-              <div className="flex flex-col gap-2 lg:gap-5">
-                {/* Customer Section */}
-                <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
-                  <div className="p-6">
-                    <p className="text-lg font-semibold text-gray-800">
-                      Customer Details
-                    </p>
-                  </div>
+            {/* SHIPPING */}
+            <div className="border p-5 rounded-xl">
+              <p className="font-semibold mb-3">Shipping</p>
 
-                  <div className="p-6 space-y-4 text-sm border-t border-t-slate-300">
-                    <div className="flex items-start gap-3">
-                      <FiUser size={20} className="text-gray-400" />
-                      <div>
-                        <p className="text-gray-400 uppercase font-semibold">
-                          Customer Name
-                        </p>
-                        <p className="font-medium text-gray-700">
-                          {orderDetails?.user?.name || "-"}
-                        </p>
-                      </div>
-                    </div>
+              <p>{shippingAddress?.name}</p>
+              <p>{shippingAddress?.phone}</p>
+              <p>{shippingAddress?.address}</p>
+            </div>
 
-                    <div className="flex items-start gap-3">
-                      <MdOutlineEmail size={20} className="text-gray-400" />
-                      <div>
-                        <p className="text-gray-400 uppercase font-semibold">
-                          Email
-                        </p>
-                        <p className="font-medium text-gray-700">
-                          {orderDetails?.user?.email || "-"}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+            {/* PAYMENT */}
+            <div className="border p-5 rounded-xl">
+              <p className="font-semibold mb-3">Payment</p>
 
-                {/* Shipping Details */}
-                <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
-                  <div className="p-6">
-                    <p className="text-lg font-semibold text-gray-800">
-                      Shipping Details
-                    </p>
-                  </div>
-
-                  {/* Shipping location */}
-                  <div className="p-6 space-y-4 text-sm border-t border-t-slate-300">
-                    <div className="flex items-start gap-3">
-                      <GrLocation size={20} className="text-gray-400" />
-                      <div>
-                        <p className="text-gray-400 uppercase font-semibold">
-                          Shipping Location
-                        </p>
-                        <p className="font-medium text-gray-700 wrap-break-word">
-                          {shippingAddress?.address || "-"}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Shipping Person name */}
-                    <div className="flex items-start gap-3">
-                      <FiUser size={20} className="text-gray-400" />
-                      <div>
-                        <p className="text-gray-400 uppercase font-semibold">
-                          Shipping Name
-                        </p>
-                        <p className="font-medium text-gray-700">
-                          {shippingAddress?.name || "-"}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Shipping Phone number */}
-                    <div className="flex items-start gap-3">
-                      <FiPhone size={20} className="text-gray-400" />
-                      <div>
-                        <p className="text-gray-400 uppercase font-semibold">
-                          Phone No.
-                        </p>
-                        <p className="font-medium text-gray-700">
-                          {shippingAddress?.phone || "-"}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Shipping method */}
-                    <div className="flex items-start gap-3">
-                      <FiTruck size={20} className="text-gray-400" />
-                      <div>
-                        <p className="text-gray-400 uppercase font-semibold">
-                          Shipping Method
-                        </p>
-                        <p className="font-medium text-gray-700">
-                          Standard Delivery (2-3 Days)
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Payment Information */}
-                <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
-                  <div className="p-6">
-                    <p className="text-lg font-semibold text-gray-800">
-                      Payment Information
-                    </p>
-                  </div>
-
-                  {/* Payment Method */}
-                  <div className="p-6 space-y-4 text-sm border-t border-t-slate-300">
-                    <div className="flex items-start gap-3">
-                      <IoCardSharp size={20} className="text-gray-400" />
-                      <div>
-                        <p className="text-gray-400 uppercase font-semibold">
-                          Payment Method
-                        </p>
-                        <p className="font-medium text-gray-700">
-                          {orderDetails?.paymentMethod || "RazorPay"}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Billing Address */}
-                    <div className="flex items-start gap-3">
-                      <RiBillLine size={20} className="text-gray-400" />
-                      <div>
-                        <p className="text-gray-400 uppercase font-semibold">
-                          Billing Address
-                        </p>
-                        <p className="font-medium text-gray-700">
-                          Same as shipping address
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <p>{orderDetails?.paymentMethod || "Razorpay"}</p>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };

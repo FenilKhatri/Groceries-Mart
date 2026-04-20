@@ -1,6 +1,8 @@
 import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 
-import useDashboardData from "../../hooks/useDashboardData";
+import { getDashboardData } from "../../api/adminApi";
+
 import {
   getOrderStats,
   getLatestOrders,
@@ -19,17 +21,25 @@ import AdminDashboardSkeleton from "../../components/skeleton/AdminDashboardSkel
 
 const Dashboard = () => {
   const {
-    vendors,
-    users,
-    shops,
-    orders,
-    products,
-    loading,
-    refreshing,
-    setRefreshing,
-    fetchDashboardData,
-  } = useDashboardData();
+    data = {},
+    isLoading,
+    isFetching,
+    refetch,
+  } = useQuery({
+    queryKey: ["dashboard"],
+    queryFn: getDashboardData,
+    staleTime: 5 * 60 * 1000, // 5 min cache
+  });
 
+  const {
+    vendors = [],
+    users = [],
+    shops = [],
+    orders = [],
+    products = [],
+  } = data;
+
+  //  ORDER STATS 
   const {
     pendingOrders,
     outForDeliveryOrders,
@@ -38,15 +48,10 @@ const Dashboard = () => {
     totalRevenue,
   } = useMemo(() => getOrderStats(orders), [orders]);
 
+  //  DERIVED DATA 
   const latestOrders = useMemo(() => getLatestOrders(orders), [orders]);
   const monthlyData = useMemo(() => getMonthlyData(orders), [orders]);
   const categoryData = useMemo(() => getCategoryData(products), [products]);
-
-  const cardBase =
-    "rounded-[28px] border border-emerald-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md";
-
-  const smallStatusCard =
-    "rounded-3xl border border-emerald-100 bg-gradient-to-br from-white to-emerald-50/70 p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md";
 
   const deliveryData = [
     { name: "Delivered", value: deliveredOrders },
@@ -58,27 +63,28 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-linear-to-b from-[#f7fff8] via-[#f8fffb] to-[#eefbf1]">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        {/* HEADER */}
         <DashboardHeader
-          refreshing={refreshing}
-          setRefreshing={setRefreshing}
-          onRefresh={fetchDashboardData}
+          refreshing={isFetching}
+          setRefreshing={() => {}}
+          onRefresh={refetch}
         />
 
+        {/* BODY */}
         <div className="mt-8 space-y-6">
-          {loading ? (
+          {isLoading ? (
             <AdminDashboardSkeleton />
           ) : (
             <>
-              {/* Top cards + sales chart */}
+              {/* STATS */}
               <StatsGrid
                 totalRevenue={totalRevenue}
                 totalOrders={orders.length}
                 totalProducts={products.length}
                 totalUsers={users.length}
-                cardBase={cardBase}
               />
 
-              {/* Status cards */}
+              {/* STATUS */}
               <StatusGrid
                 vendors={vendors.length}
                 shops={shops.length}
@@ -87,19 +93,18 @@ const Dashboard = () => {
                 outForDeliveryOrders={outForDeliveryOrders}
                 deliveredOrders={deliveredOrders}
                 cancelledOrders={cancelledOrders}
-                smallStatusCard={smallStatusCard}
               />
 
-              {/* Sales Chart */}
+              {/* SALES CHART */}
               <SalesChart monthlyData={monthlyData} />
 
-              {/* Pie charts */}
+              {/* PIE CHARTS */}
               <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <DeliveryStatusChart data={deliveryData} />
                 <CategoryInsightsChart data={categoryData} />
               </div>
 
-              {/* Recent orders table */}
+              {/* RECENT ORDERS */}
               <RecentOrdersTable orders={latestOrders} />
             </>
           )}

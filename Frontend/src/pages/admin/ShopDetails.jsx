@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+
 import {
   getShopById,
   approveShop,
@@ -9,46 +10,45 @@ import {
   deleteShop,
   shopProducts,
 } from "../../api/adminApi";
+
 import ShopDetailsCard from "../../components/common/vendor/ShopDetailsCard";
 import ShopProductsSection from "../../components/common/vendor/ShopProductsSection";
+
+import { useQuery } from "@tanstack/react-query";
 
 const ShopDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [shop, setShop] = useState(null);
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState("");
 
-  const fetchShopDetails = async () => {
-    try {
-      setLoading(true);
+  //  SHOP DETAILS 
+  const {
+    data: shop = null,
+    isLoading: shopLoading,
+    refetch: refetchShop,
+  } = useQuery({
+    queryKey: ["shop", id],
+    queryFn: () => getShopById(id),
+    select: (res) => res?.shop || null,
+    enabled: !!id,
+    onError: (err) => {
+      toast.error(err?.message || "Failed to fetch shop!");
+    },
+  });
 
-      const shopRes = await getShopById(id);
-      setShop(shopRes?.shop || null);
+  //  SHOP PRODUCTS 
+  const { data: products = [], isLoading: productsLoading } = useQuery({
+    queryKey: ["shop-products", id],
+    queryFn: () => shopProducts(id),
+    select: (res) => res?.data || [],
+    enabled: !!id,
+    onError: (err) => {
+      toast.error(err?.message || "Failed to fetch products!");
+    },
+  });
 
-      const productRes = await shopProducts(id);
-      setProducts(productRes?.data || []);
-
-    } catch (error) {
-      toast.error(
-        error?.response?.data?.message ||
-        error?.message ||
-        "Failed to fetch shop details!"
-      );
-
-      setShop(null);
-      setProducts([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchShopDetails();
-  }, [id]);
-
+  //  ACTION HANDLER 
   const handleAction = async (type) => {
     if (!shop || actionLoading) return;
 
@@ -66,45 +66,31 @@ const ShopDetails = () => {
 
       toast.success(
         res?.message ||
-        (type === "approve"
-          ? "Shop approved!"
-          : type === "reject"
-            ? "Shop rejected!"
-            : type === "cancel"
-              ? "Shop cancelled!"
-              : "Shop deleted!")
+          (type === "approve"
+            ? "Shop approved!"
+            : type === "reject"
+              ? "Shop rejected!"
+              : type === "cancel"
+                ? "Shop cancelled!"
+                : "Shop deleted!"),
       );
 
+      // invalidate / refresh cache
       if (type === "delete") {
         navigate(-1);
         return;
       }
 
-      setShop((prev) =>
-        prev
-          ? {
-            ...prev,
-            status:
-              type === "approve"
-                ? "approved"
-                : type === "reject"
-                  ? "rejected"
-                  : "cancelled",
-          }
-          : prev
-      );
+      await refetchShop();
     } catch (error) {
-      toast.error(
-        error?.response?.data?.message ||
-        error?.message ||
-        "Something went wrong!"
-      );
+      toast.error(error?.message || "Something went wrong!");
     } finally {
       setActionLoading("");
     }
   };
 
-  if (loading) {
+  //  LOADING STATE 
+  if (shopLoading) {
     return (
       <div className="bg-gray-50 rounded-4xl">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
@@ -116,10 +102,14 @@ const ShopDetails = () => {
     );
   }
 
+  //  NOT FOUND 
   if (!shop) {
-    return <div className="p-6 text-center text-lg font-medium">Shop not found.</div>;
+    return (
+      <div className="p-6 text-center text-lg font-medium">Shop not found.</div>
+    );
   }
 
+  //  UI 
   return (
     <div className="space-y-8">
       <ShopDetailsCard
@@ -129,7 +119,7 @@ const ShopDetails = () => {
         actionLoading={actionLoading}
       />
 
-      <ShopProductsSection products={products} />
+      <ShopProductsSection products={products} loading={productsLoading} />
     </div>
   );
 };

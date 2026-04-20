@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { getShops } from "../../api/adminApi";
-import { IoMdArrowRoundDown, IoMdArrowRoundUp } from "react-icons/io";
+
 import SearchBar from "../../components/common/SearchBar";
 import RefreshButton from "../../components/common/RefreshButton";
 import H3 from "../../components/ui/H3";
@@ -14,7 +14,7 @@ import AdminTable from "../../components/sections/admin/Table";
 import { shopColumns } from "../../data/pages/adminTable";
 import Button from "../../components/ui/Button";
 
-const LINKS = "px-5 py-3 text-left font-semibold";
+import { useQuery } from "@tanstack/react-query";
 
 const STATUS_STYLES = {
   approved:
@@ -31,32 +31,33 @@ const FALLBACK_IMG =
   "https://t4.ftcdn.net/jpg/03/22/52/97/360_F_322529755_PtwWWld1VDk66wXltHdVC6eZiMI4Hu8W.jpg";
 
 const AdminShops = () => {
-  const [shops, setShops] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-
-  const [query, setQuery] = useState("");
-
-  const [sorted, setSorted] = useState({ key: "", direction: "" });
-
   const navigate = useNavigate();
+  const [query, setQuery] = useState("");
+  const debouncedQuery = useDebounce(query, 500);
 
-  const handleData = async () => {
-    try {
-      setLoading(true);
-      const data = await getShops();
-      setShops(data?.shops || []);
-    } catch (error) {
-      toast.error(error?.message || "Failed to fetch shops!");
-      setShops([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [sorted, setSorted] = useState({
+    key: "",
+    direction: "",
+  });
 
-  const debouncingQuery = useDebounce(query, 500);
+  const {
+    data: shops = [],
+    isLoading,
+    isFetching,
+    refetch,
+  } = useQuery({
+    queryKey: ["shops"],
+    queryFn: getShops,
+    staleTime: 5 * 60 * 1000,
+    select: (res) => res?.shops || [],
+    onError: (err) => {
+      toast.error(err?.message || "Failed to fetch shops!");
+    },
+  });
+
+  // Filtering
   const filteredShops = useMemo(() => {
-    const search = debouncingQuery.toLowerCase().toString();
+    const search = debouncedQuery.toLowerCase().trim();
 
     return shops.filter((shop) => {
       return (
@@ -67,76 +68,76 @@ const AdminShops = () => {
         shop?.city?.toLowerCase().includes(search)
       );
     });
-  }, [shops, debouncingQuery]);
+  }, [shops, debouncedQuery]);
 
-  useEffect(() => {
-    handleData();
-  }, []);
+  // 🔹 Sorting (NO mutation)
+  const sortedShops = useMemo(() => {
+    if (!sorted.key) return filteredShops;
+
+    return [...filteredShops].sort((a, b) => {
+      const aValue = a[sorted.key] ?? "";
+      const bValue = b[sorted.key] ?? "";
+
+      return sorted.direction === "asc"
+        ? String(aValue).localeCompare(String(bValue))
+        : String(bValue).localeCompare(String(aValue));
+    });
+  }, [filteredShops, sorted]);
 
   const handleSorted = (key, direction) => {
-    const sorted = [...shops].sort((a, b) => {
-      const aValue = a[key] ?? "";
-      const bValue = b[key] ?? "";
-
-      return direction === "asc"
-        ? String(aValue).localeCompare(bValue)
-        : String(bValue).localeCompare(aValue);
-    });
-    setShops(sorted);
     setSorted({ key, direction });
   };
 
   return (
     <div className="min-h-screen bg-gray-50 rounded-4xl">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-        {/* Top Bar */}
+        {/* HEADER */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-600">
               admin panel
             </p>
-            <H3 children="Shops Management" />
-            <Description
-              children="Monitor shop requests and view shop details."
-              className="text-gray-500"
-            />
+            <H3>Shops Management</H3>
+            <Description className="text-gray-500">
+              Monitor shop requests and view shop details.
+            </Description>
           </div>
 
-          <div className="flex items-center gap-3">
-            <TotalCounts children="Shops" length={shops?.length} />
-          </div>
+          <TotalCounts length={shops?.length}>Shops</TotalCounts>
         </div>
 
-        {/* Search */}
+        {/* SEARCH */}
         <SearchBar
           query={query}
           setQuery={setQuery}
           placeholder="Search for shops..."
         />
 
-        {/* Card */}
+        {/* TABLE */}
         <div className="mt-8 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-          {/* Header */}
+          {/* HEADER BAR */}
           <div className="flex items-center justify-between border-b border-gray-100 px-5 sm:px-6 py-4">
             <TableTitle
               Title="Shops Directory"
               Description="Below is the list of all shops."
             />
-            {/* Refresh button */}
+
             <RefreshButton
-              refreshing={refreshing}
-              setRefreshing={setRefreshing}
-              onRefresh={handleData}
+              refreshing={isFetching}
+              setRefreshing={() => {}}
+              onRefresh={refetch}
             />
           </div>
 
-          {/* Table */}
+          {/* TABLE */}
           <AdminTable
             columns={shopColumns}
-            data={filteredShops}
-            loading={loading}
+            data={sortedShops}
+            loading={isLoading}
             onSort={handleSorted}
             emptyMessage="No shops found"
+            children="shop"
+            length={shops?.length}
             renderRow={(shop, index) => {
               const status = (shop?.status || "pending").toLowerCase();
               const statusLabel = status.toUpperCase();
@@ -147,39 +148,36 @@ const AdminShops = () => {
                   className="hover:bg-emerald-50/60 transition"
                 >
                   <td className="px-5 py-4">{index + 1}</td>
-                  <td className="px-5 py-4">
-                    <div className="flex items-center gap-3">
-                      <img
-                        loading="lazy"
-                        decoding="async"
-                        src={shop?.image?.url || FALLBACK_IMG}
-                        alt="shop"
-                        width="full"
-                        height="full"
-                        className="h-10 w-10 rounded-xl object-cover border"
-                        onError={(e) => {
-                          e.currentTarget.src = FALLBACK_IMG;
-                        }}
-                      />
-                      <div>
-                        <p className="font-semibold text-gray-900">
-                          {shop.name || shop.shopName || "—"}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {Array.isArray(shop.category)
-                            ? shop.category.join(", ")
-                            : shop.category || "Shop"}
-                        </p>
-                      </div>
+
+                  <td className="px-5 py-4 flex items-center gap-3">
+                    <img
+                      src={shop?.image?.url || FALLBACK_IMG}
+                      alt="shop"
+                      className="h-10 w-10 rounded-xl object-cover border"
+                      onError={(e) => {
+                        e.currentTarget.src = FALLBACK_IMG;
+                      }}
+                    />
+
+                    <div>
+                      <p className="font-semibold text-gray-900">
+                        {shop.name || shop.shopName || "—"}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {Array.isArray(shop.category)
+                          ? shop.category.join(", ")
+                          : shop.category || "Shop"}
+                      </p>
                     </div>
                   </td>
-                  <td className="px-5 py-4">
-                    <span className="font-mono text-xs bg-gray-50 border px-2 py-1 rounded-lg">
-                      {shop.vendor?.vendorId || shop.vendor?._id || "—"}
-                    </span>
+
+                  <td className="px-5 py-4 font-mono text-xs">
+                    {shop.vendor?.vendorId || shop.vendor?._id || "—"}
                   </td>
+
                   <td className="px-5 py-4">{shop.phone || "—"}</td>
                   <td className="px-5 py-4">{shop.city || "—"}</td>
+
                   <td className="px-5 py-4">
                     <span
                       className={STATUS_STYLES[status] || STATUS_STYLES.pending}
@@ -188,21 +186,17 @@ const AdminShops = () => {
                     </span>
                   </td>
 
-                  {/* ACTION */}
                   <td className="px-5 py-4">
                     <Button
                       variant="outline"
-                      children="View Shop"
-                      aria-label="View"
-                      title="View"
                       onClick={() => navigate(`/admin/shops/${shop._id}`)}
-                    />
+                    >
+                      View Shop
+                    </Button>
                   </td>
                 </tr>
               );
             }}
-            children="shop"
-            length={shops?.length}
           />
         </div>
       </div>
