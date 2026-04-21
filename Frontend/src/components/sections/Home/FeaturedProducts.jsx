@@ -168,7 +168,7 @@ const FeaturedProducts = () => {
 
                       <Button
                         variant="secondary"
-                        to={`/products/${item?.id}`}
+                        to={`/products/${item?._id}`}
                         children="View"
                         aria-label="View"
                         title="View"

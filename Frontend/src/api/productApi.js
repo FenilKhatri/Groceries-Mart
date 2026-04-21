@@ -1,6 +1,8 @@
 import http from "./http";
 
-export const getProducts = async ({ page = 1, limit = 12, category, vendor }) => {
+export const getProducts = async (
+  { page = 1, limit = 12, category, vendor } = {}
+) => {
   const res = await http.get(`/products`, {
     params: {
       page,
