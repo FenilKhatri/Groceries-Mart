@@ -1,12 +1,11 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import Loader from "../components/ui/Loader";
 
 const VendorRoute = ({ children }) => {
   const { auth } = useAuth();
 
-  if (auth?.isCheckingAuth) {
-    return <div>Loading...</div>;
-  }
+  if (auth?.isCheckingAuth) return <Loader />;
 
   if (!auth?.isAuthenticated) {
     return <Navigate to="/vendor/login" replace />;
