@@ -7,6 +7,8 @@ import PublicLayout from "../Layouts/PublicLayout";
 import Home from "../pages/public/Home";
 import Products from "../pages/public/Products";
 import ProductDetails from "../pages/public/ProductDetails";
+import Terms from "../pages/public/Terms";
+import Privacy from "../pages/public/Privacy";
 
 const AboutUs = lazy(() => import("../pages/public/AboutUs"));
 const ContactUs = lazy(() => import("../pages/public/ContactUs"));
@@ -80,7 +82,6 @@ const AppRoute = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/vendor/login" element={<VendorLogin />} />
         <Route path="/vendor/register" element={<VendorRegister />} />
-
         <Route
           element={
             <UserRoute>
@@ -103,8 +104,9 @@ const AppRoute = () => {
           <Route path="/users/cart" element={<UserCart />} />
           <Route path="/users/checkout" element={<UserCheckOut />} />
         </Route>
-
         <Route path="*" element={<PageNotFound />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
       </Route>
 
       <Route

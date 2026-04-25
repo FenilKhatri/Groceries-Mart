@@ -15,11 +15,11 @@ export const quickLinks = [
 
 export const legalLinks = [
   {
-    path: "/privacy-policy",
-    description: "Privay Policy",
+    path: "/privacy",
+    description: "Privacy Policy",
   },
   {
-    path: "/terms-of-service",
+    path: "/terms",
     description: "Terms of Service",
   },
   {
