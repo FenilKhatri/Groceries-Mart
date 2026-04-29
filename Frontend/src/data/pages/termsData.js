@@ -22,10 +22,6 @@ const termsData = {
             content: `Delivery times are estimates and may vary. Orders may be rescheduled if you are unavailable.`
         },
         {
-            heading: "Returns & Refunds",
-            content: `Refunds are processed to the original payment method. Perishable goods may not be eligible.`
-        },
-        {
             heading: "Vendor & Admin Rights",
             content: `Vendors are responsible for product listings. Admin may remove or manage listings.`
         },

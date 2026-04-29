@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { toast } from "react-toastify";
-import { allOrders } from "../../api/userApi";
+import { allOrders } from "../../features/user/api";
 
 const OrderBar = () => {
   const [orders, setOrders] = useState([]);

@@ -1,9 +1,20 @@
 import { lazy, useEffect, useState, useCallback } from "react";
 import { toast } from "react-toastify";
-import { updateStatus, getOrderById } from "../../api/adminApi";
+import { updateStatus, getOrderById } from "../../features/admin/api";
 import { useNavigate, useParams } from "react-router-dom";
 import { IoMdArrowRoundBack } from "react-icons/io";
 
+import {
+  HiOutlineUser,
+  HiOutlineMail,
+  HiOutlinePhone,
+  HiOutlineLocationMarker,
+  HiOutlineCreditCard,
+} from "react-icons/hi";
+
+import H3 from "../../shared/components/ui/H3";
+import OrderDetailsSkeleton from "../../shared/components/feedback/skeleton/OrderDetailsSkeleton";
+import OrderStatusProgress from "../../shared/components/common/OrderStatusProgress";
 import {
   getOrderBadge,
   getOrderStatusName,
@@ -11,11 +22,9 @@ import {
   orderSteps,
 } from "../../utils/order";
 
-import OrderStatusProgress from "../../components/common/OrderStatusProgress";
-import H3 from "../../components/ui/H3";
-import OrderDetailsSkeleton from "../../components/skeleton/OrderDetailsSkeleton";
-
-const OrderCard = lazy(() => import("../../components/common/OrderCard"));
+const OrderCard = lazy(
+  () => import("../../shared/components/common/OrderCard"),
+);
 
 const OrderDetails = () => {
   const { id } = useParams();
@@ -76,20 +85,22 @@ const OrderDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gradient-to-b from-[#f7fff8] via-[#f8fffb] to-[#eefbf1] p-6">
       <div className="max-w-7xl mx-auto">
         {/* HEADER */}
-        <div className="flex items-start justify-between mb-6">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
           <div>
-            <p className="text-xs font-semibold text-emerald-600 uppercase">
+            <p className="text-xs font-bold tracking-widest text-emerald-600 uppercase">
               Order Overview
             </p>
 
-            <H3>Order #{orderDetails?.razorpay?.orderId?.slice(6) || "N/A"}</H3>
+            <H3 className="mt-1 text-gray-900">
+              Order #{orderDetails?.razorpay?.orderId?.slice(6) || "N/A"}
+            </H3>
 
-            <div className="flex items-center gap-3 mt-2">
+            <div className="flex items-center gap-3 mt-3 flex-wrap">
               <span
-                className={`px-3 py-1 text-sm rounded-full font-semibold ${getOrderStatusColor(
+                className={`px-4 py-1.5 text-xs rounded-full font-semibold shadow-sm ${getOrderStatusColor(
                   orderDetails?.orderStatus,
                 )}`}
               >
@@ -97,34 +108,32 @@ const OrderDetails = () => {
                 {getOrderStatusName(orderDetails?.orderStatus)}
               </span>
 
-              <p className="text-sm text-gray-500">{itemCount} items</p>
+              <span className="text-sm text-gray-500">
+                {itemCount} item{itemCount !== 1 && "s"}
+              </span>
             </div>
           </div>
 
-          <div className="flex gap-3">
-            <button
-              onClick={() => navigate(-1)}
-              className="border px-4 py-2 rounded-lg bg-white flex items-center gap-2"
-            >
-              <IoMdArrowRoundBack />
-              Back
-            </button>
-          </div>
+          <button
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center gap-2 border border-gray-200 px-4 py-2.5 rounded-xl bg-white hover:bg-gray-50 transition shadow-sm"
+          >
+            <IoMdArrowRoundBack />
+            Back
+          </button>
         </div>
 
-        {/* STATUS UPDATE BAR */}
-        <div className="flex gap-3 mb-6">
+        {/* STATUS UPDATE */}
+        <div className="flex flex-col sm:flex-row gap-3 mb-6">
           <select
             value={orderStatus}
             onChange={(e) => setOrderStatus(e.target.value)}
-            className="border border-emerald-100 p-3 rounded-lg w-full bg-white"
+            className="flex-1 border border-gray-200 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 p-3 rounded-xl bg-white text-sm outline-none"
           >
             {orderSteps.map((s) => (
-              <>
-                <option key={s.key} value={s.key}>
-                  {s.label}
-                </option>
-              </>
+              <option key={s.key} value={s.key}>
+                {s.label}
+              </option>
             ))}
             <option value="cancelled">Cancel</option>
           </select>
@@ -132,19 +141,19 @@ const OrderDetails = () => {
           <button
             onClick={handleStatusUpdate}
             disabled={loadingStatus}
-            className="min-w-fit bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold"
+            className="min-w-40 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-semibold shadow-sm transition disabled:opacity-60"
           >
             {loadingStatus ? "Updating..." : "Update Status"}
           </button>
         </div>
 
-        {/* MAIN GRID */}
+        {/* GRID */}
         <div className="grid grid-cols-12 gap-6">
-          {/* LEFT SIDE */}
+          {/* LEFT */}
           <div className="col-span-12 lg:col-span-8 space-y-6">
-            {/* ORDER ITEMS */}
-            <div className="bg-white p-5 rounded-xl shadow-sm">
-              <h2 className="font-semibold mb-3">Order Items</h2>
+            {/* ITEMS */}
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition">
+              <h2 className="font-semibold text-gray-900 mb-4">Order Items</h2>
 
               {orderDetails?.items?.length ? (
                 <OrderCard order={orderDetails} />
@@ -153,51 +162,92 @@ const OrderDetails = () => {
               )}
             </div>
 
-            {/* ORDER ACTIVITY */}
-            <div className="bg-white p-5 rounded-xl shadow-sm">
+            {/* ACTIVITY */}
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition">
               <div className="flex justify-between mb-4">
-                <h2 className="font-semibold">Order Activity</h2>
+                <h2 className="font-semibold text-gray-900">Order Activity</h2>
                 <span className="text-sm text-emerald-600 font-semibold">
-                  1 / 5 Completed
+                  Progress
                 </span>
               </div>
 
-              <OrderStatusProgress />
+              <OrderStatusProgress currentStatus={orderDetails?.orderStatus} />
             </div>
           </div>
 
-          {/* RIGHT SIDE */}
+          {/* RIGHT */}
           <div className="col-span-12 lg:col-span-4 space-y-5">
             {/* CUSTOMER */}
-            <div className="bg-white p-5 rounded-xl shadow-sm">
-              <h2 className="font-semibold mb-3">Customer Details</h2>
-              <p className="font-medium">{orderDetails?.user?.name}</p>
-              <p className="text-sm text-gray-500">
-                {orderDetails?.user?.email}
-              </p>
-            </div>
+            <Card
+              icon={<HiOutlineUser />}
+              title="Customer Details"
+              color="emerald"
+            >
+              <Info icon={<HiOutlineUser />} value={orderDetails?.user?.name} />
+              <Info
+                icon={<HiOutlineMail />}
+                value={orderDetails?.user?.email}
+              />
+            </Card>
 
             {/* SHIPPING */}
-            <div className="bg-white p-5 rounded-xl shadow-sm">
-              <h2 className="font-semibold mb-3">Shipping Details</h2>
-
-              <p className="text-sm">{shippingAddress?.address}</p>
-              <p className="text-sm">{shippingAddress?.phone}</p>
-              <p className="text-sm">{shippingAddress?.name}</p>
-            </div>
+            <Card
+              icon={<HiOutlineLocationMarker />}
+              title="Shipping Details"
+              color="blue"
+            >
+              <Info
+                icon={<HiOutlineLocationMarker />}
+                value={shippingAddress?.address}
+              />
+              <Info icon={<HiOutlinePhone />} value={shippingAddress?.phone} />
+              <Info icon={<HiOutlineUser />} value={shippingAddress?.name} />
+            </Card>
 
             {/* PAYMENT */}
-            <div className="bg-white p-5 rounded-xl shadow-sm">
-              <h2 className="font-semibold mb-3">Payment</h2>
-              <p className="text-sm">
-                {orderDetails?.paymentMethod || "Razorpay"}
-              </p>
-            </div>
+            <Card icon={<HiOutlineCreditCard />} title="Payment" color="purple">
+              <Info
+                icon={<HiOutlineCreditCard />}
+                value={orderDetails?.paymentMethod || "Razorpay"}
+              />
+            </Card>
           </div>
         </div>
       </div>
     </div>
   );
 };
+
+/* Reusable Card */
+const Card = ({ icon, title, children, color }) => {
+  const colors = {
+    emerald: "bg-emerald-50 text-emerald-600",
+    blue: "bg-blue-50 text-blue-600",
+    purple: "bg-purple-50 text-purple-600",
+  };
+
+  return (
+    <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition">
+      <div className="flex items-center gap-3 mb-4">
+        <div
+          className={`p-2 rounded-lg ${colors[color] || "bg-gray-100 text-gray-600"}`}
+        >
+          {icon}
+        </div>
+        <h2 className="font-semibold text-gray-900">{title}</h2>
+      </div>
+
+      <div className="space-y-3">{children}</div>
+    </div>
+  );
+};
+
+/* Reusable Info Row */
+const Info = ({ icon, value }) => (
+  <div className="flex items-start gap-3 text-sm">
+    <span className="text-gray-400 mt-1">{icon}</span>
+    <p className="text-gray-700 break-all">{value || "—"}</p>
+  </div>
+);
 
 export default OrderDetails;

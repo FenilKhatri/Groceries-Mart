@@ -1,11 +1,10 @@
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { updatePassword } from "../../api/userApi";
+import { updatePassword } from "../../features/user/api";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 
 const UpdatePassword = () => {
-
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -43,9 +42,9 @@ const UpdatePassword = () => {
       setLoading(false);
     }
   };
-  
+
   const handleReset = () => {
-    if(coolDown) return;
+    if (coolDown) return;
 
     setPassword("");
     setConfirmPassword("");

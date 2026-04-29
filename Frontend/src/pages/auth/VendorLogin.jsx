@@ -1,25 +1,32 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
-import { vendorLogin } from "../../api/vendorApi";
-import { getMe } from "../../api/authApi";
+import { loginVendor } from "../../features/auth/api";
 import { useAuth } from "../../context/AuthContext";
 import WebLogo from "../../assets/Logo.webp";
-import VendorBackground from "../../components/auth/VendorAuthBackground";
 import { FaArrowLeftLong, FaArrowRight } from "react-icons/fa6";
 import { MdOutlineMail } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { BiSolidShow, BiSolidHide } from "react-icons/bi";
-import Button from "../../components/ui/Button";
+import Button from "../../shared/components/ui/Button";
+import { MESSAGES, ROLES } from "../../utils/constants";
+import VendorAuthBackground from "../../features/auth/components/VendorAuthBackground";
 
 const VendorLogin = () => {
   const [showPass, setShowPass] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const location = useLocation();
 
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+      if (location.state?.message) {
+        toast.success(location.state.message);
+      }
+    }, [location]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -28,28 +35,30 @@ const VendorLogin = () => {
     try {
       setLoading(true);
 
-      const loginRes = await vendorLogin({ email, password });
+      const loginRes = await loginVendor({ email, password });
 
-      const vendorId = loginRes?.vendor?._id;
+      const vendor = loginRes?.vendor;
+      const vendorId = loginRes?._id;
       const token = loginRes?.token;
 
-      if (!token) {
+      if (!loginRes?.vendor) {
         toast.error("Login failed!");
         return;
       }
 
       login({
-        role: "vendor",
-        token,
+        role: ROLES.VENDOR,
+        vendor: {
+          ...loginRes.vendor,
+          _id: loginRes._id,
+        }
       });
 
-      toast.success("Logged In Successfully!");
+      toast.success("Login successful");
 
       navigate(`/vendors/${vendorId}/profile`, { replace: true });
     } catch (error) {
-      toast.error(
-        error?.response?.data?.message || error?.message || "Login failed!",
-      );
+      toast.error(error?.response?.data?.message || "Login failed!");
     } finally {
       setLoading(false);
     }
@@ -57,7 +66,7 @@ const VendorLogin = () => {
 
   return (
     <section className="min-h-screen w-full grid lg:grid-cols-2">
-      <VendorBackground />
+      <VendorAuthBackground />
 
       <div className="flex flex-col justify-center bg-white px-6 sm:px-10 lg:px-16 w-full md:max-w-3xl md:mx-auto">
         <div className="flex justify-center md:justify-end">

@@ -1,20 +1,21 @@
 import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import { getContacts } from "../../api/adminApi";
+import { getContacts } from "../../features/admin/api";
 import { useNavigate } from "react-router-dom";
 
-import SearchBar from "../../components/common/SearchBar";
-import RefreshButton from "../../components/common/RefreshButton";
-import Description from "../../components/ui/Description";
-import H3 from "../../components/ui/H3";
-import TotalCounts from "../../components/sections/admin/TotalCounts";
-import useDebounce from "../../utils/useDebounce";
-import TableTitle from "../../components/sections/admin/TableTitle";
-import AdminTable from "../../components/sections/admin/Table";
-import { contactColumns } from "../../data/pages/adminTable";
-import Button from "../../components/ui/Button";
+import Description from "../../shared/components/ui/Description";
+import H3 from "../../shared/components/ui/H3";
 
+import SearchBar from "../../shared/components/common/SearchBar";
+import RefreshButton from "../../shared/components/common/RefreshButton";
+import TotalCounts from "../../features/admin/components/TotalCounts";
+import useDebounce from "../../hooks/useDebounce";
+import TableTitle from "../../features/admin/components/TableTitle";
+import AdminTable from "../../features/admin/components/Table";
+
+import Button from "../../shared/components/ui/Button";
 import { useQuery } from "@tanstack/react-query";
+import { contactColumns } from "../../data/pages/adminTableData";
 
 const AdminContacts = () => {
   const navigate = useNavigate();

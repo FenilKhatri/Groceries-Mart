@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import { getContactDetails } from "../../api/adminApi";
+import { getContactDetails } from "../../features/admin/api";
 
 import { IoMdArrowBack } from "react-icons/io";
 import {
@@ -17,7 +17,7 @@ const ContactDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  //  CONTACT QUERY 
+  //  CONTACT QUERY
   const {
     data: contact = null,
     isLoading,

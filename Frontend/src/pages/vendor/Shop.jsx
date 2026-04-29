@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import { getMyShop, uploadVendorShop } from "../../api/vendorApi";
+import { getMyShop, uploadVendorShop } from "../../features/vendor/api";
 import cityName from "../../data/cityName";
 import categories from "../../data/categories";
-import ShopStatusView from "../../components/common/vendor/ShopStatusView";
-import ShopRegistrationForm from "../../components/common/vendor/ShopRegistrationForm";
 import { useAuth } from "../../context/AuthContext";
+import ShopStatusView from "../../features/vendor/components/ShopStatusView";
+import ShopRegistrationForm from "../../features/vendor/components/ShopRegistrationForm";
 
 const Shop = () => {
   const { auth } = useAuth();
@@ -139,7 +139,7 @@ const Shop = () => {
 
       const data = await uploadVendorShop(formData);
 
-      toast.success(data?.message || "Shop submitted!");
+      toast.info(data?.message || "Shop submitted!");
 
       if (data?.shop) {
         setShopData(data.shop);

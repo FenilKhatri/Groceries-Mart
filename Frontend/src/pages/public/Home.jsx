@@ -1,13 +1,4 @@
-import Category from "../../components/sections/Home/Category";
-import FeaturedProducts from "../../components/sections/Home/FeaturedProducts";
-import HeroSection from "../../components/sections/Home/HeroSection";
-import {
-  WhyChooseUs,
-  Vendors,
-  Reviews,
-  TrustBadges,
-  UserFlow
-} from "../../components/sections/Home/index";
+import { HeroSection, Category, FeaturedProducts, WhyChooseUs, UserFlow,Vendors, Reviews, TrustBadges } from "../../features/home/components/index";
 
 const Home = () => {
   return (

@@ -150,27 +150,25 @@ const updateQuantity = asyncHandler(async (req, res) => {
   await ensureUserExists(userId);
 
   const { productId, quantity } = req.body || {};
-  const change = Number(quantity);
-  if (!Number.isInteger(change) || change === 0) {
-    return res
-      .status(400)
-      .json({ message: "Quantity must be a non-zero integer!" });
+  const newQty = Number(quantity);
+
+  if (!Number.isInteger(newQty)) {
+    return res.status(400).json({ message: "Invalid quantity!" });
   }
 
   const product = await getProductOrThrow(productId);
   const cart = await getCartOrThrow(userId);
 
   const idx = findItemIndex(cart, productId);
-  if (idx === -1) return res.status(404).json({ message: "Item not found!" });
-
-  const newQty = cart.items[idx].quantity + change;
-
-  if (newQty > product.stock)
-    return res.status(400).json({ message: "Stock limit exceeded!" });
+  if (idx === -1)
+    return res.status(404).json({ message: "Item not found!" });
 
   if (newQty <= 0) {
     cart.items.splice(idx, 1);
   } else {
+    if (newQty > product.stock) {
+      return res.status(400).json({ message: "Stock limit exceeded!" });
+    }
     cart.items[idx].quantity = newQty;
     cart.items[idx].price = product.price;
   }
@@ -178,7 +176,7 @@ const updateQuantity = asyncHandler(async (req, res) => {
   recalcCart(cart);
   await cart.save();
 
-  return res.status(200).json({ message: "Quantity updated!", cart });
+  return res.status(200).json({ message: "Cart updated!", cart });
 });
 
 // Remove item

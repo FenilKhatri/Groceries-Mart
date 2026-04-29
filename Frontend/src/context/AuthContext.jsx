@@ -6,21 +6,20 @@ import {
   useCallback,
   useEffect,
 } from "react";
-import { getMe } from "../api/authApi";
+import { getMe, logoutApi } from "../features/auth/api";
+import http from "../shared/api/http";
 
 const AuthContext = createContext(null);
 
 const getInitialAuth = () => {
   const role = localStorage.getItem("role");
-  const token = localStorage.getItem("token");
 
   return {
     role: role || null,
     user: null,
     vendor: null,
     admin: null,
-    token: token || null,
-    isAuthenticated: !!token,
+    isAuthenticated: false,
     isCheckingAuth: true,
   };
 };
@@ -29,18 +28,14 @@ export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState(getInitialAuth);
 
   useEffect(() => {
+    const role = localStorage.getItem("role");
+
+    if (!role) {
+      setAuth((prev) => ({ ...prev, isCheckingAuth: false }));
+      return;
+    }
+
     const initAuth = async () => {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        setAuth((prev) => ({
-          ...prev,
-          isAuthenticated: false,
-          isCheckingAuth: false,
-        }));
-        return;
-      }
-
       try {
         const res = await getMe();
 
@@ -48,60 +43,52 @@ export const AuthProvider = ({ children }) => {
         const role = res?.data?.accountType;
 
         setAuth({
-          role: role || null,
+          role,
           user: role === "user" ? account : null,
           vendor: role === "vendor" ? account : null,
           admin: role === "admin" ? account : null,
-          token,
           isAuthenticated: true,
           isCheckingAuth: false,
         });
-      } catch (error) {
-        console.error("getMe failed:", error);
 
-        // Only logout on 401
-        if (error?.response?.status === 401) {
-          localStorage.removeItem("token");
-          localStorage.removeItem("role");
+        localStorage.setItem("role", role);
+      } catch {
+        localStorage.removeItem("role");
 
-          setAuth({
-            role: null,
-            user: null,
-            vendor: null,
-            admin: null,
-            token: null,
-            isAuthenticated: false,
-            isCheckingAuth: false,
-          });
-        } else {
-          setAuth((prev) => ({
-            ...prev,
-            isCheckingAuth: false,
-          }));
-        }
+        setAuth({
+          role: null,
+          user: null,
+          vendor: null,
+          admin: null,
+          isAuthenticated: false,
+          isCheckingAuth: false,
+        });
       }
     };
 
     initAuth();
   }, []);
 
-  const login = useCallback(({ role, token }) => {
-    localStorage.setItem("token", token);
+  const login = useCallback(({ role, vendor, user, admin }) => {
     localStorage.setItem("role", role);
 
     setAuth({
       role,
-      user: null,
-      vendor: null,
-      admin: null,
-      token,
+      user: role === "user" ? user : null,
+      vendor: role === "vendor" ? vendor : null,
+      admin: role === "admin" ? admin : null,
       isAuthenticated: true,
       isCheckingAuth: false,
     });
   }, []);
 
-  const logout = useCallback(() => {
-    localStorage.removeItem("token");
+  const logout = useCallback(async () => {
+    try {
+      await http.post("/logout");
+    } catch (err) {
+      console.error("Logout API failed:", err);
+    }
+
     localStorage.removeItem("role");
 
     setAuth({
@@ -109,13 +96,20 @@ export const AuthProvider = ({ children }) => {
       user: null,
       vendor: null,
       admin: null,
-      token: null,
       isAuthenticated: false,
       isCheckingAuth: false,
     });
   }, []);
-
+  
   const value = useMemo(() => ({ auth, login, logout }), [auth, login, logout]);
+  
+  if (auth.isCheckingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-lg font-semibold animate-pulse">Loading...</p>
+      </div>
+    );
+  }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

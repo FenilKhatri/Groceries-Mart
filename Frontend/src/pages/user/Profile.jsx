@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
-import { deleteProfile, updateProfile, userProfile } from "../../api/userApi";
+import {
+  deleteProfile,
+  updateProfile,
+  userProfile,
+} from "../../features/user/api";
 import { toast } from "react-toastify";
-import UserProfileSkeleton from "../../components/skeleton/UserProfileSkeleton";
+import UserProfileSkeleton from "../..//shared/components/feedback/skeleton/UserProfileSkeleton";
+import { useParams } from "react-router-dom";
 
 const UserProfile = () => {
   const [user, setUser] = useState({});
@@ -14,19 +19,26 @@ const UserProfile = () => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
+  const { id } = useParams();
+
+  useEffect(() => {
+    if (id) handleData();
+  }, [id]);
+
   const handleData = async () => {
     try {
       setLoading(true);
-      const res = await userProfile();
 
-      const userData = res?.user || {};
+      const res = await vendorProfile(id);
 
-      setUser(userData);
-      setName(userData?.name || "");
-      setEmail(userData?.email || "");
-      setPhone(userData?.phone || "");
+      const vendor = res?.data?.vendor || {};
+
+      setProfile(vendor);
+      setName(vendor?.name || "");
+      setEmail(vendor?.email || "");
+      setPhone(vendor?.phone || "");
     } catch (error) {
-      toast.error(error?.message || "Failed to fetch!");
+      toast.error("Failed to fetch!");
     } finally {
       setLoading(false);
     }
@@ -46,18 +58,17 @@ const UserProfile = () => {
 
   const handleSave = async () => {
     try {
-      setIsUpdating(true);
+      setUpdating(true);
 
-      await updateProfile({ name, email, phone });
+      await updateProfile({ name, email, phone }, id);
 
+      toast.success("Profile updated!");
       await handleData();
       setIsEditing(false);
-
-      toast.success("Profile updated successfully!");
     } catch (error) {
-      toast.error(error?.message || "Failed to update!");
+      toast.error("Failed to update!");
     } finally {
-      setIsUpdating(false);
+      setUpdating(false);
     }
   };
 
@@ -82,8 +93,8 @@ const UserProfile = () => {
   };
 
   useEffect(() => {
-    handleData();
-  }, []);
+    if (id) handleData();
+  }, [id]);
 
   return (
     <div className="w-full bg-white rounded-xl shadow-sm border border-gray-200">

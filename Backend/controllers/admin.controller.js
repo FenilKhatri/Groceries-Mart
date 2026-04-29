@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { get } from "mongoose";
 import Shop from "../models/shopModel.js";
 import Vendor from "../models/vendorModel.js";
 import User from "../models/userModel.js";
@@ -261,7 +261,25 @@ const updateShopStatus = async ({
 };
 
 // Admin Profile Controller
-const updateprofile = asyncHandler(async (req, res) => {
+const getProfile = asyncHandler(async (req, res) => {
+  const id = req.user?.id || req.user?._id;
+
+  if (!validateObjectIdOrFail(res, id, "id")) return;
+
+  const admin = await findByIdOrFail(
+    User,
+    id,
+    res,
+    "Admin not found!",
+    "name email phone createdAt"
+  );
+
+  if (!admin) return;
+
+  return sendResponse(res, 200, "Profile fetched!", { user: admin });
+});
+
+const updateProfile = asyncHandler(async (req, res) => {
   const id = req.user?.id || req.user?._id;
   if (!validateObjectIdOrFail(res, id, "id")) return;
 
@@ -584,10 +602,11 @@ export const getDashboardData = asyncHandler(async (req, res) => {
 });
 
 export default {
-  getVendors,
   getShops,
   getUsers,
   getOrders,
+  getProfile,
+  getVendors,
   getContacts,
   getProducts,
   getShopDetails,
@@ -596,7 +615,7 @@ export default {
   getDashboardData,
   getContactDetails,
   updateOrderStatus,
-  updateprofile,
+  updateProfile,
   approveVendor,
   rejectVendor,
   deleteVendor,

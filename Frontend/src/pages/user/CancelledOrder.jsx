@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { allOrders } from "../../api/userApi";
+import { allOrders } from "../../features/user/api";
 import OrderList from "./OrderList";
-import UserOrderSkeleton from "../../components/skeleton/UserOrderSkeleton";
+import UserOrderSkeleton from "../../shared/components/feedback/skeleton/UserOrderSkeleton";
 
-const ProcessingOrders = () => {
+const CancelledOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -38,4 +38,4 @@ const ProcessingOrders = () => {
   );
 };
 
-export default ProcessingOrders;
+export default CancelledOrders;

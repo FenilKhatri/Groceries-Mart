@@ -3,9 +3,9 @@ import { AiFillProduct } from "react-icons/ai";
 import { IoWarning } from "react-icons/io5";
 import { MdInventory2, MdCategory } from "react-icons/md";
 import { toast } from "react-toastify";
-import { vendorProducts } from "../../api/vendorApi";
+import { vendorProducts } from "../../features/vendor/api";
 import { Link } from "react-router-dom";
-import VendorDashboardSkeleton from "../../components/skeleton/VendorDashboardSkeleton";
+import VendorDashboardSkeleton from "../../shared/components/feedback/skeleton/VendorDashboardSkeleton";
 import { useAuth } from "../../context/AuthContext";
 
 const VendorDashboard = () => {

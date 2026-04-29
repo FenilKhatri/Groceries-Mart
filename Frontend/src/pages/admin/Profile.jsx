@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { getProfile, updateProfile } from "../../api/adminApi";
-import ProfileData from "../../components/sections/admin/profile/ProfileData";
-import H3 from "../../components/ui/H3";
-import Description from "../../components/ui/Description";
+import { getProfile, updateProfile } from "../../features/admin/api";
+import H3 from "../../shared/components/ui/H3";
+import Description from "../../shared/components/ui/Description";
+import ProfileData from "../../features/admin/components/profile/ProfileData";
 
 const Profile = () => {
   const queryClient = useQueryClient();
@@ -13,15 +13,15 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [updating, setUpdating] = useState(false);
 
-  //  PROFILE QUERY 
+  //  PROFILE QUERY
   const { data = {}, isLoading } = useQuery({
     queryKey: ["adminProfile"],
     queryFn: getProfile,
-    select: (res) => res?.user || {},
+    select: (res) => res?.data?.user || {},
     staleTime: 5 * 60 * 1000,
   });
 
-  //  LOCAL EDIT STATE 
+  //  LOCAL EDIT STATE
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -29,17 +29,18 @@ const Profile = () => {
   });
 
   // sync form when data loads
-  useState(() => {
+  useEffect(() => {
     if (data) {
+      localStorage.setItem("admin", JSON.stringify(data));
       setForm({
-        name: data.name || "",
-        email: data.email || "",
-        phone: data.phone || "",
+        name: data?.name || "Admin",
+        email: data?.email || "",
+        phone: data?.phone || "",
       });
     }
   }, [data]);
 
-  //  UPDATE PROFILE 
+  //  UPDATE PROFILE
   const handleUpdateProfile = async () => {
     try {
       setUpdating(true);

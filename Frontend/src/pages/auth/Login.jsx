@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { FaArrowLeftLong, FaArrowRight } from "react-icons/fa6";
@@ -8,22 +8,29 @@ import { RiLockPasswordLine } from "react-icons/ri";
 import { BiSolidShow, BiSolidHide } from "react-icons/bi";
 
 import WebLogo from "../../assets/Logo.webp";
-import Background from "../../components/auth/UserAuthBackground";
+import Background from "../../features/auth/components/UserAuthBackground";
 
-import { userLogin } from "../../api/authUserApi";
 import { useAuth } from "../../context/AuthContext";
-import { getMe } from "../../api/authApi";
-import Button from "../../components/ui/Button";
+import { getMe, userLogin } from "../../features/auth/api";
+import Button from "../../shared/components/ui/Button";
+import { MESSAGES, ROLES } from "../../utils/constants";
 
 const Login = () => {
   // same functionality states
   const navigate = useNavigate();
   const { login } = useAuth();
+  const location = useLocation();
 
   const [loading, setLoading] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    if (location.state?.message) {
+      toast.success(location.state.message);
+    }
+  }, [location]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -40,31 +47,29 @@ const Login = () => {
         meJson?.data?.accountType || meJson?.accountType || null;
 
       if (!account || !accountType) {
-        toast.error("Login failed!");
+        toast.error(MESSAGES.ERROR.LOGIN);
         return;
       }
 
       login({
         role: accountType,
-        user: accountType === "user" ? account : null,
-        vendor: accountType === "vendor" ? account : null,
-        admin: accountType === "admin" ? account : null,
+        user: accountType === ROLES.USER ? account : null,
+        vendor: accountType === ROLES.VENDOR ? account : null,
+        admin: accountType === ROLES.ADMIN ? account : null,
       });
 
-      toast.success("Logged In Successfully!");
+      toast.success(MESSAGES.SUCCESS.LOGIN);
 
-      if (accountType === "admin") {
+      if (accountType === ROLES.ADMIN) {
         navigate("/admin/profile", { replace: true });
-      } else if (accountType === "vendor") {
+      } else if (accountType === ROLES.VENDOR) {
         const vendorId = account?._id || account?.id;
         navigate(`/vendors/${vendorId}/profile`, { replace: true });
       } else {
         navigate("/", { replace: true });
       }
     } catch (error) {
-      toast.error(
-        error?.response?.data?.message || error?.message || "Login failed!",
-      );
+      toast.error(error?.message);
     } finally {
       setLoading(false);
     }

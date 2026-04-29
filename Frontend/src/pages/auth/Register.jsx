@@ -12,7 +12,8 @@ import { MdDialpad } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { BiSolidShow, BiSolidHide } from "react-icons/bi";
 
-import { userRegister } from "../../api/authUserApi";
+import { userRegister } from "../../shared/api/authUserApi";
+import { MESSAGES, ROLES } from "../../utils/constants";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -42,10 +43,10 @@ const Register = () => {
         email,
         phone,
         password,
-        role: "user",
+        role: ROLES.USER,
       });
 
-      toast.success(data?.message || "Registered!");
+      toast.success(data?.message || MESSAGES.SUCCESS.REGISTER);
 
       setName("");
       setEmail("");
@@ -56,7 +57,7 @@ const Register = () => {
       navigate("/login", { replace: true });
     } catch (error) {
       toast.error(
-        error?.response?.data?.message || error?.message || "Bad Request",
+        error?.response?.data?.message || error?.message || MESSAGES.ERROR.REGISTER,
       );
     } finally {
       setRegisterLoading(false);

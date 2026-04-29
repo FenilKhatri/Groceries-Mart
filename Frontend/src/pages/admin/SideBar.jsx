@@ -13,7 +13,6 @@ import { FaUsers } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 import { FiLogOut } from "react-icons/fi";
 import { useAuth } from "../../context/AuthContext";
-import { logoutApi } from "../../api/logOutApi";
 
 const AdminSideBar = () => {
   const [open, setOpen] = useState(false);
@@ -28,14 +27,11 @@ const AdminSideBar = () => {
       : "group flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-50 hover:text-emerald-700 transition";
 
   const handleLogOut = async () => {
-    try {
-      await logoutApi();
-    } catch (error) {
-      console.error("Logout API failed:", error);
-    } finally {
-      logout();
-      navigate("/login", { replace: true });
-    }
+    await logout();
+    navigate("/login", {
+      replace: true,
+      state: { message: "Logged out successfully!" },
+    });
   };
 
   const closeMobile = () => setOpen(false);

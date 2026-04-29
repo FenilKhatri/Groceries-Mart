@@ -1,8 +1,4 @@
-import Header from "../../components/sections/contact/Header";
-import ContactInfo from "../../components/sections/contact/ContactInfo";
-import Form from "../../components/sections/contact/Form";
-import Map from "../../components/sections/contact/Map";
-import FAQ from "../../components/sections/contact/FAQs";
+import { Header, ContactInfo, Form, FAQs, Map } from "../../features/contact/components/index";
 
 const ContactUs = () => {
 
@@ -15,7 +11,7 @@ const ContactUs = () => {
           <ContactInfo />
           <Form />
         </div>
-        <FAQ />
+        <FAQs />
         {/* Map */}
         <div className="space-y-6">
           <Map />

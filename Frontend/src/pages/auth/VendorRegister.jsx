@@ -3,15 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import WebLogo from "../../assets/Logo.webp";
-import VendorBackground from "../../components/auth/VendorAuthBackground";
+import VendorAuthBackground from "../../features/auth/components/VendorAuthBackground";
 
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { FaRegUser } from "react-icons/fa";
 import { MdOutlineMail, MdDialpad } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { BiSolidShow, BiSolidHide } from "react-icons/bi";
-
-import { vendorRegister } from "../../api/vendorApi";
+import { registerVendor } from "../../features/auth/api";
 
 const VendorRegister = () => {
   const navigate = useNavigate();
@@ -36,14 +35,14 @@ const VendorRegister = () => {
     try {
       setRegisterLoading(true);
 
-      const data = await vendorRegister({
+      const data = await registerVendor({
         name,
         email,
         phone,
         password,
       });
 
-      toast.success(data?.message || "Registered!");
+      toast.success(data?.message || MESSAGES.SUCCESS.REGISTER);
 
       setName("");
       setEmail("");
@@ -54,7 +53,7 @@ const VendorRegister = () => {
       navigate("/vendor/login", { replace: true });
     } catch (error) {
       toast.error(
-        error?.response?.data?.message || error?.message || "Bad Request",
+        error?.response?.data?.message || error?.message || MESSAGES.ERROR.REGISTER,
       );
     } finally {
       setRegisterLoading(false);
@@ -63,7 +62,7 @@ const VendorRegister = () => {
 
   return (
     <section className="w-full min-h-screen grid lg:grid-cols-2">
-      <VendorBackground />
+      <VendorAuthBackground />
 
       {/* Register Part */}
       <div className="flex flex-col justify-center bg-white px-6 sm:px-10 lg:px-16 w-full md:max-w-3xl md:mx-auto">

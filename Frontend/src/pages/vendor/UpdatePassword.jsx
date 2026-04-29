@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { updatePassword } from "../../api/vendorApi";
+import { updatePassword } from "../../features/vendor/api";
 import { toast } from "react-toastify";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 
@@ -56,7 +56,7 @@ const UpdatePassword = () => {
 
   return (
     <>
-      <div className="mx-auto max-w-7xl px-4 py-8 space-y-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="text-xs font-semibold tracking-widest text-gray-500 uppercase">

@@ -1,11 +1,4 @@
-import Header from "../../components/sections/about/Header";
-import Story from "../../components/sections/about/Story";
-import Stats from "../../components/sections/about/Stats";
-import CoreValues from "../../components/sections/about/CoreValues";
-import MeetTeam from "../../components/sections/about/MeetTeam";
-import Mission from "../../components/sections/about/Mission";
-import Vision from "../../components/sections/about/Vision";
-import Trust from "../../components/sections/about/Trust";
+import { Header, Story, Stats, CoreValues, MeetTeam, Mission, Vision, Trust } from "../../features/about/components/index";
 
 const AboutUs = () => {
   return (

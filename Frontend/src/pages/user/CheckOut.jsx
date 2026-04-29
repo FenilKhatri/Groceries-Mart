@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
-import { deleteCart, userCart } from "../../api/userApi";
+import { deleteCart, userCart } from "../../features/user/api";
 import { toast } from "react-toastify";
-import { createRazorPayOrder, verifyRazorPayOrder } from "../../api/paymentApi";
+import {
+  createRazorPayOrder,
+  verifyRazorPayOrder,
+} from "../../features/order/api";
 import { useNavigate } from "react-router-dom";
-import ShippingAddress from "../../components/checkout/ShippingAddress";
-import OrderSummary from "../../components/checkout/OrderSummary";
+import ShippingAddress from "../../features/order/components/ShippingAddress";
+import OrderSummary from "../../features/order/components/OrderSummary";
 
 const CheckOut = () => {
   const [items, setItems] = useState(null);

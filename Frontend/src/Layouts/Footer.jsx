@@ -2,9 +2,9 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import WebLogo from "../assets/Logo.webp";
-import { subscribe } from "../api/userApi";
-import { contactInfo } from "../data/pages/contact.js";
-import Description from "../components/ui/Description";
+import { subscribe } from "../features/user/api.js";
+import { contactInfo } from "../data/pages/contactData.js";
+import Description from "../shared/components/ui/Description";
 import { quickLinks, legalLinks } from "../data/footerLinks.js";
 
 const Footer = () => {

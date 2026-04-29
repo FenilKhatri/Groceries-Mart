@@ -1,68 +1,72 @@
 import React, { useEffect, useMemo, useCallback, useState } from "react";
-import { getProducts } from "../../api/productApi";
+import { getProducts } from "../../features/products/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { addToCart } from "../../api/userApi";
-import ProductGrid from "../../components/common/ProductGrid";
-import SearchBar from "../../components/common/SearchBar";
-import useDebounce from "../../utils/useDebounce";
+import { addToCart } from "../../features/user/api";
+import ProductGrid from "../../shared/components/common/ProductGrid";
+import SearchBar from "../../shared/components/common/SearchBar";
+import useDebounce from "../../hooks/useDebounce";
 
 const LIMIT = 12;
 
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
-
+  
   const [hasMore, setHasMore] = useState(true);
-
+  
   const [loading, setLoading] = useState(false);
   const [loadMoreLoading, setLoadMoreLoading] = useState(false);
-
+  
   const [addLoading, setAddLoading] = useState(null);
   const [cooldownMap, setCooldownMap] = useState({});
-
+  
   const [query, setQuery] = useState("");
   const [sortConfig, setSortConfig] = useState({ key: "", direction: "" });
-
+  
   const navigate = useNavigate();
+  
+  const debouncedQuery = useDebounce(query, 500);
 
-  const fetchProducts = useCallback(async (currentPage, isLoadMore = false) => {
-    try {
-      isLoadMore ? setLoadMoreLoading(true) : setLoading(true);
+  const fetchProducts = useCallback(
+    async (currentPage, isLoadMore = false) => {
+      try {
+        isLoadMore ? setLoadMoreLoading(true) : setLoading(true);
 
-      const res = await getProducts({
-        page: currentPage,
-        limit: LIMIT,
-      });
-
-      const newProducts = res?.data?.products || [];
-
-      setProducts((prev) => {
-        const map = new Map();
-
-        [...prev, ...newProducts].forEach((p) => {
-          map.set(p._id, p);
+        const res = await getProducts({
+          page: currentPage,
+          limit: LIMIT,
+          search: debouncedQuery, // now correct
         });
 
-        return Array.from(map.values());
-      });
+        const newProducts = res?.data?.products || [];
 
-      if (res?.data?.hasMore !== undefined) {
-        setHasMore(res.data.hasMore);
-      } else {
-        setHasMore(newProducts.length === LIMIT);
+        setProducts((prev) => {
+          const map = new Map();
+          [...prev, ...newProducts].forEach((p) => {
+            map.set(p._id, p);
+          });
+          return Array.from(map.values());
+        });
+
+        setHasMore(res?.data?.hasMore ?? newProducts.length === LIMIT);
+      } catch (error) {
+        toast.error(error?.message || "Failed to fetch products!");
+      } finally {
+        setLoading(false);
+        setLoadMoreLoading(false);
       }
-    } catch (error) {
-      toast.error(error?.message || "Failed to fetch products!");
-    } finally {
-      setLoading(false);
-      setLoadMoreLoading(false);
-    }
-  }, []);
+    },
+    [debouncedQuery],
+  );
 
   useEffect(() => {
+    setPage(1);
+    setProducts([]);
+    setHasMore(true);
+
     fetchProducts(1, false);
-  }, [fetchProducts]);
+  }, [debouncedQuery, fetchProducts]);
 
   const handleLoadMore = () => {
     setPage((prev) => {
@@ -84,24 +88,10 @@ const Products = () => {
     setSortConfig({ key, direction });
   };
 
-  const debouncedQuery = useDebounce(query, 500);
-
   const finalProducts = useMemo(() => {
-    const search = debouncedQuery.toLowerCase().trim();
+    if (!sortConfig.key) return products;
 
-    let filtered = products.filter((product) => {
-      return (
-        product?.name?.toLowerCase().includes(search) ||
-        product?.brand?.toLowerCase().includes(search) ||
-        product?.category?.toLowerCase().includes(search) ||
-        product?.shortDescription?.toLowerCase().includes(search) ||
-        product?.longDescription?.toLowerCase().includes(search)
-      );
-    });
-
-    if (!sortConfig.key) return filtered;
-
-    return [...filtered].sort((a, b) => {
+    return [...products].sort((a, b) => {
       const aValue = a?.[sortConfig.key] ?? "";
       const bValue = b?.[sortConfig.key] ?? "";
 
@@ -115,7 +105,7 @@ const Products = () => {
         ? String(aValue).localeCompare(String(bValue))
         : String(bValue).localeCompare(String(aValue));
     });
-  }, [products, debouncedQuery, sortConfig]);
+  }, [products, sortConfig]);
 
   const handleProductDetails = (id) => {
     navigate(`/products/${id}`);

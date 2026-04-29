@@ -9,12 +9,11 @@ import {
   cancelShop,
   deleteShop,
   shopProducts,
-} from "../../api/adminApi";
-
-import ShopDetailsCard from "../../components/common/vendor/ShopDetailsCard";
-import ShopProductsSection from "../../components/common/vendor/ShopProductsSection";
+} from "../../features/admin/api";
 
 import { useQuery } from "@tanstack/react-query";
+import ShopDetailsCard from "../../features/vendor/components/ShopDetailsCard";
+import ShopProductsSection from "../../features/vendor/components/ShopProductsSection";
 
 const ShopDetails = () => {
   const { id } = useParams();
@@ -22,7 +21,7 @@ const ShopDetails = () => {
 
   const [actionLoading, setActionLoading] = useState("");
 
-  //  SHOP DETAILS 
+  //  SHOP DETAILS
   const {
     data: shop = null,
     isLoading: shopLoading,
@@ -37,7 +36,7 @@ const ShopDetails = () => {
     },
   });
 
-  //  SHOP PRODUCTS 
+  //  SHOP PRODUCTS
   const { data: products = [], isLoading: productsLoading } = useQuery({
     queryKey: ["shop-products", id],
     queryFn: () => shopProducts(id),
@@ -48,7 +47,7 @@ const ShopDetails = () => {
     },
   });
 
-  //  ACTION HANDLER 
+  //  ACTION HANDLER
   const handleAction = async (type) => {
     if (!shop || actionLoading) return;
 
@@ -89,7 +88,7 @@ const ShopDetails = () => {
     }
   };
 
-  //  LOADING STATE 
+  //  LOADING STATE
   if (shopLoading) {
     return (
       <div className="bg-gray-50 rounded-4xl">
@@ -102,14 +101,14 @@ const ShopDetails = () => {
     );
   }
 
-  //  NOT FOUND 
+  //  NOT FOUND
   if (!shop) {
     return (
       <div className="p-6 text-center text-lg font-medium">Shop not found.</div>
     );
   }
 
-  //  UI 
+  //  UI
   return (
     <div className="space-y-8">
       <ShopDetailsCard

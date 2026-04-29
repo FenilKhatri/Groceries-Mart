@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { FaUser, FaBox } from "react-icons/fa";
-import { userProfile } from "../../api/userApi";
+import { userProfile } from "../../features/user/api";
 import { useEffect, useState } from "react";
 import { RiLockPasswordLine } from "react-icons/ri";
 import Skeleton from "react-loading-skeleton";

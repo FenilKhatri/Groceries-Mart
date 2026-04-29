@@ -1,29 +1,31 @@
 import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { getShops } from "../../api/adminApi";
+import { getShops } from "../../features/admin/api";
 
-import SearchBar from "../../components/common/SearchBar";
-import RefreshButton from "../../components/common/RefreshButton";
-import H3 from "../../components/ui/H3";
-import Description from "../../components/ui/Description";
-import TotalCounts from "../../components/sections/admin/TotalCounts";
-import TableTitle from "../../components/sections/admin/TableTitle";
-import useDebounce from "../../utils/useDebounce";
-import AdminTable from "../../components/sections/admin/Table";
-import { shopColumns } from "../../data/pages/adminTable";
-import Button from "../../components/ui/Button";
+import Description from "../../shared/components/ui/Description";
+import H3 from "../../shared/components/ui/H3";
 
+import SearchBar from "../../shared/components/common/SearchBar";
+import RefreshButton from "../../shared/components/common/RefreshButton";
+import TotalCounts from "../../features/admin/components/TotalCounts";
+import useDebounce from "../../hooks/useDebounce";
+import TableTitle from "../../features/admin/components/TableTitle";
+import AdminTable from "../../features/admin/components/Table";
+
+import { SHOP_STATUS } from "../../utils/constants";
 import { useQuery } from "@tanstack/react-query";
+import { shopColumns } from "../../data/pages/adminTableData";
+import Button from "../../shared/components/ui/Button";
 
 const STATUS_STYLES = {
-  approved:
+  [SHOP_STATUS.APPROVED]:
     "text-xs font-semibold px-2 py-1 rounded-lg bg-emerald-100 text-emerald-700 border border-emerald-200",
-  rejected:
+  [SHOP_STATUS.REJECTED]:
     "text-xs font-semibold px-2 py-1 rounded-lg bg-red-100 text-red-700 border border-red-200",
-  cancelled:
+  [SHOP_STATUS.CANCELLED]:
     "text-xs font-semibold px-2 py-1 rounded-lg bg-gray-100 text-gray-700 border border-gray-200",
-  pending:
+  [SHOP_STATUS.PENDING]:
     "text-xs font-semibold px-2 py-1 rounded-lg bg-amber-50 text-amber-700 border border-amber-200",
 };
 
@@ -139,7 +141,7 @@ const AdminShops = () => {
             children="shop"
             length={shops?.length}
             renderRow={(shop, index) => {
-              const status = (shop?.status || "pending").toLowerCase();
+              const status = (shop?.status || SHOP_STATUS.PENDING).toLowerCase();
               const statusLabel = status.toUpperCase();
 
               return (

@@ -6,19 +6,21 @@ import {
   approveVendorRequest,
   rejectVendorRequest,
   deleteVendorRequest,
-} from "../../api/adminApi";
+} from "../../features/admin/api";
 
-import SearchBar from "../../components/common/SearchBar";
-import RefreshButton from "../../components/common/RefreshButton";
-import Description from "../../components/ui/Description";
-import H3 from "../../components/ui/H3";
-import TotalCounts from "../../components/sections/admin/TotalCounts";
-import useDebounce from "../../utils/useDebounce";
-import TableTitle from "../../components/sections/admin/TableTitle";
-import AdminTable from "../../components/sections/admin/Table";
-import { vendorColumns } from "../../data/pages/adminTable";
+import Description from "../../shared/components/ui/Description";
+import H3 from "../../shared/components/ui/H3";
+
+import SearchBar from "../../shared/components/common/SearchBar";
+import RefreshButton from "../../shared/components/common/RefreshButton";
+import TotalCounts from "../../features/admin/components/TotalCounts";
+import useDebounce from "../../hooks/useDebounce";
+import TableTitle from "../../features/admin/components/TableTitle";
+import AdminTable from "../../features/admin/components/Table";
 
 import { useQuery } from "@tanstack/react-query";
+import { vendorColumns } from "../../data/pages/adminTableData";
+import { actions } from "../../utils/constants";
 
 const AdminVendors = () => {
   const [query, setQuery] = useState("");
@@ -32,7 +34,7 @@ const AdminVendors = () => {
     direction: "",
   });
 
-  //  VENDORS QUERY 
+  //  VENDORS QUERY
   const {
     data: vendors = [],
     isLoading,
@@ -85,7 +87,7 @@ const AdminVendors = () => {
 
   const isActing = (type, id) => action?.type === type && action?.id === id;
 
-  //  FILTER 
+  //  FILTER
   const filteredVendors = useMemo(() => {
     const search = debouncedQuery.toLowerCase().trim();
 
@@ -98,7 +100,7 @@ const AdminVendors = () => {
     });
   }, [vendors, debouncedQuery]);
 
-  //  SORT 
+  //  SORT
   const sortedVendors = useMemo(() => {
     if (!order.key) return filteredVendors;
 
@@ -180,31 +182,18 @@ const AdminVendors = () => {
                 <td className="px-5 py-4">{vendor.phone}</td>
 
                 <td className="px-5 py-4 grid grid-cols-3 gap-2">
-                  <button
-                    disabled={busy || vendor.status === "approved"}
-                    onClick={() => act("approve", vendor._id)}
-                    className="rounded-xl px-3 py-2 text-xs font-semibold bg-emerald-100 hover:bg-emerald-200 disabled:bg-gray-100"
-                  >
-                    {isActing("approve", vendor._id)
-                      ? "Approving..."
-                      : "Approve"}
-                  </button>
-
-                  <button
-                    disabled={busy || vendor.status === "rejected"}
-                    onClick={() => act("reject", vendor._id)}
-                    className="rounded-xl px-3 py-2 text-xs font-semibold bg-orange-100 hover:bg-orange-200 disabled:bg-gray-100"
-                  >
-                    Reject
-                  </button>
-
-                  <button
-                    disabled={busy || vendor.status === "deleted"}
-                    onClick={() => act("delete", vendor._id)}
-                    className="rounded-xl px-3 py-2 text-xs font-semibold bg-red-100 hover:bg-red-200 disabled:bg-gray-100"
-                  >
-                    Delete
-                  </button>
+                  {actions?.map((action) => (
+                    <button
+                      key={action?.key}
+                      disabled={busy || action?.disabledCheck(vendor.status)}
+                      onClick={() => act(action?.key, vendor._id)}
+                      className={`rounded-xl px-3 py-2 text-xs font-semibold cursor-pointer ${action?.bg} ${action?.hover} disabled:bg-gray-100`}
+                    >
+                      {isActing(action?.key, vendor._id)
+                        ? action?.loadingLabel
+                        : action?.label}
+                    </button>
+                  ))}
                 </td>
               </tr>
             )}

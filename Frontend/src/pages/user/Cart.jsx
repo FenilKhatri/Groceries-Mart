@@ -5,11 +5,11 @@ import {
   removeItem,
   updateQuantity,
   userCart,
-} from "../../api/userApi";
+} from "../../features/user/api";
 import { Link } from "react-router-dom";
 import { TbRefreshOff } from "react-icons/tb";
-import UserCartSkeleton from "../../components/skeleton/UserCartSkeleton";
-import OrderSummarySkeleton from "../../components/skeleton/OrderSummarySkeleton";
+import UserCartSkeleton from "../../shared/components/feedback/skeleton/UserCartSkeleton";
+import OrderSummarySkeleton from "../../shared/components/feedback/skeleton/OrderSummarySkeleton";
 
 const UserCart = () => {
   const [cart, setCart] = useState(null);
@@ -38,16 +38,33 @@ const UserCart = () => {
     }
   };
 
-  const handleUpdateQuantity = async (productId, quantity) => {
+  const handleUpdateQuantity = async (productId, change) => {
     if (updatingProductId === productId) return;
-    if (quantity < 1) return;
+
+    const item = cart?.items?.find((i) => getPid(i) === productId);
+    if (!item) return;
+
+    const newQty = item.quantity + change;
+    if (newQty < 0) return;
 
     try {
       setUpdatingProductId(productId);
-      const data = await updateQuantity({ productId, quantity });
-      await refreshCart(data?.message || "Cart updated!");
+
+      setCart((prev) => ({
+        ...prev,
+        items:
+          newQty === 0
+            ? prev.items.filter((i) => getPid(i) !== productId)
+            : prev.items.map((i) =>
+                getPid(i) === productId ? { ...i, quantity: newQty } : i,
+              ),
+        totalAmount: prev.totalAmount + change * (item?.product?.price || 0),
+      }));
+
+      await updateQuantity({ productId, quantity: newQty });
     } catch (error) {
       toast.error(error?.message || "Failed to update cart!");
+      handleCart(); // fallback
     } finally {
       setUpdatingProductId(null);
     }
@@ -89,11 +106,6 @@ const UserCart = () => {
 
   useEffect(() => {
     handleCart();
-    const handleFocus = () => handleCart();
-    window.addEventListener("focus", handleFocus);
-    return () => {
-      window.removeEventListener("focus", handleFocus);
-    };
   }, []);
 
   const ProductImage = ({ src, alt, priority }) => {
@@ -234,51 +246,31 @@ const UserCart = () => {
                           </div>
                         </div>
 
-                        {/* Right */}
-                        <div className="flex flex-col items-start gap-4 md:items-end">
-                          <div className="flex items-center overflow-hidden rounded-lg border border-gray-200">
-                            <button
-                              onClick={() =>
-                                handleUpdateQuantity(pid, item?.quantity - 1)
-                              }
-                              aria-label="Decrease"
-                              title="Decrease"
-                              disabled={isUpdating || item?.quantity <= 1}
-                              className="px-4 py-2 text-lg font-bold text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
-                            >
-                              -
-                            </button>
+                        {/* Quantity Control */}
+                        <div className="flex items-center overflow-hidden rounded-lg border border-gray-200">
+                          <button
+                            onClick={() =>
+                              handleUpdateQuantity(pid, -1)
+                            }
+                            disabled={isUpdating}
+                            className="px-4 py-2 text-lg font-bold text-gray-700 hover:bg-gray-100 disabled:opacity-50"
+                          >
+                            -
+                          </button>
 
-                            <span className="min-w-12.5 border-x border-gray-200 px-4 py-2 text-center text-sm font-semibold text-gray-900">
-                              {isUpdating ? "..." : item?.quantity}
-                            </span>
+                          <span className="min-w-12.5 border-x border-gray-200 px-4 py-2 text-center text-sm font-semibold text-gray-900">
+                            {isUpdating ? "..." : item?.quantity}
+                          </span>
 
-                            <button
-                              onClick={() =>
-                                handleUpdateQuantity(pid, item?.quantity + 1)
-                              }
-                              disabled={isUpdating}
-                              aria-label="Increase"
-                              title="Increase"
-                              className="px-4 py-2 text-lg font-bold text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
-                            >
-                              +
-                            </button>
-                          </div>
-
-                          <div className="text-right">
-                            <p className="text-sm font-semibold text-gray-400">
-                              Price
-                            </p>
-                            <p className="text-lg font-bold text-emerald-600">
-                              ₹ {item?.product?.price || 0}
-                            </p>
-                            <p className="text-sm text-gray-500">
-                              Total: ₹{" "}
-                              {(item?.product?.price || 0) *
-                                (item?.quantity || 0)}
-                            </p>
-                          </div>
+                          <button
+                            onClick={() =>
+                              handleUpdateQuantity(pid, +1)
+                            }
+                            disabled={isUpdating}
+                            className="px-4 py-2 text-lg font-bold text-gray-700 hover:bg-gray-100 disabled:opacity-50"
+                          >
+                            +
+                          </button>
                         </div>
                       </div>
                     );

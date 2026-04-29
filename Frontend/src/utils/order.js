@@ -1,4 +1,4 @@
-import ORDER_STATUS_CONFIG from "../data/orderComponent"; 
+import ORDER_STATUS_CONFIG from "../data/orderConstants";
 
 export const getOrderStatusName = (status) =>
     ORDER_STATUS_CONFIG[status]?.label || "Unknown";

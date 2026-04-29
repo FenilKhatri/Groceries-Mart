@@ -8,16 +8,17 @@ import {
   getCategoryData,
 } from "../../utils/dashboardHelpers";
 
-import { getDashboardData } from "../../api/adminApi";
+import { getDashboardData } from "../../features/admin/api";
 
-import DashboardHeader from "../../components/sections/admin/dashboard/DashboardHeader";
-import StatsGrid from "../../components/sections/admin/dashboard/StatsGrid";
-import StatusGrid from "../../components/sections/admin/dashboard/StatusGrid";
-import DeliveryStatusChart from "../../components/sections/admin/dashboard/DeliveryStatusChart";
-import CategoryInsightsChart from "../../components/sections/admin/dashboard/CategoryInsightsChart";
-import SalesChart from "../../components/sections/admin/dashboard/SalesChart";
-import RecentOrdersTable from "../../components/sections/admin/dashboard/RecentOrdersTable";
-import AdminDashboardSkeleton from "../../components/skeleton/AdminDashboardSkeleton";
+import DashboardHeader from "../../features/admin/components/dashboard/DashboardHeader";
+import StatusGrid from "../../features/admin/components/dashboard/StatusGrid";
+import StatsGrid from "../../features/admin/components/dashboard/StatsGrid";
+import DeliveryStatusChart from "../../features/admin/components/dashboard/DeliveryStatusChart";
+import CategoryInsightsChart from "../../features/admin/components/dashboard/CategoryInsightsChart";
+import SalesChart from "../../features/admin/components/dashboard/SalesChart";
+import RecentOrdersTable from "../../features/admin/components/dashboard/RecentOrdersTable";
+import AdminDashboardSkeleton from "../../shared/components/feedback/skeleton/AdminDashboardSkeleton";
+import { ORDER_STATUS } from "../../utils/constants";
 
 const Dashboard = () => {
   const {
@@ -37,9 +38,9 @@ const Dashboard = () => {
     shops = [],
     orders = [],
     products = [],
-  } = data?.data;
+  } = data?.data || {};
 
-  //  ORDER STATS 
+  //  ORDER STATS
   const {
     pendingOrders,
     outForDeliveryOrders,
@@ -48,16 +49,16 @@ const Dashboard = () => {
     totalRevenue,
   } = useMemo(() => getOrderStats(orders), [orders]);
 
-  //  DERIVED DATA 
+  //  DERIVED DATA
   const latestOrders = useMemo(() => getLatestOrders(orders), [orders]);
   const monthlyData = useMemo(() => getMonthlyData(orders), [orders]);
   const categoryData = useMemo(() => getCategoryData(products), [products]);
 
   const deliveryData = [
-    { name: "Delivered", value: deliveredOrders },
-    { name: "Pending", value: pendingOrders },
-    { name: "Out for Delivery", value: outForDeliveryOrders },
-    { name: "Cancelled", value: cancelledOrders },
+    { name: ORDER_STATUS.DELIVERED, value: deliveredOrders },
+    { name: ORDER_STATUS.PENDING, value: pendingOrders },
+    { name: ORDER_STATUS.OUT_FOR_DELIVERY, value: outForDeliveryOrders },
+    { name: ORDER_STATUS.CANCELLED, value: cancelledOrders },
   ];
 
   return (

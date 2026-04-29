@@ -11,7 +11,8 @@ adminRouter.post("/login", auth.userLogin)
 adminRouter.use(authMiddleware, adminMiddleware);
 
 // Admin profile update
-adminRouter.patch("/update-profile", admin.updateprofile);
+adminRouter.get("/profile", admin.getProfile);
+adminRouter.patch("/update-profile", admin.updateProfile);
 
 // Vendor Routes
 adminRouter.get("/vendors", admin.getVendors);
@@ -44,8 +45,8 @@ adminRouter.get("/contacts", admin.getContacts);
 adminRouter.get("/contact/:id", admin.getContactDetails);
 
 // Delete
-adminRouter.delete("/users/delete-profile", admin.deleteUser);
-adminRouter.delete("/vendors/delete-profile", admin.deleteVendor);
+adminRouter.delete("/users/:id/delete", admin.deleteUser);
+adminRouter.delete("/vendors/:id/delete", admin.deleteVendor);
 
 // Dashboard
 adminRouter.get("/dashboard", admin.getDashboardData);

@@ -10,9 +10,8 @@ import {
 import { CgProfile } from "react-icons/cg";
 import { FiLogOut, FiLock } from "react-icons/fi";
 import { toast } from "react-toastify";
-import { getMyShop } from "../../api/vendorApi";
+import { getMyShop } from "../../features/vendor/api";
 import { useAuth } from "../../context/AuthContext";
-import { logoutApi } from "../../api/logOutApi";
 import { RiLockPasswordLine } from "react-icons/ri";
 
 const VendorSideBar = () => {
@@ -27,13 +26,27 @@ const VendorSideBar = () => {
   const vendor = auth?.vendor || null;
   const vendorId = vendor?._id;
 
+  if (auth.isCheckingAuth) {
+    return <p>Loading...</p>;
+  }
+
+  if (role !== "vendor") {
+    return null;
+  }
+
+  if (!vendor) {
+    return <p>Loading vendor...</p>;
+  }
+
   const isVendorSession = role === "vendor";
   const vendorLoaded = !!vendor;
   const vendorStatus = vendor?.status || null;
 
   const canAccessShop = vendorStatus === "approved";
+
   const shopApproved =
     !!shopData && (shopData?.status === "approved" || !!shopData?.approvedAt);
+
   const canAccessRest = vendorStatus === "approved" && shopApproved;
 
   const linkClasses = ({ isActive }) =>
@@ -45,36 +58,32 @@ const VendorSideBar = () => {
     "flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 bg-gray-50 cursor-not-allowed border border-gray-200 w-full text-left";
 
   const getLockMessage = () => {
-    if (isVendorSession && !vendorLoaded) return "Loading vendor profile...";
-    if (loadingAccess) return "Checking access...";
+    if (auth?.isCheckingAuth) return "Loading vendor profile...";
     if (role !== "vendor") return "Unauthorized.";
-    if (!vendorStatus) return "Loading vendor status...";
+    if (!vendor) return "Unable to load vendor data.";
 
     if (vendorStatus !== "approved") {
-      return "Your vendor account must be approved first.";
+      return "Your vendor request is pending. You can access after admin approval.";
     }
 
     if (!shopData) return "Create your shop first.";
-    const approved = shopData?.status === "approved" || !!shopData?.approvedAt;
 
+    const approved = shopData?.status === "approved" || !!shopData?.approvedAt;
     if (!approved) return "Your shop must be approved first.";
+
     return "";
   };
 
   const handleLogOut = async () => {
-    try {
-      await logoutApi();
-    } catch (error) {
-      console.error("Logout API failed:", error);
-    } finally {
-      logout();
-      navigate("/login", { replace: true });
-    }
+    await logout();
+    navigate("/login", {
+      replace: true,
+      state: { message: "Logged out successfully!" },
+    });
   };
 
   const fetchShopOnly = async () => {
-    if (!isVendorSession) return;
-    if (!vendorLoaded) return;
+    if (!vendorId) return;
 
     try {
       setLoadingAccess(true);
@@ -98,21 +107,23 @@ const VendorSideBar = () => {
   };
 
   useEffect(() => {
+    // wait until auth finishes checking
     if (auth?.isCheckingAuth) return;
 
+    // not vendor → stop loading
     if (!isVendorSession) {
       setShopData(null);
       setLoadingAccess(false);
       return;
     }
 
-    if (!vendor) {
+    if (!vendor?._id) {
       setLoadingAccess(true);
       return;
     }
 
     fetchShopOnly();
-  }, [auth?.isCheckingAuth, isVendorSession, vendor, vendorStatus]);
+  }, [auth?.isCheckingAuth, isVendorSession, vendor?._id]);
 
   const LockIcon = () => <FiLock className="shrink-0" />;
 
@@ -142,8 +153,6 @@ const VendorSideBar = () => {
             ) : (
               <button
                 type="button"
-                aria-label="Dashboard"
-                title="Dashboard"
                 className={lockedClasses}
                 onClick={() => toast.info(getLockMessage())}
               >
@@ -164,8 +173,6 @@ const VendorSideBar = () => {
             ) : (
               <button
                 type="button"
-                aria-label="Shop"
-                title="Shop"
                 className={lockedClasses}
                 onClick={() => toast.info(getLockMessage())}
               >
@@ -186,8 +193,6 @@ const VendorSideBar = () => {
             ) : (
               <button
                 type="button"
-                aria-label="Products"
-                title="Products"
                 className={lockedClasses}
                 onClick={() => toast.info(getLockMessage())}
               >
@@ -207,7 +212,7 @@ const VendorSideBar = () => {
           </nav>
         );
       },
-    [canAccessRest, canAccessShop, loadingAccess, vendorStatus, shopData],
+    [canAccessRest, canAccessShop, vendorId, shopData, vendorStatus],
   );
 
   return (

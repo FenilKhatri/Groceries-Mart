@@ -8,14 +8,16 @@ import {
 } from "react-icons/hi";
 import { RiAdminLine } from "react-icons/ri";
 import { toast } from "react-toastify";
-import { deleteProfile, updateProfile, vendorProfile } from "../../api/vendorApi";
+import {
+  deleteProfile,
+  updateProfile,
+  vendorProfile,
+} from "../../features/vendor/api";
 import { MdVerifiedUser } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
-
 const Profile = () => {
-
   const { id } = useParams();
 
   const [profile, setProfile] = useState({});

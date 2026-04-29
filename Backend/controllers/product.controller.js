@@ -48,7 +48,7 @@ const formatProduct = (product) => ({
 
 // Get products
 const getProducts = asyncHandler(async (req, res) => {
-  const { category, vendor, page = 1, limit = 12 } = req.query;
+  const { category, vendor, page = 1, limit = 12, search = "" } = req.query;
 
   const filter = {};
 
@@ -60,6 +60,18 @@ const getProducts = asyncHandler(async (req, res) => {
     filter["vendor.vendorId"] = vendor;
   }
 
+  if (search) {
+    const regex = new RegExp(search, "i");
+
+    filter.$or = [
+      { name: regex },
+      { brand: regex },
+      { category: regex },
+      { shortDescription: regex },
+      { longDescription: regex },
+    ];
+  }
+
   const pageNum = Math.max(1, Number(page) || 1);
   const limitNum = Math.max(1, Number(limit) || 12);
 
@@ -68,7 +80,7 @@ const getProducts = asyncHandler(async (req, res) => {
   const products = await Product.find(filter)
     .sort({ createdAt: -1, _id: -1 })
     .skip(skip)
-    .limit(Number(limit))
+    .limit(limitNum)
     .lean();
 
   const total = await Product.countDocuments(filter);

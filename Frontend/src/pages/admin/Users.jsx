@@ -1,18 +1,19 @@
 import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import { deleteUser, getUsers } from "../../api/adminApi";
+import { deleteUser, getUsers } from "../../features/admin/api";
 
-import SearchBar from "../../components/common/SearchBar";
-import RefreshButton from "../../components/common/RefreshButton";
-import Description from "../../components/ui/Description";
-import H3 from "../../components/ui/H3";
-import TotalCounts from "../../components/sections/admin/TotalCounts";
-import useDebounce from "../../utils/useDebounce";
-import TableTitle from "../../components/sections/admin/TableTitle";
-import AdminTable from "../../components/sections/admin/Table";
-import { userColumns } from "../../data/pages/adminTable";
+import Description from "../../shared/components/ui/Description";
+import H3 from "../../shared/components/ui/H3";
+
+import SearchBar from "../../shared/components/common/SearchBar";
+import RefreshButton from "../../shared/components/common/RefreshButton";
+import TotalCounts from "../../features/admin/components/TotalCounts";
+import useDebounce from "../../hooks/useDebounce";
+import TableTitle from "../../features/admin/components/TableTitle";
+import AdminTable from "../../features/admin/components/Table";
 
 import { useQuery } from "@tanstack/react-query";
+import { userColumns } from "../../data/pages/adminTableData";
 
 const AdminUsers = () => {
   const [query, setQuery] = useState("");
@@ -38,7 +39,7 @@ const AdminUsers = () => {
     },
   });
 
-  //  DELETE USER 
+  //  DELETE USER
   const handleDeleteUser = async (userId) => {
     try {
       const confirmed = window.confirm("Are you sure you want to delete?");
@@ -52,7 +53,7 @@ const AdminUsers = () => {
     }
   };
 
-  //  SORTING 
+  //  SORTING
   const sortedUsers = useMemo(() => {
     if (!sorted.key) return users;
 
@@ -66,7 +67,7 @@ const AdminUsers = () => {
     });
   }, [users, sorted]);
 
-  //  FILTER 
+  //  FILTER
   const filteredUsers = useMemo(() => {
     const search = debouncedQuery.toLowerCase().trim();
 
@@ -78,7 +79,7 @@ const AdminUsers = () => {
     });
   }, [sortedUsers, debouncedQuery]);
 
-  //  SORT HANDLER 
+  //  SORT HANDLER
   const handleSorted = (key, direction) => {
     setSorted({ key, direction });
   };

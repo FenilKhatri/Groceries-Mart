@@ -2,11 +2,11 @@ import React, { useLayoutEffect, useMemo, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaArrowLeft, FaStar, FaTruck, FaStore } from "react-icons/fa";
-import { getProductDetails } from "../../api/productApi";
-import { addToCart } from "../../api/userApi";
+import { getProductDetails } from "../../features/products/api";
+import { addToCart } from "../../features/user/api";
 import { FaShareAlt } from "react-icons/fa";
 import NoProductImg from "../../assets/background/ProductNotFound.png";
-import ProductDetailSkeleton from "../../components/skeleton/ProductDetailSkeleton";
+import ProductDetailSkeleton from "../../shared/components/feedback/skeleton/ProductDetailSkeleton";
 import { ProductSchema } from "../../utils/productSchema";
 
 // constants
@@ -154,7 +154,7 @@ const ProductDetails = () => {
     try {
       setAddLoading(productId);
 
-      const data = await addToCart({ productId, qunatity: 1 });
+      const data = await addToCart({ productId, quantity: 1 });
       toast.success(data?.message || "Added to cart!");
     } catch (error) {
       toast.error(error?.message || "Failed to add!");
@@ -182,8 +182,6 @@ const ProductDetails = () => {
     }
   };
 
-
-  
   return (
     <>
       {product && <ProductSchema product={product} />}

@@ -6,7 +6,7 @@ import {
   getOrderStatusColor,
 } from "../../utils/order";
 import { toast } from "react-toastify";
-import { downloadInvoice } from "../../api/userApi";
+import { downloadInvoice } from "../../features/user/api";
 
 const OrderList = ({ orders = [], emptyMessage = "No orders found." }) => {
   const handleInvoice = async (id) => {

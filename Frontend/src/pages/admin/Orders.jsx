@@ -1,18 +1,7 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { getOrders } from "../../api/adminApi";
-
-import SearchBar from "../../components/common/SearchBar";
-import RefreshButton from "../../components/common/RefreshButton";
-import H3 from "../../components/ui/H3";
-import Description from "../../components/ui/Description";
-import TotalCounts from "../../components/sections/admin/TotalCounts";
-import useDebounce from "../../utils/useDebounce";
-import TableTitle from "../../components/sections/admin/TableTitle";
-import { orderColumns } from "../../data/pages/adminTable";
-import AdminTable from "../../components/sections/admin/Table";
-import Button from "../../components/ui/Button";
+import { getOrders } from "../../features/admin/api";
 
 import {
   getOrderStatusName,
@@ -20,7 +9,19 @@ import {
   getOrderStatusColor,
 } from "../../utils/order";
 
+import Description from "../../shared/components/ui/Description";
+import H3 from "../../shared/components/ui/H3";
+
+import SearchBar from "../../shared/components/common/SearchBar";
+import RefreshButton from "../../shared/components/common/RefreshButton";
+import TotalCounts from "../../features/admin/components/TotalCounts";
+import useDebounce from "../../hooks/useDebounce";
+import TableTitle from "../../features/admin/components/TableTitle";
+import AdminTable from "../../features/admin/components/Table";
+
 import { useQuery } from "@tanstack/react-query";
+import { orderColumns } from "../../data/pages/adminTableData";
+import Button from "../../shared/components/ui/Button";
 
 const AdminOrders = () => {
   const navigate = useNavigate();
@@ -159,7 +160,7 @@ const AdminOrders = () => {
 
 export default AdminOrders;
 
-//  ORDER ROW 
+//  ORDER ROW
 
 const OrderRow = ({ order, index, navigate }) => {
   const { shippingAddress = {}, items = [], orderStatus } = order;

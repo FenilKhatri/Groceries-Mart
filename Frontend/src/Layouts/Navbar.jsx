@@ -5,8 +5,8 @@ import { FaUser, FaHouseUser } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
 import Logo from "../assets/Logo.webp";
 import { useAuth } from "../context/AuthContext";
-import { logoutApi } from "../api/logOutApi";
-import Button from "../components/ui/Button";
+import Button from "../shared/components/ui/Button";
+import { API_ENDPOINTS, ROLES, ROUTES } from "../utils/constants";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -59,7 +59,7 @@ const Navbar = () => {
 
   const { centerLinks, showAuthButtons, panelLink, panelLabel, showLogout } =
     useMemo(() => {
-      if (role === "admin") {
+      if (role === ROLES.ADMIN) {
         return {
           centerLinks: adminCenter,
           showAuthButtons: false,
@@ -69,7 +69,7 @@ const Navbar = () => {
         };
       }
 
-      if (role === "vendor") {
+      if (role === ROLES.VENDOR) {
         return {
           centerLinks: vendorCenter,
           showAuthButtons: false,
@@ -79,7 +79,7 @@ const Navbar = () => {
         };
       }
 
-      if (role === "user") {
+      if (role === ROLES.USER) {
         return {
           centerLinks: userCenter,
           showAuthButtons: false,
@@ -99,14 +99,9 @@ const Navbar = () => {
     }, [role, guestCenter, userCenter, vendorCenter, adminCenter, vendorId]);
 
   const handleLogout = async () => {
-    try {
-      await logoutApi();
-    } catch (error) {
-      console.error("Logout API failed:", error);
-    } finally {
-      logout();
-      navigate("/login", { replace: true });
-    }
+    await logout();
+    navigate("/login", { replace: true });
+    toast.success("Logged out successfully!");
   };
 
   return (
@@ -138,7 +133,7 @@ const Navbar = () => {
           {showAuthButtons && (
             <>
               <Button
-                to="/login"
+                to={ROUTES.LOGIN}
                 icon={<FaUser size={16} />}
                 children="Login"
                 variant="secondary"
@@ -148,7 +143,7 @@ const Navbar = () => {
               />
 
               <Button
-                to="/vendor/login"
+                to={ROUTES.VENDOR_LOGIN}
                 icon={<FaHouseUser size={16} />}
                 children="Vendor Login"
                 variant="primary"

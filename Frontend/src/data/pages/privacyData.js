@@ -3,7 +3,7 @@ const privacyData = {
     sections: [
         {
             heading: "Information We Collect",
-            content: `Name, email, phone number, address, order history, and technical data like IP and cookies.`
+            content: `Name, email, phone number, address, order history, and technical data like cookies.`
         },
         {
             heading: "How We Use Data",
