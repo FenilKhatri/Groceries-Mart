@@ -39,6 +39,7 @@ const ProcessingOrders = lazy(() => import("../pages/user/ProcessingOrders"));
 const CompletedOrders = lazy(() => import("../pages/user/CompletedOrders"));
 const CancelledOrder = lazy(() => import("../pages/user/CancelledOrder"));
 const UserUpdatePassword = lazy(() => import("../pages/user/UpdatePassword"));
+const DeletedAccount = lazy(() => import("../pages/user/DeletedAccount"));
 
 //  ADMIN
 const AdminProfile = lazy(() => import("../pages/admin/Profile"));
@@ -115,6 +116,9 @@ const AppRoutes = () => {
 
           <Route path="*" element={<PageNotFound />} />
         </Route>
+
+        {/* Account deletion Page */}
+        <Route path="/account-deleted" element={<DeletedAccount />} />
 
         {/*  VENDOR  */}
         <Route

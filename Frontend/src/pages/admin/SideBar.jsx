@@ -13,6 +13,8 @@ import { FaUsers } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 import { FiLogOut } from "react-icons/fi";
 import { useAuth } from "../../context/AuthContext";
+import { BiHome } from "react-icons/bi";
+import { toast } from "react-toastify";
 
 const AdminSideBar = () => {
   const [open, setOpen] = useState(false);
@@ -27,12 +29,10 @@ const AdminSideBar = () => {
       : "group flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-50 hover:text-emerald-700 transition";
 
   const handleLogOut = async () => {
-    await logout();
-    navigate("/login", {
-      replace: true,
-      state: { message: "Logged out successfully!" },
-    });
-  };
+      await logout();
+      navigate("/login", { replace: true });
+      toast.success("Logged out successfully!");
+    };
 
   const closeMobile = () => setOpen(false);
 
@@ -65,6 +65,14 @@ const AdminSideBar = () => {
       <p className="px-2 pb-2 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
         Menu
       </p>
+
+      <NavLink to="/" className={linkClasses} onClick={onClick}>
+        <BiHome
+          size={20}
+          className="text-gray-500 group-hover:text-emerald-600"
+        />
+        Home
+      </NavLink>
 
       <NavLink to="/admin/profile" className={linkClasses} onClick={onClick}>
         <CgProfile

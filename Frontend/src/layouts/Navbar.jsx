@@ -7,6 +7,7 @@ import Logo from "../assets/Logo.webp";
 import { useAuth } from "../context/AuthContext";
 import Button from "../shared/components/ui/Button";
 import { API_ENDPOINTS, ROLES, ROUTES } from "../utils/constants";
+import { toast } from "react-toastify";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);

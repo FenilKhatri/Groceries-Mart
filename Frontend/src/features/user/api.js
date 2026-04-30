@@ -42,13 +42,13 @@ export const userProfile = async () => {
 
 // Update Profile
 export const updateProfile = async ({ name, email, phone }) => {
-  const res = await http.put(API_ENDPOINTS.USERS.PROFILE, { name, email, phone });
+  const res = await http.put(API_ENDPOINTS.USERS.UPDATE_PROFILE, { name, email, phone });
   return res.data;
 }
 
 // Delete Profile
 export const deleteProfile = async () => {
-  const res = await http.delete(API_ENDPOINTS.USERS.PROFILE);
+  const res = await http.delete(API_ENDPOINTS.USERS.DELETE_PROFILE);
   return res.data;
 }
 

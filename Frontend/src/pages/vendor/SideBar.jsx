@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import { getMyShop } from "../../features/vendor/api";
 import { useAuth } from "../../context/AuthContext";
 import { RiLockPasswordLine } from "react-icons/ri";
+import { BiHome } from "react-icons/bi";
 
 const VendorSideBar = () => {
   const [open, setOpen] = useState(false);
@@ -76,10 +77,8 @@ const VendorSideBar = () => {
 
   const handleLogOut = async () => {
     await logout();
-    navigate("/login", {
-      replace: true,
-      state: { message: "Logged out successfully!" },
-    });
+    navigate("/login", { replace: true });
+    toast.success("Logged out successfully!");
   };
 
   const fetchShopOnly = async () => {
@@ -132,6 +131,15 @@ const VendorSideBar = () => {
       function NavContent({ onLinkClick }) {
         return (
           <nav className="flex flex-col px-4 py-5 gap-1">
+            <NavLink
+              to="/"
+              className={linkClasses}
+              onClick={onLinkClick}
+            >
+              <BiHome size={20} />
+              Home
+            </NavLink>
+
             <NavLink
               to={`/vendors/${vendorId}/profile`}
               className={linkClasses}

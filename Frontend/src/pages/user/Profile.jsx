@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   deleteProfile,
@@ -5,8 +6,9 @@ import {
   userProfile,
 } from "../../features/user/api";
 import { toast } from "react-toastify";
-import UserProfileSkeleton from "../..//shared/components/feedback/skeleton/UserProfileSkeleton";
-import { useParams } from "react-router-dom";
+import UserProfileSkeleton from "../../shared/components/feedback/skeleton/UserProfileSkeleton";
+import DeletedAccount from "./DeletedAccount";
+import { useAuth } from "../../context/AuthContext";
 
 const UserProfile = () => {
   const [user, setUser] = useState({});
@@ -14,42 +16,43 @@ const UserProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [deleted, setDeleted] = useState(false);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
-  const { id } = useParams();
-
-  useEffect(() => {
-    if (id) handleData();
-  }, [id]);
+  const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const handleData = async () => {
     try {
       setLoading(true);
 
-      const res = await vendorProfile(id);
+      const res = await userProfile();
+      const userData = res?.user || {};
 
-      const vendor = res?.data?.vendor || {};
-
-      setProfile(vendor);
-      setName(vendor?.name || "");
-      setEmail(vendor?.email || "");
-      setPhone(vendor?.phone || "");
+      setUser(userData);
+      setName(userData.name || "");
+      setEmail(userData.email || "");
+      setPhone(userData.phone || "");
     } catch (error) {
-      toast.error("Failed to fetch!");
+      toast.error("Failed to fetch profile!");
     } finally {
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    handleData();
+  }, []);
+
   const handleEdit = () => {
     if (isEditing) {
-      // Cancel edit → reset values
-      setName(user?.name || "");
-      setEmail(user?.email || "");
-      setPhone(user?.phone || "");
+
+      setName(user.name || "");
+      setEmail(user.email || "");
+      setPhone(user.phone || "");
       setIsEditing(false);
       return;
     }
@@ -58,9 +61,9 @@ const UserProfile = () => {
 
   const handleSave = async () => {
     try {
-      setUpdating(true);
+      setIsUpdating(true);
 
-      await updateProfile({ name, email, phone }, id);
+      await updateProfile({ name, email, phone });
 
       toast.success("Profile updated!");
       await handleData();
@@ -68,33 +71,28 @@ const UserProfile = () => {
     } catch (error) {
       toast.error("Failed to update!");
     } finally {
-      setUpdating(false);
+      setIsUpdating(false);
     }
   };
 
   const handleDelete = async () => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete your account?",
-    );
+    const confirmed = window.confirm("Are you sure?");
     if (!confirmed) return;
 
     try {
       setDeleting(true);
 
       await deleteProfile();
+      await logout();
+      toast.success("Account deleted!");
 
-      localStorage.clear();
-      window.location.href = "/";
+      navigate("/account-deleted");
     } catch (error) {
-      toast.error(error?.message || "Failed to delete!");
+      toast.error("Failed to delete!");
     } finally {
       setDeleting(false);
     }
   };
-
-  useEffect(() => {
-    if (id) handleData();
-  }, [id]);
 
   return (
     <div className="w-full bg-white rounded-xl shadow-sm border border-gray-200">
@@ -111,8 +109,6 @@ const UserProfile = () => {
           className="px-4 py-2 text-sm font-semibold text-red-600 bg-red-100 rounded-lg hover:bg-red-200 transition duration-300 cursor-pointer"
           onClick={handleDelete}
           disabled={deleting}
-          aria-label="Delete"
-          title="Delete"
         >
           {deleting ? "Deleting profile..." : "Delete Account"}
         </button>
@@ -173,15 +169,12 @@ const UserProfile = () => {
             <div className="pt-2 flex flex-col md:flex-row gap-3">
               <button
                 type="button"
-                aria-label="Edit"
-                title="Edit"
-                className={`px-5 py-2.5 rounded-lg font-semibold transition duration-300 cursor-pointer
+                className={`px-5 py-2.5 rounded-lg font-semibold transition duration-300
                   ${
                     isEditing
                       ? "border border-red-500 text-red-500"
-                      : "bg-emerald-500 text-white"
-                  }
-                `}
+                      : "bg-emerald-500 text-white cursor-pointer hover:bg-emerald-600"
+                  }`}
                 onClick={handleEdit}
                 disabled={isUpdating}
               >
@@ -191,8 +184,6 @@ const UserProfile = () => {
               {isEditing && (
                 <button
                   type="button"
-                  aria-label="Save"
-                  title="Save"
                   className="px-5 py-2.5 bg-emerald-500 text-white rounded-lg font-semibold hover:bg-emerald-600 transition duration-300 cursor-pointer"
                   onClick={handleSave}
                   disabled={isUpdating}

@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import WebLogo from "../../assets/Logo.webp";
-import Background from "../../components/auth/UserAuthBackground";
+import Background from "../../features/auth/components/UserAuthBackground";
 
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { FaRegUser } from "react-icons/fa";
@@ -12,7 +12,7 @@ import { MdDialpad } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { BiSolidShow, BiSolidHide } from "react-icons/bi";
 
-import { userRegister } from "../../shared/api/authUserApi";
+import { userRegister } from "../../features/auth/api";
 import { MESSAGES, ROLES } from "../../utils/constants";
 
 const Register = () => {
