@@ -1,5 +1,5 @@
 import http from "../../shared/api/http";
-import { API_ENDPOINTS } from "@/utils/constants";
+import { API_ENDPOINTS } from "../../utils/constants";
 
 // Create order
 export const createRazorPayOrder = async () => {

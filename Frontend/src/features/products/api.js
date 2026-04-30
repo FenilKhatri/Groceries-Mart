@@ -1,5 +1,5 @@
-import http from "@/shared/api/http";
-import { API_ENDPOINTS } from "@/utils/constants";
+import http from "../../shared/api/http";
+import { API_ENDPOINTS } from "../../utils/constants";
 
 export const getProducts = async ({
     page = 1,

@@ -1,4 +1,4 @@
-import http from "@/shared/api/http";
+import http from "../../shared/api/http";
 import { API_ENDPOINTS } from "../../utils/constants";
 
 // User Register

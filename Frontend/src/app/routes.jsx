@@ -1,70 +1,70 @@
 import { Routes, Route, Outlet } from "react-router-dom";
 import { lazy, Suspense } from "react";
 
-import Loader from "@/shared/components/ui/Loader";
-import PublicLayout from "@/layouts/PublicLayout";
+import Loader from "../shared/components/ui/Loader";
+import PublicLayout from "../layouts/PublicLayout";
 
-import RoleRoute from "@/routes/guards/RoleRoute";
+import RoleRoute from "../routes/guards/RoleRoute";
 import { ROLES, ROUTES } from "../utils/constants";
 
-//  PUBLIC 
-const Home = lazy(() => import("@/pages/public/Home"));
-const Products = lazy(() => import("@/pages/public/Products"));
-const ProductDetails = lazy(() => import("@/pages/public/ProductDetails"));
-const Terms = lazy(() => import("@/pages/public/Terms"));
-const Privacy = lazy(() => import("@/pages/public/Privacy"));
-const AboutUs = lazy(() => import("@/pages/public/AboutUs"));
-const ContactUs = lazy(() => import("@/pages/public/ContactUs"));
-const PageNotFound = lazy(() => import("@/pages/public/PageNotFound"));
+//  PUBLIC
+const Home = lazy(() => import("../pages/public/Home"));
+const Products = lazy(() => import("../pages/public/Products"));
+const ProductDetails = lazy(() => import("../pages/public/ProductDetails"));
+const Terms = lazy(() => import("../pages/public/Terms"));
+const Privacy = lazy(() => import("../pages/public/Privacy"));
+const AboutUs = lazy(() => import("../pages/public/AboutUs"));
+const ContactUs = lazy(() => import("../pages/public/ContactUs"));
+const PageNotFound = lazy(() => import("../pages/public/PageNotFound"));
 
-//  AUTH 
-const Login = lazy(() => import("@/pages/auth/Login"));
-const Register = lazy(() => import("@/pages/auth/Register"));
-const VendorLogin = lazy(() => import("@/pages/auth/VendorLogin"));
-const VendorRegister = lazy(() => import("@/pages/auth/VendorRegister"));
+//  AUTH
+const Login = lazy(() => import("../pages/auth/Login"));
+const Register = lazy(() => import("../pages/auth/Register"));
+const VendorLogin = lazy(() => import("../pages/auth/VendorLogin"));
+const VendorRegister = lazy(() => import("../pages/auth/VendorRegister"));
 
-//  LAYOUTS 
-const AdminLayout = lazy(() => import("@/layouts/AdminLayout"));
-const VendorLayout = lazy(() => import("@/layouts/VendorLayout"));
-const UserLayout = lazy(() => import("@/layouts/UserLayout"));
-const OrderLayout = lazy(() => import("@/layouts/OrderLayout"));
+//  LAYOUTS
+const AdminLayout = lazy(() => import("../layouts/AdminLayout"));
+const VendorLayout = lazy(() => import("../layouts/VendorLayout"));
+const UserLayout = lazy(() => import("../layouts/UserLayout"));
+const OrderLayout = lazy(() => import("../layouts/OrderLayout"));
 
-//  USER 
-const UserProfile = lazy(() => import("@/pages/user/Profile"));
-const UserCart = lazy(() => import("@/pages/user/Cart"));
-const UserCheckOut = lazy(() => import("@/pages/user/CheckOut"));
-const UserWishList = lazy(() => import("@/pages/user/Wishlist"));
-const AllOrders = lazy(() => import("@/pages/user/AllOrders"));
-const ProcessingOrders = lazy(() => import("@/pages/user/ProcessingOrders"));
-const CompletedOrders = lazy(() => import("@/pages/user/CompletedOrders"));
-const CancelledOrder = lazy(() => import("@/pages/user/CancelledOrder"));
-const UserUpdatePassword = lazy(() => import("@/pages/user/UpdatePassword"));
+//  USER
+const UserProfile = lazy(() => import("../pages/user/Profile"));
+const UserCart = lazy(() => import("../pages/user/Cart"));
+const UserCheckOut = lazy(() => import("../pages/user/CheckOut"));
+const UserWishList = lazy(() => import("../pages/user/Wishlist"));
+const AllOrders = lazy(() => import("../pages/user/AllOrders"));
+const ProcessingOrders = lazy(() => import("../pages/user/ProcessingOrders"));
+const CompletedOrders = lazy(() => import("../pages/user/CompletedOrders"));
+const CancelledOrder = lazy(() => import("../pages/user/CancelledOrder"));
+const UserUpdatePassword = lazy(() => import("../pages/user/UpdatePassword"));
 
-//  ADMIN 
-const AdminProfile = lazy(() => import("@/pages/admin/Profile"));
-const AdminDashboard = lazy(() => import("@/pages/admin/Dashboard"));
-const AdminVendors = lazy(() => import("@/pages/admin/Vendors"));
-const AdminUsers = lazy(() => import("@/pages/admin/Users"));
-const AdminOrders = lazy(() => import("@/pages/admin/Orders"));
-const AdminShops = lazy(() => import("@/pages/admin/Shops"));
-const AdminShopDetails = lazy(() => import("@/pages/admin/ShopDetails"));
-const AdminContacts = lazy(() => import("@/pages/admin/Contacts"));
-const AdminOrderDetails = lazy(() => import("@/pages/admin/OrderDetails"));
-const AdminContactDetails = lazy(() => import("@/pages/admin/ContactDetails"));
+//  ADMIN
+const AdminProfile = lazy(() => import("../pages/admin/Profile"));
+const AdminDashboard = lazy(() => import("../pages/admin/Dashboard"));
+const AdminVendors = lazy(() => import("../pages/admin/Vendors"));
+const AdminUsers = lazy(() => import("../pages/admin/Users"));
+const AdminOrders = lazy(() => import("../pages/admin/Orders"));
+const AdminShops = lazy(() => import("../pages/admin/Shops"));
+const AdminShopDetails = lazy(() => import("../pages/admin/ShopDetails"));
+const AdminContacts = lazy(() => import("../pages/admin/Contacts"));
+const AdminOrderDetails = lazy(() => import("../pages/admin/OrderDetails"));
+const AdminContactDetails = lazy(() => import("../pages/admin/ContactDetails"));
 
-//  VENDOR 
-const VendorProfile = lazy(() => import("@/pages/vendor/Profile"));
-const VendorDashboard = lazy(() => import("@/pages/vendor/Dashboard"));
-const VendorShop = lazy(() => import("@/pages/vendor/Shop"));
-const VendorProducts = lazy(() => import("@/pages/vendor/Products"));
+//  VENDOR
+const VendorProfile = lazy(() => import("../pages/vendor/Profile"));
+const VendorDashboard = lazy(() => import("../pages/vendor/Dashboard"));
+const VendorShop = lazy(() => import("../pages/vendor/Shop"));
+const VendorProducts = lazy(() => import("../pages/vendor/Products"));
 const VendorProductList = lazy(
-  () => import("@/features/vendor/components/ProductList"),
+  () => import("../features/vendor/components/ProductList"),
 );
 const VendorProductForm = lazy(
-  () => import("@/features/vendor/components/ProductForm"),
+  () => import("../features/vendor/components/ProductForm"),
 );
 const VendorUpdatePassword = lazy(
-  () => import("@/pages/vendor/UpdatePassword"),
+  () => import("../pages/vendor/UpdatePassword"),
 );
 
 const AppRoutes = () => {
