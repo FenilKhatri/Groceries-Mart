@@ -23,11 +23,7 @@ export const legalLinks = [
     description: "Terms of Service",
   },
   {
-    path: "/return-policy",
-    description: "Return Policy",
-  },
-  {
-    path: "/faq",
+    path: "/contact#faq",
     description: "FAQ",
   },
 ];

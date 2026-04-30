@@ -1,6 +1,22 @@
 import { Header, ContactInfo, Form, FAQs, Map } from "../../features/contact/components/index";
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 const ContactUs = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace("#", "");
+
+      const el = document.getElementById(id);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: "smooth" });
+        }, 200);
+      }
+    }
+  }, [location.hash]);
 
   return (
     <section className="bg-gray-50 py-10 md:py-16">

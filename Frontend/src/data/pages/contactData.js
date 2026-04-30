@@ -23,6 +23,46 @@ export const faqs = [
     answer:
       "Yes, all products are sourced from verified vendors and go through quality checks.",
   },
+  {
+    question: "Is there a minimum order amount?",
+    answer:
+      "Yes, a minimum order value may be required depending on your location and vendor policies.",
+  },
+  {
+    question: "Can I cancel or modify my order?",
+    answer:
+      "No, you cannot cancel or modify your order.",
+  },
+  {
+    question: "How can I track my order?",
+    answer:
+      "You can track your order in real-time from your dashboard under the 'My Orders' section.",
+  },
+  {
+    question: "What if I receive damaged or wrong items?",
+    answer:
+      "If you receive damaged or incorrect items, you can request a replacement or refund through the support section.",
+  },
+  {
+    question: "Do you charge delivery fees?",
+    answer:
+      "Delivery charges are not applicable. Free delivery available.",
+  },
+  {
+    question: "Is my payment information secure?",
+    answer:
+      "Absolutely. All payments are processed through secure gateways with encryption to protect your data.",
+  },
+  {
+    question: "Do you deliver to all locations?",
+    answer:
+      "We currently deliver to selected areas. Enter your city to check service availability.",
+  },
+  {
+    question: "How do I contact customer support?",
+    answer:
+      "You can reach our support team via the contact form, email, or phone provided on the Contact Us page.",
+  },
 ];
 
 
