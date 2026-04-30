@@ -1,6 +1,6 @@
 import React from "react";
-import PolicyLayout from "../../components/common/PolicyLayout";
 import termsData from "../../data/pages/termsData";
+import PolicyLayout from "../../shared/components/policy/PolicyLayout";
 
 const Terms = () => {
   return <PolicyLayout {...termsData} />;

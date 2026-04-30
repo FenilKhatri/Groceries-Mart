@@ -1,6 +1,6 @@
 import React from "react";
 import privacyData from "../../data/pages/privacyData";
-import PolicyLayout from "../../components/common/PolicyLayout";
+import PolicyLayout from "../../shared/components/policy/PolicyLayout";
 
 const Privacy = () => {
   return <PolicyLayout {...privacyData} />;
