@@ -147,7 +147,7 @@ npm run dev
 
 Razorpay for payment integration <br />
 MongoDB Atlas for the database <br />
-Vercel and Railway for deployment
+Vercel and Render for deployment
 
 ## 📬 Contact
 
