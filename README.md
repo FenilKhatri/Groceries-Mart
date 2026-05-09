@@ -67,7 +67,6 @@ https://grocery-store-pncw.onrender.com
 - React.js
 - Tailwind CSS
 - React Router
-- Context API
 
 ---
 
