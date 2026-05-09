@@ -140,7 +140,7 @@ npm run dev
 ## 📦 Deployment
 
 **Frontend:** Vercel <br />
-**Backend:** Railway <br />
+**Backend:** Render <br />
 **Database:** MongoDB Atlas
 
 ## 🙌 Acknowledgements
